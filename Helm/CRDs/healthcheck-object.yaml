@@ -1,0 +1,8 @@
+apiVersion: "mercan.io/v1"
+kind: HealthCheck
+metadata:
+  name: my-new-healthcheck-object
+spec:
+  service: "my-existed-service"
+  crontab: "* * * * */5"
+  cert: ""
