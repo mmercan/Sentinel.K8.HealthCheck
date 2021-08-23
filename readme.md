@@ -8,7 +8,7 @@ dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 ## Workers
 
 ### General
-- Sync (c)
+- Sync (c) :gear:
 - Scheduler (c)
 - Comms (Mail, Teams, Signalr etc..) (c)
 
@@ -23,6 +23,6 @@ dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 - Api.HealthMonitoring (c)
  
 ## Libs
-- Sentinel.Common
-- Sentinel.K8s
-- Sentinel.Models
+- Sentinel.Common :blue_book:
+- Sentinel.K8s :blue_book:
+- Sentinel.Models :blue_book:
