@@ -1,0 +1,58 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - Workers/**
+      - Libs/**
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_PATH: ${{ github.workspace }}
+      IMAGE_NAME: ${{ github.repository }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Kubernetes set context
+        uses: Azure/k8s-set-context@v1.1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          context: matt-test-aks2
+    
+      - name: add KUBECONFIG To env file
+        run: |
+          cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
+          ls /home/runner/work/_temp
+          
+      - name: View Docker Compose config
+        run: |
+          docker-compose --file ./dockercompose-sonar.yml --log-level DEBUG config
+
+      - name: Build Test Docker Compose file
+        run: |
+          docker-compose --file Workers/Taka.Worker.Sync/docker-compose-test.yml --log-level DEBUG build \
+          --build-arg buildtime_APPID=${{ secrets.buildtime_APPID }} \
+          --build-arg buildtime_APPSECRET=${{ secrets.buildtime_APPSECRET }} \
+          --build-arg buildtime_ADID=${{ secrets.buildtime_ADID }}$() \
+          --build-arg buildtime_SONARKEY=${{ secrets.buildtime_SONARKEY }} \
+
+      - name: Run the Test image
+        run: |
+          docker run -i \
+          -v /home/runner/work/_temp:/root/.kube \
+          -v ${{env.ARTIFACT_PATH}}/TestResults:/TestResults sentinel-healthcheck-test \
