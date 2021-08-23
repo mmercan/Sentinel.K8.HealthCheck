@@ -7,14 +7,9 @@ namespace Sentinel.Models.CRDs
 {
 
 
-    [KubernetesEntity(Group = "mercan.io", Kind = "HealthCheck", ApiVersion = "v1", PluralName = "healthchecks")]
+    [KubernetesEntity(Group = "sentinel.mercan.io", Kind = "HealthCheck", ApiVersion = "v1", PluralName = "healthchecks")]
     public class HealthCheckResource : CustomResource<HealthCheckResourceSpec, HealthCheckResourceStatus>
     {
-        // public const string KubeApiVersion = "v1";
-        // public const string KubeKind = "HealthCheck";
-        // public const string KubeGroup = "mercan.io";
-        // public const string PluralName = "healthchecks";
-        // public const string singularName = "healthcheck";
 
         public override string ToString()
         {
@@ -54,7 +49,7 @@ namespace Sentinel.Models.CRDs
 
     }
 
-    [KubernetesEntity(Group = "mercan.io", Kind = "HealthCheck", ApiVersion = "v1", PluralName = "healthchecks")]
+    [KubernetesEntity(Group = "sentinel.mercan.io", Kind = "HealthCheck", ApiVersion = "v1", PluralName = "healthchecks")]
     public class HealthCheckResourceStatus : V1Status
     {
         [JsonProperty(PropertyName = "phase")]

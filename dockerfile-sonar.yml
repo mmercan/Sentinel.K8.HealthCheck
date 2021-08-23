@@ -1,0 +1,26 @@
+FROM mmercan/dockerfile-sonarqube-dotnet50-sdk:latest AS test
+ARG buildtime_APPID
+ARG buildtime_APPSECRET
+ARG buildtime_ADID
+ARG buildtime_SONARKEY
+# ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+# ENV ASPNETCORE_ENVIRONMENT=Development
+# ENV SONAR_HOST http://sonar.myrcan.com
+# RUN apt-get update && apt-get install -y openjdk-8-jdk
+# RUN dotnet tool install --global dotnet-sonarscanner
+# ENV PATH="${PATH}:/root/.dotnet/tools"
+ENV ASPNETCORE_URLS=http://+:80
+ENV PROJECT=Taka.Worker.Sync
+ENV VERSION=1.0
+ENV SONARKEY=$buildtime_SONARKEY
+ENV APPID=$buildtime_APPID
+ENV APPSECRET=$buildtime_APPSECRET
+ENV ADID=$buildtime_ADID
+ENV SONAR_HOST=https://sonarcloud.io
+
+
+WORKDIR /src
+COPY . .
+
+RUN ["chmod", "+x", "./sonar-docker-entrypoint.sh"]
+ENTRYPOINT ["./sonar-docker-entrypoint.sh"]

@@ -196,25 +196,17 @@ namespace Sentinel.K8s.Tests
 
         }
 
+
         [Theory]
         [InlineData("my-new-healthcheck-object-2", "default")]
         public async Task Should_KubernetesClient_UpdateStatus(string name, string @namespace)
         {
 
-
             CancellationTokenSource source = new CancellationTokenSource();
             source.CancelAfter(60 * 1000);
 
-
-
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-
-            // var statusres = await k8Client.ApiClient.GetNamespacedCustomObjectStatusAsync("mercan.io", "v1", @namespace, "healthchecks", name) as JObject;
-            // var statusresobj = statusres.ToObject<Models.CRDs.HealthCheckResource>();
             var statusresobj = await k8Client.Get<Models.CRDs.HealthCheckResource>(name: name, @namespace: @namespace);
-            // nssTask.Wait();
-            // _output.WriteLine("Get a custom Single Resource : " + nssTask.Result.Metadata.Name);
-            // Assert.NotNull(nssTask.Result);
             if (statusresobj.Status == null)
             {
                 statusresobj.Status = new Models.CRDs.HealthCheckResourceStatus();
@@ -231,6 +223,19 @@ namespace Sentinel.K8s.Tests
 
             _output.WriteLine("Status will be saved " + statusresobj.ToString() + " " + statusresobj.Status.Phase);
             await k8Client.UpdateStatus<Models.CRDs.HealthCheckResource>(statusresobj);
+
+        }
+
+        [Fact]
+        public async Task Should_KubernetesClient_Returns_List_of_Custom_Resources()
+        {
+            var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
+            var healthchecks = await k8Client.List<Models.CRDs.HealthCheckResource>(@namespace: "default");
+            _output.WriteLine("healthchecks listed");
+            foreach (var item in healthchecks)
+            {
+                _output.WriteLine("hc : " + item.Name());
+            }
 
         }
 

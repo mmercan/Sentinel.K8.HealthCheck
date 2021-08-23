@@ -1,4 +1,4 @@
-apiVersion: "mercan.io/v1"
+apiVersion: "sentinel.mercan.io/v1"
 kind: HealthCheck
 metadata:
   name: my-new-healthcheck-object-fail-2
