@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Sentinel Test
 
 on:
   push:
