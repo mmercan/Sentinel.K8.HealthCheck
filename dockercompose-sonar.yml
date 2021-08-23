@@ -1,0 +1,12 @@
+version: "3.4"
+
+services:
+  taka-worker-sync:
+    image: sentinel-healthcheck-test
+    build:
+      target: test
+      context: .
+      dockerfile: dockerfile-sonar.yml
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
