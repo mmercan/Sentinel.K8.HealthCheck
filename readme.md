@@ -29,5 +29,5 @@ dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 
 
 
- - :gear: Workers
- - :blue_book: Class Library
+  :gear: Workers
+  :blue_book: Class Library
