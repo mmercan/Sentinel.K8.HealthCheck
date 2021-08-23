@@ -5,6 +5,12 @@ dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 
 ```
 
+## Pipelines
+### test :
+[![Sentinel Test](https://github.com/mmercan/Sentinel.K8.HealthCheck/actions/workflows/docker-image.yml/badge.svg)](https://github.com/mmercan/Sentinel.K8.HealthCheck/actions/workflows/docker-image.yml)
+### Quality Gate:
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Sentinel.Health.k8&metric=alert_status)](https://sonarcloud.io/dashboard?id=Sentinel.Health.k8)
+
 ## Workers
 
 ### General
