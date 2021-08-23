@@ -10,7 +10,7 @@ ARG buildtime_SONARKEY
 # RUN dotnet tool install --global dotnet-sonarscanner
 # ENV PATH="${PATH}:/root/.dotnet/tools"
 ENV ASPNETCORE_URLS=http://+:80
-ENV PROJECT=Taka.Worker.Sync
+ENV PROJECT=Sentinel.Health.k8
 ENV VERSION=1.0
 ENV SONARKEY=$buildtime_SONARKEY
 ENV APPID=$buildtime_APPID
