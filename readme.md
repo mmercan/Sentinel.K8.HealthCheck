@@ -8,15 +8,15 @@ dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 ## Workers
 
 ### General
-- Sync (c) :gear:
-- Scheduler (c)
-- Comms (Mail, Teams, Signalr etc..) (c)
+- Sync :gear:
+- Scheduler :gear:
+- Comms (Mail, Teams, Signalr etc..) :gear:
 
 ### Runners
-- HealthCheck (c)
-- Replica Scaler (c)
-- Screen Shot (c)
-- Keyvault to Secret puller (c)
+- HealthCheck :gear:
+- Replica Scaler :gear:
+- Screen Shot :gear:
+- Keyvault to Secret puller :gear:
 
 
 ## Apis
@@ -26,3 +26,8 @@ dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 - Sentinel.Common :blue_book:
 - Sentinel.K8s :blue_book:
 - Sentinel.Models :blue_book:
+
+
+
+ - :gear: Workers
+ - :blue_book: Class Library
