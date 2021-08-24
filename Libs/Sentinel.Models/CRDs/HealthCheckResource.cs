@@ -18,7 +18,7 @@ namespace Sentinel.Models.CRDs
         public override string ToString()
         {
             StringBuilder labelsbld = new StringBuilder();
-            labelsbld.Append("{");
+            labelsbld.Append('{');
             if (Metadata != null && Metadata.Labels != null)
             {
                 foreach (var kvp in Metadata.Labels)
