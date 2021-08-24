@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using k8s;
 using k8s.Models;
 using Newtonsoft.Json;
@@ -16,15 +17,16 @@ namespace Sentinel.Models.CRDs
 
         public override string ToString()
         {
-            var labels = "{";
+            StringBuilder labelsbld = new StringBuilder();
+            labelsbld.Append("{");
             if (Metadata != null && Metadata.Labels != null)
             {
                 foreach (var kvp in Metadata.Labels)
                 {
-                    labels += kvp.Key + " : " + kvp.Value + ", ";
+                    labelsbld.Append(kvp.Key + " : " + kvp.Value + ", ");
                 }
             }
-            labels = labels.TrimEnd(',', ' ') + "}";
+            var labels = labelsbld.ToString().TrimEnd(',', ' ') + "}";
 
             return $"{Metadata.Name} (Labels: {labels}), Spec: {Spec.Service}";
         }

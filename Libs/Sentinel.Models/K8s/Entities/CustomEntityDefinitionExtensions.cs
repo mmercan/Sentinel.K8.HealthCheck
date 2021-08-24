@@ -66,8 +66,6 @@ namespace Sentinel.Models.K8s.Entities
             {
                 throw new ArgumentException($"The Type {resourceType} does not have the kubernetes entity attribute.");
             }
-
-            var scopeAttribute = resourceType.GetCustomAttribute<EntityScopeAttribute>();
             var kind = string.IsNullOrWhiteSpace(attribute.Kind) ? resourceType.Name : attribute.Kind;
 
             return new CustomResourceDefinition

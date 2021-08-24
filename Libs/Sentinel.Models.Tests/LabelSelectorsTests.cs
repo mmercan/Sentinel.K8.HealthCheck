@@ -27,9 +27,9 @@ namespace Sentinel.Models.Tests
         [Fact]
         public void ExistsSelectorShouldReturnString()
         {
-            var name = new List<string> { "testname", "operator" };
             var sel1 = new ExistsSelector("operator-deployment");
-            _output.WriteLine("ExistsSelector : " + sel1.ToExpression());
+            var exp = sel1.ToExpression();
+            _output.WriteLine("ExistsSelector : " + exp);
 
         }
 

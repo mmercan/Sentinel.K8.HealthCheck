@@ -235,7 +235,7 @@ namespace Sentinel.K8s.Tests
             _output.WriteLine("healthchecks listed");
             foreach (var item in healthchecks)
             {
-                _output.WriteLine("hc : " + item.Name());
+                _output.WriteLine("hc : " + item.ToString());
             }
 
         }
