@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Sentinel.K8s.DotnetKubernetesClient.LabelSelectors
+namespace Sentinel.Models.K8s.LabelSelectors
 {
     public record NotEqualsSelector : ILabelSelector
     {

@@ -2,9 +2,10 @@ using System.Collections.Generic;
 using k8s;
 using k8s.Models;
 using Newtonsoft.Json;
-using Sentinel.K8s.DotnetKubernetesClient.Entities;
+using Sentinel.Models.K8s;
+using Sentinel.Models.K8s.Entities;
 
-namespace Sentinel.K8s.CRDs
+namespace Sentinel.Models.CRDs
 {
 
 

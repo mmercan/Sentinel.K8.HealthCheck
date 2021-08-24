@@ -10,6 +10,7 @@ using System;
 using System.Threading.Tasks;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using Sentinel.Models.CRDs;
 
 namespace Sentinel.K8s.Tests
 {
@@ -206,10 +207,10 @@ namespace Sentinel.K8s.Tests
             source.CancelAfter(60 * 1000);
 
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var statusresobj = await k8Client.Get<CRDs.HealthCheckResource>(name: name, @namespace: @namespace);
+            var statusresobj = await k8Client.Get<HealthCheckResource>(name: name, @namespace: @namespace);
             if (statusresobj.Status == null)
             {
-                statusresobj.Status = new CRDs.HealthCheckResource.HealthCheckResourceStatus();
+                statusresobj.Status = new HealthCheckResource.HealthCheckResourceStatus();
                 _output.WriteLine("No Status Found ");
             }
             else
@@ -222,7 +223,7 @@ namespace Sentinel.K8s.Tests
             statusresobj.Status.Message = "Message added";
 
             _output.WriteLine("Status will be saved " + statusresobj.ToString() + " " + statusresobj.Status.Phase);
-            await k8Client.UpdateStatus<CRDs.HealthCheckResource>(statusresobj);
+            await k8Client.UpdateStatus<HealthCheckResource>(statusresobj);
 
         }
 
@@ -230,7 +231,7 @@ namespace Sentinel.K8s.Tests
         public async Task Should_KubernetesClient_Returns_List_of_Custom_Resources()
         {
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var healthchecks = await k8Client.List<CRDs.HealthCheckResource>(@namespace: "default");
+            var healthchecks = await k8Client.List<HealthCheckResource>(@namespace: "default");
             _output.WriteLine("healthchecks listed");
             foreach (var item in healthchecks)
             {

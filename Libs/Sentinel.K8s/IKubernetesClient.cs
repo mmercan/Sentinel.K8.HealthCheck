@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using k8s;
 using k8s.Models;
-using Sentinel.K8s.DotnetKubernetesClient.LabelSelectors;
+using Sentinel.Models.K8s.LabelSelectors;
 
 namespace Sentinel.K8s
 {

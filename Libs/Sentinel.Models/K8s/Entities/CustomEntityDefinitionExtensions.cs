@@ -3,7 +3,7 @@ using System.Reflection;
 using k8s;
 using k8s.Models;
 
-namespace Sentinel.K8s.DotnetKubernetesClient.Entities
+namespace Sentinel.Models.K8s.Entities
 {
     public static class CustomEntityDefinitionExtensions
     {

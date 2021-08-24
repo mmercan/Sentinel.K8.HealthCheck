@@ -1,4 +1,4 @@
-namespace Sentinel.K8s.DotnetKubernetesClient.Entities
+namespace Sentinel.Models.K8s.Entities
 {
     public readonly struct CustomEntityDefinition
     {

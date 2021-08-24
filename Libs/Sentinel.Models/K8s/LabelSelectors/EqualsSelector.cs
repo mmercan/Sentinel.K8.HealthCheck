@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Sentinel.K8s.DotnetKubernetesClient.LabelSelectors
+namespace Sentinel.Models.K8s.LabelSelectors
 {
     /// <summary>
     /// Label-selector that checks if a certain label contains

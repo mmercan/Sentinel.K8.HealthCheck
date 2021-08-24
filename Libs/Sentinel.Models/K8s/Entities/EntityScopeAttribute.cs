@@ -1,6 +1,6 @@
 using System;
 
-namespace Sentinel.K8s.DotnetKubernetesClient.Entities
+namespace Sentinel.Models.K8s.Entities
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public sealed class EntityScopeAttribute : Attribute

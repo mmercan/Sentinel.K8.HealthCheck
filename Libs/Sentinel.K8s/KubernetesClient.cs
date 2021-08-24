@@ -14,9 +14,10 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Sentinel.K8s.DotnetKubernetesClient;
-using Sentinel.K8s.DotnetKubernetesClient.Entities;
-using Sentinel.K8s.DotnetKubernetesClient.LabelSelectors;
+
 using Sentinel.K8s.DotnetKubernetesClient.Serialization;
+using Sentinel.Models.K8s.Entities;
+using Sentinel.Models.K8s.LabelSelectors;
 
 namespace Sentinel.K8s
 {
