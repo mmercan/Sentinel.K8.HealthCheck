@@ -26,7 +26,7 @@ dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 
 
 ## Apis
-- Api.HealthMonitoring (c)
+- Api.HealthMonitoring :cloud:
  
 ## Libs
 - Sentinel.Common :blue_book:
@@ -37,3 +37,4 @@ dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 
   :gear: Workers
   :blue_book: Class Library
+  :cloud: Api Web Apps

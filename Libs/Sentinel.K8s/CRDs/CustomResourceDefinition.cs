@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 [module: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "CA1724:TypeNamesShouldNotMatchNamespaces", Justification = "This is just an example.")]
 [module: System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "This is just an example.")]
 
-namespace Sentinel.Models.CRDs
+namespace Sentinel.K8s.CRDs
 {
     public class CustomResourceDefinition
     {
