@@ -53,5 +53,31 @@ namespace Sentinel.Models.K8s.Entities
                 string.IsNullOrWhiteSpace(attribute.PluralName) ? $"{kind.ToLower()}s" : attribute.PluralName,
                 scopeAttribute?.Scope ?? default);
         }
+
+
+
+        public static CustomResourceDefinition CreateCustomResourceDefinition<TResource>(string Namespace)
+            where TResource : IKubernetesObject<V1ObjectMeta> =>
+            CreateCustomResourceDefinition(typeof(TResource), Namespace);
+        public static CustomResourceDefinition CreateCustomResourceDefinition(this Type resourceType, string Namespace)
+        {
+            var attribute = resourceType.GetCustomAttribute<KubernetesEntityAttribute>();
+            if (attribute == null)
+            {
+                throw new ArgumentException($"The Type {resourceType} does not have the kubernetes entity attribute.");
+            }
+
+            var scopeAttribute = resourceType.GetCustomAttribute<EntityScopeAttribute>();
+            var kind = string.IsNullOrWhiteSpace(attribute.Kind) ? resourceType.Name : attribute.Kind;
+
+            return new CustomResourceDefinition
+            {
+                Kind = kind,
+                Group = attribute.Group,
+                Version = attribute.ApiVersion,
+                PluralName = string.IsNullOrWhiteSpace(attribute.PluralName) ? $"{kind.ToLower()}s" : attribute.PluralName,
+                Namespace = Namespace
+            };
+        }
     }
 }
