@@ -1,5 +1,6 @@
 using System;
 using System.Reactive.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using k8s.Models;
@@ -110,6 +111,56 @@ namespace Sentinel.K8s.Tests
 
             _output.WriteLine("Subscribe ResourceWatcherShouldHandleTimeouts started");
             await Task.Delay(TimeSpan.FromSeconds(20));
+            await watcher.Stop();
+            watcher.Dispose();
+
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+        }
+
+
+        [Fact]
+        public async Task ResourceWatcherOnCloseShouldTriggerRestart()
+        {
+            OperatorSettings set = new OperatorSettings();
+            set.Namespace = "default";
+            set.WatcherHttpTimeout = 3;
+            // set.Name
+            var k8client = GetKubernetesClient();
+            var loggger = GetLogger<ResourceWatcher<V1ConfigMap>>();
+            var metrics = new ResourceWatcherMetrics<V1ConfigMap>(set);
+            var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, set);
+
+
+            CancellationTokenSource source = new CancellationTokenSource();
+            source.CancelAfter(60 * 1000);
+
+
+            watcher.WatchEvents.Subscribe(onNext: (p) =>
+            {
+                _output.WriteLine("Subscribe timeout : " + p.Event.ToString() + " => " + p.Resource.Metadata.Name);
+            }
+            , onError: (ex) =>
+            {
+                _output.WriteLine("Subscribe timeout  Error : " + ex.Message);
+            }
+            );
+
+            await watcher.Start();
+
+            var underlyingHandlerMethod = watcher.GetType().GetMethod("OnClose", BindingFlags.NonPublic | BindingFlags.Instance);
+            underlyingHandlerMethod.Invoke(watcher, null);
+
+
+            var underlyingExceptionMethod = watcher.GetType().GetMethod("OnException", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            var expparams = new object[1] { new Exception() };
+            underlyingExceptionMethod.Invoke(watcher, expparams);
+
+
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+
             await watcher.Stop();
         }
 
