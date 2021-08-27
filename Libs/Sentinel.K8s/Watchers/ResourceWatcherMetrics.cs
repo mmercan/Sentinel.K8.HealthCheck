@@ -2,20 +2,19 @@ using k8s;
 using k8s.Models;
 using Prometheus;
 using Sentinel.Models.K8s.Entities;
+using static Sentinel.K8s.Watchers.ResourceWatcherMetrics;
 
 namespace Sentinel.K8s.Watchers
 {
+    public static class ResourceWatcherMetrics
+    {
+        public static readonly string[] Labels = { "operator", "kind", "group", "version", "scope", };
+    }
+
     public class ResourceWatcherMetrics<TEntity>
      where TEntity : IKubernetesObject<V1ObjectMeta>
     {
-        private static readonly string[] Labels =
-        {
-            "operator",
-            "kind",
-            "group",
-            "version",
-            "scope",
-        };
+
 
         public ResourceWatcherMetrics(OperatorSettings settings)
         {
