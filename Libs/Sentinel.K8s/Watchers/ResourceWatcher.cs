@@ -12,7 +12,7 @@ namespace Sentinel.K8s.Watchers
 {
 
 #nullable enable
-    public class ResourceWatcher<TEntity> : IDisposable
+    public sealed class ResourceWatcher<TEntity> : IDisposable
            where TEntity : IKubernetesObject<V1ObjectMeta>
     {
         private const double MaxRetrySeconds = 32;
@@ -141,7 +141,7 @@ namespace Sentinel.K8s.Watchers
             }
         }
 
-        private async void RestartWatcher()
+        private async Task RestartWatcher()
         {
             _logger.LogTrace(@"Restarting resource watcher for type ""{type}"".", typeof(TEntity));
             _cancellation?.Cancel();
@@ -188,7 +188,8 @@ namespace Sentinel.K8s.Watchers
             if (_cancellation?.IsCancellationRequested == false)
             {
                 _logger.LogDebug("The server closed the connection. Trying to reconnect.");
-                RestartWatcher();
+                var restartTask = RestartWatcher();
+                restartTask.Wait();
             }
         }
 

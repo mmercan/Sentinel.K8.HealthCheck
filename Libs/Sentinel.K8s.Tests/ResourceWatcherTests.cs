@@ -67,7 +67,7 @@ namespace Sentinel.K8s.Tests
             await watcher.Start();
             _output.WriteLine("Subscribe ResourceWatcherShouldHaveWatch started");
             await Task.Delay(TimeSpan.FromSeconds(20));
-
+            await watcher.Stop();
         }
 
 
