@@ -14,7 +14,6 @@ namespace Sentinel.Models.CRDs
     [EntityScope(EntityScope.Namespaced)]
     public class HealthCheckResource : CustomResource<HealthCheckResource.HealthCheckResourceSpec, HealthCheckResource.HealthCheckResourceStatus>
     {
-
         public override string ToString()
         {
             StringBuilder labelsbld = new StringBuilder();
