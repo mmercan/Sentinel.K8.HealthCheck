@@ -71,6 +71,48 @@ namespace Sentinel.K8s.Tests
         }
 
 
+        [Fact]
+        public async Task ResourceWatcherShouldHandleTimeouts()
+        {
+            OperatorSettings set = new OperatorSettings();
+            set.Namespace = "default";
+            set.WatcherHttpTimeout = 3;
+            // set.Name
+            var k8client = GetKubernetesClient();
+            var loggger = GetLogger<ResourceWatcher<V1ConfigMap>>();
+            var metrics = new ResourceWatcherMetrics<V1ConfigMap>(set);
+            var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, set);
+
+
+            CancellationTokenSource source = new CancellationTokenSource();
+            source.CancelAfter(60 * 1000);
+
+
+            watcher.WatchEvents.Subscribe(onNext: (p) =>
+            {
+                _output.WriteLine("Subscribe timeout : " + p.Event.ToString() + " => " + p.Resource.Metadata.Name);
+            }
+            , onError: (ex) =>
+            {
+                _output.WriteLine("Subscribe timeout  Error : " + ex.Message);
+            }
+            // ,onCompleted:  (done)=>{
+            //      _output.WriteLine("Subscribe Done");
+            // }
+            // ,token:source
+
+            );
+
+
+            await watcher.Start();
+
+            await watcher.Start();
+
+            _output.WriteLine("Subscribe ResourceWatcherShouldHandleTimeouts started");
+            await Task.Delay(TimeSpan.FromSeconds(20));
+            await watcher.Stop();
+        }
+
 
     }
 }
