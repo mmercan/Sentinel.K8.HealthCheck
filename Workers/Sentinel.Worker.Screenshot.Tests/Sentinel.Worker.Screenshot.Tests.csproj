@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Sentinel.Worker.Sync\Sentinel.Worker.Sync.csproj" />
+    <ProjectReference Include="..\Sentinel.Worker.Screenshot\Sentinel.Worker.Screenshot.csproj" />
     <ProjectReference Include="..\..\Libs\Sentinel.Tests.Helpers\Sentinel.Tests.Helpers.csproj" />
   </ItemGroup>
 

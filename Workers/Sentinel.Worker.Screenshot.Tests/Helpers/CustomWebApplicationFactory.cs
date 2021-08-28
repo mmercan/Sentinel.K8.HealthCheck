@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 
 
-namespace Sentinel.Worker.Sync.Tests.Helpers
+namespace Sentinel.Worker.Screenshot.Tests.Helpers
 {
     public class CustomWebApplicationFactory : WebApplicationFactory<Startup>
     {

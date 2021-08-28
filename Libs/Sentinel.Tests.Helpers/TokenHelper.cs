@@ -4,7 +4,7 @@ using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using Xunit.Abstractions;
 
-namespace Sentinel.Worker.Sync.Tests.Helpers
+namespace Sentinel.Tests.Helpers
 {
     public class TokenHelper
     {

@@ -1,11 +1,11 @@
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Sentinel.Tests.Helpers;
-using Sentinel.Worker.Sync.Tests.Helpers;
+using Sentinel.Worker.Screenshot.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Sentinel.Worker.Sync.Tests.IntegrationTests
+namespace Sentinel.Worker.Screenshot.Tests.IntegrationTests
 {
 
     [Collection("WebApplicationFactory")]
