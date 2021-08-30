@@ -11,6 +11,16 @@ using Microsoft.Extensions.Hosting;
 using Sentinel.K8s;
 using k8s;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Turquoise.HealthChecks.Common.CheckCaller;
+using System.Net.Http.Headers;
+using Sentinel.Common.CustomFeatureFilter;
+using Sentinel.Common.HttpClientHelpers;
+using Microsoft.FeatureManagement;
+using Quartz;
+using Microsoft.FeatureManagement.FeatureFilters;
+using Sentinel.Worker.Sync.JobSchedules;
+using CrystalQuartz.Application;
+using CrystalQuartz.AspNetCore;
 
 namespace Sentinel.Worker.Sync
 {
@@ -35,15 +45,112 @@ namespace Sentinel.Worker.Sync
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddAutoMapper(typeof(Startup).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
+            services.AddHttpClient<HealthCheckReportDownloaderService>("HealthCheckReportDownloader", options =>
+            {
+                // options.BaseAddress = new Uri(Configuration["CrmConnection:ServiceUrl"] + "api/data/v8.2/");
+                options.Timeout = new TimeSpan(0, 2, 0);
+                options.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
+                options.DefaultRequestHeaders.Add("OData-Version", "4.0");
+                options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            })
+            .AddPolicyHandler(HttpClientHelpers.GetRetryPolicy())
+            .AddPolicyHandler(HttpClientHelpers.GetCircuitBreakerPolicy());
+
+            services.AddHttpContextAccessor();
+
+            services.AddFeatureManagement()
+            .AddFeatureFilter<PercentageFilter>()
+            .AddFeatureFilter<HeadersFeatureFilter>();
+
+            services.AddHealthChecks();
+
+            services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
+            services.Configure<QuartzOptions>(options =>
+            {
+                options.Scheduling.IgnoreDuplicates = true; // default: false
+                options.Scheduling.OverWriteExistingData = true; // default: true
+            });
+
+
+            services.AddQuartz(q =>
+            {
+                q.SchedulerId = "Scheduler-Core";
+                q.UseMicrosoftDependencyInjectionJobFactory();
+
+                q.UseSimpleTypeLoader();
+                q.UseInMemoryStore();
+                q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = 10; });
+
+                if (Configuration["Schedules:NamespaceScheduler"] != null
+                 && Configuration["Schedules:NamespaceScheduler"] == "true")
+                {
+                    q.ScheduleJob<NamespaceSchedulerJob>(trigger => trigger
+                    .WithIdentity("NamespaceSchedulerJob")
+                    .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(5)))
+                    .WithCronSchedule(Configuration["Schedules:NamespaceSchedule"])
+                    .WithDescription("Namespaces sync trigger configured run in Cron"));
+                }
+
+                if (Configuration["Schedules:ServiceScheduler"] != null
+                 && Configuration["Schedules:ServiceScheduler"] == "true")
+                {
+                    q.ScheduleJob<ServiceSchedulerJob>(trigger => trigger
+                    .WithIdentity("ServiceSchedulerJob")
+                    .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(10)))
+                    .WithCronSchedule(Configuration["Schedules:ServiceSchedule"])
+                    .WithDescription("Service sync trigger configured run in Cron"));
+                }
+
+                if (Configuration["Schedules:DeploymentScheduler"] != null
+                 && Configuration["Schedules:DeploymentScheduler"] == "true")
+                {
+                    q.ScheduleJob<DeploymentSchedulerJob>(trigger => trigger
+                    .WithIdentity("DeploymentSchedulerJob")
+                    .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(15)))
+                    .WithCronSchedule(Configuration["Schedules:DeploymentSchedule"])
+                    .WithDescription("Service sync trigger configured run in Cron"));
+                }
+
+                if (Configuration["Schedules:HealthCheckScheduler"] != null
+                 && Configuration["Schedules:HealthCheckScheduler"] == "true")
+                {
+                    q.ScheduleJob<HealthCheckSchedulerJob>(trigger => trigger
+                    .WithIdentity("HealthCheckSchedulerJob")
+                    .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(20)))
+                    .WithCronSchedule(Configuration["Schedules:HealthCheckSchedule"])
+                    .WithDescription("Service sync trigger configured run in Cron"));
+                }
+
+
+            });
+
+            services.AddQuartzServer(options =>
+            {
+                options.WaitForJobsToComplete = true;
+                options.StartDelay = TimeSpan.FromSeconds(2);
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISchedulerFactory schedulerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+
+            var options = new CrystalQuartzOptions
+            {
+                ErrorDetectionOptions = new CrystalQuartz.Application.ErrorDetectionOptions
+                { VerbosityLevel = ErrorVerbosityLevel.Detailed }
+                //JobDataMapDisplayOptions 
+            };
+
+            var scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
+            app.UseCrystalQuartz(() => scheduler, options);
 
             app.UseRouting();
 
