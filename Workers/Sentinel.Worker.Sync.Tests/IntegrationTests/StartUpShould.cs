@@ -37,20 +37,17 @@ namespace Sentinel.Worker.Sync.Tests.IntegrationTests
             {
                 output.WriteLine("Run is started");
 
-                CancellationTokenSource source = new CancellationTokenSource();
-                source.CancelAfter(3 * 1000);
-
                 var client = factory.CreateClient();
                 // client.DefaultRequestHeaders.Add("api-version", "1.0"); client.DefaultRequestHeaders.Add("Authorization", this.authTokenFixture.Token);
                 client.DefaultRequestHeaders.Add("Internal", "true");
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 // Act
                 var responseTask = client.GetAsync(url);
-                responseTask.Wait(source.Token);
+                responseTask.Wait();
                 var response = responseTask.Result;
                 // Assert
                 // response.EnsureSuccessStatusCode();
-            }).Wait(3000);
+            }).Wait(5000);
         }
 
     }
