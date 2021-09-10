@@ -32,14 +32,14 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             contextMoc.Setup(m => m.CancellationToken).Returns(source.Token);
 
             var jobtask = job.Execute(contextMoc.Object);
-            try
-            {
-                jobtask.Wait(source.Token);
-            }
-            catch
-            {
-                output.WriteLine("NamespaceSchedulerJob Cancelled : ");
-            }
+            // try
+            // {
+            //    // jobtask.Wait(source.Token);
+            // }
+            // catch
+            // {
+            //     output.WriteLine("NamespaceSchedulerJob Cancelled : ");
+            // }
 
 
         }
