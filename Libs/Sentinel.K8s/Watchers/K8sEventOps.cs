@@ -11,12 +11,13 @@ using static k8s.Models.V1Patch;
 
 namespace Sentinel.K8s.Watchers
 {
-    public class K8sEventOps
+
+    public class K8SEventOps
     {
         private readonly IKubernetesClient _client;
         private readonly ILogger _logger;
 
-        public K8sEventOps(IKubernetesClient kubernetesClient, ILogger logger)
+        public K8SEventOps(IKubernetesClient kubernetesClient, ILogger logger)
         {
             this._client = kubernetesClient;
             this._logger = logger;

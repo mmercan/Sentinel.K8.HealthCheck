@@ -30,11 +30,11 @@ namespace Sentinel.K8s.Tests.Helpers
             var logger = factory.CreateLogger<T>();
             return logger;
         }
-        public static K8sEventOps GetK8sEventOps()
+        public static K8SEventOps GetK8SEventOps()
         {
             var client = GetKubernetesClient();
-            var logger = GetLogger<K8sEventOps>();
-            K8sEventOps ops = new K8sEventOps(client, logger);
+            var logger = GetLogger<K8SEventOps>();
+            K8SEventOps ops = new K8SEventOps(client, logger);
             return ops;
         }
     }

@@ -7,7 +7,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
     {
         public Task Execute(IJobExecutionContext context)
         {
-            //throw new System.NotImplementedException();
             return Task.CompletedTask;
         }
     }

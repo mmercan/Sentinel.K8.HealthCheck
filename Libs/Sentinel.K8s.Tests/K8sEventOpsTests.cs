@@ -8,17 +8,17 @@ using Xunit.Abstractions;
 
 namespace Sentinel.K8s.Tests
 {
-    public class K8sEventOpsTests
+    public class K8SEventOpsTests
     {
 
         private readonly ITestOutputHelper _output;
 
-        public K8sEventOpsTests(ITestOutputHelper output) => _output = output;
+        public K8SEventOpsTests(ITestOutputHelper output) => _output = output;
 
 
         [Theory]
         [InlineData("my-new-healthcheck-object-2", "default", "message_")]
-        public async Task K8sEventOpsShuldHaveAnInstance(string name, string @namespace, string message)
+        public async Task K8SEventOpsShuldHaveAnInstance(string name, string @namespace, string message)
         {
 
             var message_1 = message + DateTime.Now.ToString();
@@ -27,7 +27,7 @@ namespace Sentinel.K8s.Tests
 
             var hel = healthobj.ToString();
 
-            K8sEventOps ops = KubernetesClientTestHelper.GetK8sEventOps();
+            K8SEventOps ops = KubernetesClientTestHelper.GetK8SEventOps();
 
 
             //Create new Event
@@ -44,9 +44,9 @@ namespace Sentinel.K8s.Tests
 
         [Theory]
         [InlineData("default")]
-        public async Task K8sEventOpsListEventsInNamespace(string @namespace)
+        public async Task K8SEventOpsListEventsInNamespace(string @namespace)
         {
-            K8sEventOps ops = KubernetesClientTestHelper.GetK8sEventOps();
+            K8SEventOps ops = KubernetesClientTestHelper.GetK8SEventOps();
 
             var eventList = await ops.GetAsync(@namespace);
 
@@ -56,9 +56,9 @@ namespace Sentinel.K8s.Tests
         }
 
         [Fact]
-        public async Task K8sEventOpsListEventsInAllNamespaces()
+        public async Task K8SEventOpsListEventsInAllNamespaces()
         {
-            K8sEventOps ops = KubernetesClientTestHelper.GetK8sEventOps();
+            K8SEventOps ops = KubernetesClientTestHelper.GetK8SEventOps();
 
             var eventList = await ops.GetAllAsync();
 

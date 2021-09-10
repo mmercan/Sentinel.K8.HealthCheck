@@ -33,12 +33,6 @@ namespace Sentinel.K8s
         private readonly KubernetesClientConfiguration _clientConfig;
         private readonly ILogger<KubernetesClient> _logger;
 
-
-        /// <inheritdoc />
-        // public KubernetesClient() : this(KubernetesClientConfiguration.BuildDefaultConfig())
-        // {
-        // }
-
         /// <inheritdoc />
         public KubernetesClient(KubernetesClientConfiguration clientConfig, ILogger<KubernetesClient> logger)
         {
@@ -153,6 +147,7 @@ namespace Sentinel.K8s
             var resources = result?.ToObject<EntityList<TResource>>();
             if (resources == null)
             {
+                _logger.LogCritical("resources is null");
                 throw new ArgumentException("Could not parse result");
             }
 
@@ -278,13 +273,6 @@ namespace Sentinel.K8s
 
             return Task.FromResult(result.Watch(onEvent, onError, onClose));
         }
-
-
-
-
-
-
-
 
     }
 }

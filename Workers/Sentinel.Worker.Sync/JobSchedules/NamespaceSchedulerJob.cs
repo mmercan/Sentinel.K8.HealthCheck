@@ -27,19 +27,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
             await Task.Delay(TimeSpan.FromSeconds(15));
             _logger.LogCritical("current NS : " + ns);
 
-            // var executingTask = Task.Factory.StartNew(async () =>
-            //  {
-            //      //Pull Namespaces
-            //      // Mapped to the to be stored
-            //      // Store it on desired DB
-            //  }, TaskCreationOptions.LongRunning);
-
-
-            // if (executingTask.IsCompleted)
-            // {
-            //     return executingTask;
-            // }
-            // return Task.CompletedTask;
         }
     }
 }

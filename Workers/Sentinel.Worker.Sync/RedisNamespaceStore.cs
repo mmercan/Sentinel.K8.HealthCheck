@@ -7,20 +7,25 @@ namespace Sentinel.Worker.Sync
     {
 
         private readonly IConnectionMultiplexer _multiplexer;
+        private readonly IDatabase _db;
         public RedisNamespaceStore(IConnectionMultiplexer multiplexer)
         {
 
-            
+
             _multiplexer = multiplexer;
             if (!_multiplexer.IsConnected)
             {
                 // _multiplexer.conn
 
             }
-            var db = _multiplexer.GetDatabase();
+            _db = _multiplexer.GetDatabase();
             // JsonConvert.DeserializeObject()
         }
 
+        public string Status()
+        {
+            return _multiplexer.GetStatus();
+        }
 
         //Get
 

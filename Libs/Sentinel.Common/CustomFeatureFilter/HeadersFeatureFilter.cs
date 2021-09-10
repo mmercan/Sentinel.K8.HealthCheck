@@ -13,7 +13,7 @@ namespace Sentinel.Common.CustomFeatureFilter
         // Used to access HttpContext
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<HeadersFeatureFilter> _logger;
-        private string claimType = "";
+        private readonly string claimType = "";
         public HeadersFeatureFilter(IHttpContextAccessor httpContextAccessor, ILogger<HeadersFeatureFilter> logger)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -39,7 +39,7 @@ namespace Sentinel.Common.CustomFeatureFilter
                     .All(header => headerKeys.Contains(header));
 
                 var hasclaim = user.HasClaim(claim => claim.Type == claimType);
-
+                _logger.LogDebug("hasclaim :" + hasclaim.ToString());
                 _logger.LogDebug(user?.Identity?.Name + " isEnabled : " + isEnabled.ToString() + " " + headerKeys.FirstOrDefault());
 
                 return isEnabled;
