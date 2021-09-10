@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using k8s;
 using k8s.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.Rest;
 using Microsoft.Rest.Serialization;
 using Newtonsoft.Json;
@@ -16,6 +17,7 @@ using Newtonsoft.Json.Serialization;
 using Sentinel.K8s.DotnetKubernetesClient;
 
 using Sentinel.K8s.DotnetKubernetesClient.Serialization;
+using Sentinel.K8s.Watchers;
 using Sentinel.Models.K8s.Entities;
 using Sentinel.Models.K8s.LabelSelectors;
 
@@ -29,16 +31,21 @@ namespace Sentinel.K8s
         private const string DownwardApiNamespaceFile = "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
         private const string DefaultNamespace = "default";
         private readonly KubernetesClientConfiguration _clientConfig;
+        private readonly ILogger<KubernetesClient> _logger;
+
 
         /// <inheritdoc />
-        public KubernetesClient() : this(KubernetesClientConfiguration.BuildDefaultConfig())
-        {
-        }
+        // public KubernetesClient() : this(KubernetesClientConfiguration.BuildDefaultConfig())
+        // {
+        // }
 
         /// <inheritdoc />
-        public KubernetesClient(KubernetesClientConfiguration clientConfig)
+        public KubernetesClient(KubernetesClientConfiguration clientConfig, ILogger<KubernetesClient> logger)
         {
             _clientConfig = clientConfig;
+
+            _logger = logger;
+
             ApiClient = new Kubernetes(clientConfig, new ClientUrlFixer())
             {
                 SerializationSettings =
@@ -78,9 +85,12 @@ namespace Sentinel.K8s
         }
 
         /// <inheritdoc />
-        public KubernetesClient(IKubernetes apiClient, KubernetesClientConfiguration clientConfig)
+        public KubernetesClient(IKubernetes apiClient, KubernetesClientConfiguration clientConfig, ILogger<KubernetesClient> logger)
         {
             _clientConfig = clientConfig;
+
+            _logger = logger;
+
             ApiClient = apiClient;
             if (apiClient is Kubernetes)
             {
@@ -268,6 +278,11 @@ namespace Sentinel.K8s
 
             return Task.FromResult(result.Watch(onEvent, onError, onClose));
         }
+
+
+
+
+
 
 
 

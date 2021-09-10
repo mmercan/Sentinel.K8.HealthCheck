@@ -1,6 +1,7 @@
 using k8s;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Sentinel.K8s.Watchers;
 
 namespace Sentinel.K8s.Tests.Helpers
 {
@@ -9,7 +10,10 @@ namespace Sentinel.K8s.Tests.Helpers
         public static KubernetesClient GetKubernetesClient()
         {
             KubernetesClientConfiguration config = k8s.KubernetesClientConfiguration.BuildConfigFromConfigFile();
-            KubernetesClient client = new KubernetesClient(config);
+            var logger = GetLogger<KubernetesClient>();
+
+
+            KubernetesClient client = new KubernetesClient(config, logger);
             return client;
         }
 
@@ -26,7 +30,12 @@ namespace Sentinel.K8s.Tests.Helpers
             var logger = factory.CreateLogger<T>();
             return logger;
         }
-
-
+        public static K8sEventOps GetK8sEventOps()
+        {
+            var client = GetKubernetesClient();
+            var logger = GetLogger<K8sEventOps>();
+            K8sEventOps ops = new K8sEventOps(client, logger);
+            return ops;
+        }
     }
 }

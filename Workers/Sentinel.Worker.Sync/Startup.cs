@@ -21,6 +21,8 @@ using Microsoft.FeatureManagement.FeatureFilters;
 using Sentinel.Worker.Sync.JobSchedules;
 using CrystalQuartz.Application;
 using CrystalQuartz.AspNetCore;
+using EasyNetQ;
+using StackExchange.Redis;
 
 namespace Sentinel.Worker.Sync
 {
@@ -35,8 +37,13 @@ namespace Sentinel.Worker.Sync
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            if (Configuration["RunOnCluster"] == "true") { services.AddSingleton<IKubernetesClient>(new KubernetesClient(KubernetesClientConfiguration.InClusterConfig())); }
-            else { services.AddSingleton<IKubernetesClient>(new KubernetesClient(KubernetesClientConfiguration.BuildConfigFromConfigFile())); }
+
+
+            if (Configuration["RunOnCluster"] == "true") { services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.InClusterConfig()); }
+            else { services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.BuildConfigFromConfigFile()); }
+
+            services.AddSingleton<IKubernetesClient, KubernetesClient>();
+            services.AddSingleton<KubernetesClient>();
 
             services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             services.Configure<IISServerOptions>(options => { options.AllowSynchronousIO = true; });
@@ -130,6 +137,23 @@ namespace Sentinel.Worker.Sync
                 options.WaitForJobsToComplete = true;
                 options.StartDelay = TimeSpan.FromSeconds(2);
             });
+
+
+
+            services.AddSingleton<EasyNetQ.IBus>((ctx) =>
+            {
+                return RabbitHutch.CreateBus(Configuration["RabbitMQConnection"]);
+            });
+
+            services.AddSingleton<IConnectionMultiplexer>((ctx) =>
+            {
+                return ConnectionMultiplexer.Connect(Configuration["RedisConnection"]);
+            });
+            // services.AddStackExchangeRedisCache(options =>
+            // {
+            //     options.Configuration = Configuration["RedisConnection"];
+            //     options.InstanceName = "ApiComms";
+            // });
 
         }
 
