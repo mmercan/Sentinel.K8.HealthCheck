@@ -1,3 +1,4 @@
+using System.Threading;
 using Moq;
 using Quartz;
 using Sentinel.Worker.Sync.JobSchedules;
@@ -23,9 +24,17 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<NamespaceSchedulerJob>();
             NamespaceSchedulerJob job = new NamespaceSchedulerJob(client, logger);
 
+            CancellationTokenSource source = new CancellationTokenSource();
+            source.CancelAfter(3 * 1000);
+
             var contextMoc = new Mock<IJobExecutionContext>();
+            contextMoc.Setup(m => m.CancellationToken).Returns(source.Token);
+
             var jobtask = job.Execute(contextMoc.Object);
-            jobtask.Wait();
+            jobtask.Wait(source.Token);
+
+
+
         }
     }
 }
