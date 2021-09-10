@@ -36,9 +36,9 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             {
                 jobtask.Wait(source.Token);
             }
-            catch (OperationCanceledException ex)
+            catch
             {
-                output.WriteLine("NamespaceSchedulerJob Cancelled : " + ex.Message);
+                output.WriteLine("NamespaceSchedulerJob Cancelled : ");
             }
 
 
