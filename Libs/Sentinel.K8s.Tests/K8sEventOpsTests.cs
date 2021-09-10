@@ -31,11 +31,11 @@ namespace Sentinel.K8s.Tests
 
 
             //Create new Event
-            var eve = await ops.CountUpOrCreateEvent<HealthCheckResource>(@namespace, healthobj, message);
+            var eve = await ops.CountUpOrCreateEvent<HealthCheckResource>(@namespace, healthobj, message_1);
 
 
             //Count up 
-            var eve_2 = await ops.CountUpOrCreateEvent<HealthCheckResource>(@namespace, healthobj, message);
+            var eve_2 = await ops.CountUpOrCreateEvent<HealthCheckResource>(@namespace, healthobj, message_1);
             _output.WriteLine("event message : " + eve_2.Message);
             Assert.NotNull(eve_2.Metadata.Name);
 

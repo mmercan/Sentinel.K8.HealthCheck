@@ -26,13 +26,13 @@ namespace Sentinel.K8s.Watchers
 
         public async Task<IList<Corev1Event>> GetAsync(string @namespace)
         {
-            var events = await _client.ApiClient.ListNamespacedEventWithHttpMessagesAsync(@namespace); //ListNamespacedEventAsync(nameSpace);
+            var events = await _client.ApiClient.ListNamespacedEventWithHttpMessagesAsync(@namespace);
             return events.Body.Items;
         }
 
         public async Task<IList<Corev1Event>> GetAllAsync()
         {
-            var events = await _client.ApiClient.ListEventForAllNamespacesWithHttpMessagesAsync(); //ListEventForAllNamespacesAsync();
+            var events = await _client.ApiClient.ListEventForAllNamespacesWithHttpMessagesAsync();
             return events.Body.Items;
         }
 
