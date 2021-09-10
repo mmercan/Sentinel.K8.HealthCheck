@@ -77,11 +77,13 @@ namespace Sentinel.Worker.Sync
             {
                 options.Scheduling.IgnoreDuplicates = true; // default: false
                 options.Scheduling.OverWriteExistingData = true; // default: true
-            });
+                                                                 // options.SchedulerName = "SyncQuartzScheduler";
+           });
 
 
             services.AddQuartz(q =>
             {
+                // q.SchedulerName = "SyncQuartzScheduler";
                 q.SchedulerId = "Scheduler-Core";
                 q.UseMicrosoftDependencyInjectionJobFactory();
 

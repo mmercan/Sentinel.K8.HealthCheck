@@ -7,6 +7,7 @@ using k8s;
 using k8s.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
+using static k8s.Models.V1Patch;
 
 namespace Sentinel.K8s.Watchers
 {
@@ -67,7 +68,8 @@ namespace Sentinel.K8s.Watchers
                 var patch = new JsonPatchDocument<Corev1Event>();
                 patch.Replace(e => e.Count, newcount);
                 patch.Replace(e => e.LastTimestamp, DateTime.UtcNow);
-                v1event = await _client.ApiClient.PatchNamespacedEventAsync(new V1Patch(patch), name, @namespace);
+
+                v1event = await _client.ApiClient.PatchNamespacedEventAsync(new V1Patch(patch, PatchType.JsonPatch), name, @namespace);
             }
             else
             {
