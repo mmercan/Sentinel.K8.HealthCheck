@@ -154,7 +154,7 @@ namespace Sentinel.Worker.Sync
             // {
             //     options.Configuration = Configuration["RedisConnection"];
             //     options.InstanceName = "ApiComms";
-            // });
+            //  });
 
         }
 
