@@ -41,7 +41,6 @@ namespace Sentinel.Worker.Sync.RedisHelpers
 
         public static Task<bool> SetAsync<T>(this IDatabase database, string key, T value)
         {
-
             var stringValue = JsonConvert.SerializeObject(value);
             return database.StringSetAsync(key, stringValue);
         }

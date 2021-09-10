@@ -7,7 +7,7 @@ namespace Sentinel.Worker.Sync
     {
 
         private readonly IConnectionMultiplexer _multiplexer;
-        private readonly IDatabase _db;
+        public IDatabase Database { get; }
         public RedisNamespaceStore(IConnectionMultiplexer multiplexer)
         {
 
@@ -18,7 +18,8 @@ namespace Sentinel.Worker.Sync
                 // _multiplexer.conn
 
             }
-            _db = _multiplexer.GetDatabase();
+            Database = _multiplexer.GetDatabase();
+
             // JsonConvert.DeserializeObject()
         }
 
