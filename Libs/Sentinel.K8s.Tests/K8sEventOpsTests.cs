@@ -23,6 +23,8 @@ namespace Sentinel.K8s.Tests
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
             var healthobj = await k8Client.Get<HealthCheckResource>(name: name, @namespace: @namespace);
 
+            var hel = healthobj.ToString();
+
             K8sEventOps ops = KubernetesClientTestHelper.GetK8sEventOps();
 
             var eve = await ops.CountUpOrCreateEvent<HealthCheckResource>(@namespace, healthobj, message);
