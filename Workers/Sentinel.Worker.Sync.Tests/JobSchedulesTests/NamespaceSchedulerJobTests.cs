@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Moq;
 using Quartz;
@@ -35,8 +36,9 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             {
                 jobtask.Wait(source.Token);
             }
-            catch
+            catch (OperationCanceledException ex)
             {
+                output.WriteLine("NamespaceSchedulerJob Cancelled : " + ex.Message);
 
             }
 
