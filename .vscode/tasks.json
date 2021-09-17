@@ -1,0 +1,67 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "Sentinel.Worker.Comms.build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/Workers/Sentinel.Worker.Comms/Sentinel.Worker.Comms.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+    },{
+        "label": "Sentinel.Worker.HealthChecker.build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/Workers/Sentinel.Worker.HealthChecker/Sentinel.Worker.HealthChecker.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+    },{
+        "label": "Sentinel.Worker.Scaler.build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/Workers/Sentinel.Worker.Scaler/Sentinel.Worker.Scaler.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+    },{
+        "label": "Sentinel.Worker.Scheduler.build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/Workers/Sentinel.Worker.Scheduler/Sentinel.Worker.Scheduler.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+    },{
+        "label": "Sentinel.Worker.Screenshot.build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/Workers/Sentinel.Worker.Screenshot/Sentinel.Worker.Screenshot.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+    },{
+        "label": "Sentinel.Worker.SecretGenerator.build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/Workers/Sentinel.Worker.SecretGenerator/Sentinel.Worker.SecretGenerator.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+    },{
+        "label": "Sentinel.Worker.Sync.build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/Workers/Sentinel.Worker.Sync/Sentinel.Worker.Sync.csproj"
+        ],
+        "problemMatcher": "$msCompile"
+    }]
+}

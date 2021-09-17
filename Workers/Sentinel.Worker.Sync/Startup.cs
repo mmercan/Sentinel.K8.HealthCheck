@@ -82,54 +82,53 @@ namespace Sentinel.Worker.Sync
 
             services.AddQuartz(q =>
             {
-                q.SchedulerId = "Scheduler-Core";
+
+                q.SchedulerId = "scheduler-sync";
                 q.UseMicrosoftDependencyInjectionJobFactory();
 
                 q.UseSimpleTypeLoader();
                 q.UseInMemoryStore();
                 q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = 10; });
 
-                if (Configuration["Schedules:NamespaceScheduler"] != null
-                 && Configuration["Schedules:NamespaceScheduler"] == "true")
+                if (Configuration["Schedules:NamespaceScheduler:enabled"] != null
+                 && Configuration["Schedules:NamespaceScheduler:enabled"] == "true")
                 {
                     q.ScheduleJob<NamespaceSchedulerJob>(trigger => trigger
                     .WithIdentity("NamespaceSchedulerJob")
                     .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(5)))
-                    .WithCronSchedule(Configuration["Schedules:NamespaceSchedule"])
+                    .WithCronSchedule(Configuration["Schedules:NamespaceScheduler:schedule"])
                     .WithDescription("Namespaces sync trigger configured run in Cron"));
                 }
 
-                if (Configuration["Schedules:ServiceScheduler"] != null
-                 && Configuration["Schedules:ServiceScheduler"] == "true")
+                if (Configuration["Schedules:ServiceScheduler:enabled"] != null
+                 && Configuration["Schedules:ServiceScheduler:enabled"] == "true")
                 {
                     q.ScheduleJob<ServiceSchedulerJob>(trigger => trigger
                     .WithIdentity("ServiceSchedulerJob")
                     .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(10)))
-                    .WithCronSchedule(Configuration["Schedules:ServiceSchedule"])
+                    .WithCronSchedule(Configuration["Schedules:ServiceScheduler:schedule"])
                     .WithDescription("Service sync trigger configured run in Cron"));
                 }
 
-                if (Configuration["Schedules:DeploymentScheduler"] != null
-                 && Configuration["Schedules:DeploymentScheduler"] == "true")
+                if (Configuration["Schedules:DeploymentScheduler:enabled"] != null
+                 && Configuration["Schedules:DeploymentScheduler:enabled"] == "true")
                 {
                     q.ScheduleJob<DeploymentSchedulerJob>(trigger => trigger
                     .WithIdentity("DeploymentSchedulerJob")
                     .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(15)))
-                    .WithCronSchedule(Configuration["Schedules:DeploymentSchedule"])
+                    .WithCronSchedule(Configuration["Schedules:DeploymentScheduler:schedule"])
                     .WithDescription("Service sync trigger configured run in Cron"));
                 }
 
-                if (Configuration["Schedules:HealthCheckScheduler"] != null
-                 && Configuration["Schedules:HealthCheckScheduler"] == "true")
+                if (Configuration["Schedules:HealthCheckScheduler:enabled"] != null
+                 && Configuration["Schedules:HealthCheckScheduler:enabled"] == "true")
                 {
                     q.ScheduleJob<HealthCheckSchedulerJob>(trigger => trigger
                     .WithIdentity("HealthCheckSchedulerJob")
                     .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(20)))
-                    .WithCronSchedule(Configuration["Schedules:HealthCheckSchedule"])
+                    .WithCronSchedule(Configuration["Schedules:HealthCheckScheduler:schedule"])
                     .WithDescription("Service sync trigger configured run in Cron"));
                 }
-
-
             });
 
             services.AddQuartzServer(options =>
