@@ -9,6 +9,15 @@ using Sentinel.Models.K8s.Entities;
 namespace Sentinel.Models.CRDs
 {
 
+    [KubernetesEntity(Group = "sentinel.mercan.io", Kind = "HealthCheck", ApiVersion = "v1", PluralName = "healthchecks")]
+    public class HealthCheckResourceList : CustomResource<HealthCheckResource.HealthCheckResourceSpec, HealthCheckResource.HealthCheckResourceStatus>
+    {
+
+        [JsonProperty(PropertyName = "items")]
+        public IList<HealthCheckResource> Items { get; set; }
+
+    }
+
 
     [KubernetesEntity(Group = "sentinel.mercan.io", Kind = "HealthCheck", ApiVersion = "v1", PluralName = "healthchecks")]
     [EntityScope(EntityScope.Namespaced)]

@@ -1,7 +1,11 @@
 using System.Threading;
+using AutoMapper;
 using Moq;
 using Quartz;
+using Sentinel.K8s;
 using Sentinel.Worker.Sync.JobSchedules;
+using Sentinel.Worker.Sync.TestsHelpers;
+using StackExchange.Redis;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +22,24 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
         [Fact]
         public void DeploymentSchedulerJobShouldRun()
         {
-            DeploymentSchedulerJob job = new DeploymentSchedulerJob();
+
+            var client = KubernetesClientTestHelper.GetKubernetesClient();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<DeploymentSchedulerJob>();
+
+            var config = new MapperConfiguration(cfg =>
+              {
+                  cfg.AddProfile(new K8sMapper());
+              });
+            var mapper = config.CreateMapper();
+
+            IConnectionMultiplexer rediscon = ConnectionMultiplexer.Connect("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc");
+
+            DeploymentSchedulerJob job = new DeploymentSchedulerJob(
+                logger: logger,
+                k8sclient: client,
+                mapper: mapper,
+                redisMultiplexer: rediscon
+            );
 
             CancellationTokenSource source = new CancellationTokenSource();
             source.CancelAfter(3 * 1000);

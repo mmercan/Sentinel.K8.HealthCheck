@@ -23,6 +23,12 @@ using CrystalQuartz.Application;
 using CrystalQuartz.AspNetCore;
 using EasyNetQ;
 using StackExchange.Redis;
+using Serilog;
+using Serilog.Events;
+using Microsoft.Extensions.Logging;
+using Sentinel.Worker.Sync.Middlewares;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Turquoise.HealthChecks.Common;
 
 namespace Sentinel.Worker.Sync
 {
@@ -158,31 +164,51 @@ namespace Sentinel.Worker.Sync
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISchedulerFactory schedulerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISchedulerFactory schedulerFactory, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            var logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("Enviroment", env.EnvironmentName)
+                .Enrich.WithProperty("ApplicationName", "Turquoise.Worker.Sync")
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .WriteTo.Console()
+                .WriteTo.File("Logs/logs.txt");
+            //.WriteTo.Elasticsearch()
+            logger.WriteTo.Console();
+            loggerFactory.AddSerilog();
+            Log.Logger = logger.CreateLogger();
+            app.UseExceptionLogger();
+
 
             var options = new CrystalQuartzOptions
             {
                 ErrorDetectionOptions = new CrystalQuartz.Application.ErrorDetectionOptions
                 { VerbosityLevel = ErrorVerbosityLevel.Detailed }
-                //JobDataMapDisplayOptions 
             };
+
 
             var scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
             app.UseCrystalQuartz(() => scheduler, options);
 
             app.UseRouting();
 
+            app.UseHealthChecks("/Health/IsAliveAndWell", new HealthCheckOptions()
+            {
+                ResponseWriter = WriteResponses.WriteListResponse,
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsync("{\"IsAlive\":true}");
                 });
             });
         }
