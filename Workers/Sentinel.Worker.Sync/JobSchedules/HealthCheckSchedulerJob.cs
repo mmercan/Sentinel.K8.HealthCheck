@@ -13,23 +13,22 @@ namespace Sentinel.Worker.Sync.JobSchedules
     public class HealthCheckSchedulerJob : IJob
     {
         private readonly ILogger<HealthCheckSchedulerJob> _logger;
-        private readonly KubernetesClientConfiguration _k8ClientConfig;
         private readonly IKubernetesClient _k8sclient;
         private readonly IConnectionMultiplexer _redisMultiplexer;
+        private readonly IDatabase _database;
 
         public HealthCheckSchedulerJob(ILogger<HealthCheckSchedulerJob> logger, IKubernetesClient k8sclient, IConnectionMultiplexer redisMultiplexer)
         {
             _logger = logger;
             _k8sclient = k8sclient;
             _redisMultiplexer = redisMultiplexer;
-
+            _database = redisMultiplexer.GetDatabase();
         }
         public async Task Execute(IJobExecutionContext context)
         {
             var checks = await _k8sclient.List<HealthCheckResourceList>();
             var names = string.Join(',', checks.Select(p => p.Name()).ToArray());
             _logger.LogWarning(names);
-            //  return Task.CompletedTask;
         }
     }
 }

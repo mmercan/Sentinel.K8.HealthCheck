@@ -14,7 +14,6 @@ namespace Sentinel.Worker.Sync.Watchers
     public class NamespaceWatcherJob : BackgroundServiceWithHealthCheck
     {
         private readonly IKubernetesClient _client;
-
         public IServiceProvider Services { get; }
 
         public NamespaceWatcherJob(IServiceProvider serviceProvider, ILogger<NamespaceWatcherJob> logger,
@@ -24,33 +23,27 @@ namespace Sentinel.Worker.Sync.Watchers
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
-            _logger.LogInformation(
-                "Consume Scoped Service Hosted Service running.");
+            _logger.LogInformation("Consume Scoped Service Hosted Service running.");
 
             await DoWork(stoppingToken);
         }
 
         private async Task DoWork(CancellationToken stoppingToken)
         {
-            _logger.LogInformation(
-                "Consume Scoped Service Hosted Service is working.");
+            _logger.LogInformation("Consume Scoped Service Hosted Service is working.");
 
 
             await _client.Watch<k8s.Models.V1Namespace>(timeout: TimeSpan.FromMinutes(3),
             onEvent: OnEvent,
             onError: (error) =>
              {
-                 // await DoWork(stoppingToken);
+                 _logger.LogWarning("Error NamespaceWatcherJob : ", error.Message);
              },
              onClose: () =>
              {
 
              },
              cancellationToken: stoppingToken);
-
-
-
 
             // using (var scope = Services.CreateScope())
             // {
@@ -99,12 +92,10 @@ namespace Sentinel.Worker.Sync.Watchers
 
 
 
-        public override async Task StopAsync(CancellationToken stoppingToken)
+        public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation(
-                "Consume Scoped Service Hosted Service is stopping.");
-
-            await base.StopAsync(stoppingToken);
+            _logger.LogInformation("Consume Scoped Service Hosted Service is stopping.");
+            await base.StopAsync(cancellationToken);
         }
 
     }

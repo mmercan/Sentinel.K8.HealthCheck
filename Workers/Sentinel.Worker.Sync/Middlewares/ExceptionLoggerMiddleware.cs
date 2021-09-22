@@ -10,7 +10,7 @@ namespace Sentinel.Worker.Sync.Middlewares
     public class ExceptionLoggerMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly DeveloperExceptionPageOptions _options;
+        private readonly ExceptionLoggerOptions _options;
         private readonly ILogger _logger;
 
         public ExceptionLoggerMiddleware(
@@ -20,6 +20,7 @@ namespace Sentinel.Worker.Sync.Middlewares
             )
         {
 
+            _options = options.Value;
             _logger = loggerFactory.CreateLogger<ExceptionLoggerMiddleware>();
             _next = next;
         }
@@ -37,6 +38,12 @@ namespace Sentinel.Worker.Sync.Middlewares
 
                 if (httpContext.Response.HasStarted)
                 {
+                    var response = "Response has started";
+                    if (_options != null)
+                    {
+                        response = _options.Name + " " + response;
+                    }
+                    _logger.LogDebug(response);
                 }
                 throw;
             }

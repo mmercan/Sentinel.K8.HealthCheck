@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -62,19 +63,26 @@ namespace Sentinel.Worker.Sync.RedisHelpers
 
         public async static Task<List<T>> SetListAsync<T>(this IDatabase database, List<T> items)
         {
-            var keyProp = typeof(T).GetProperties().SingleOrDefault(p => p.GetCustomAttributes(typeof(KeyAttribute), false).Count() > 0);
-
-            if (keyProp == null)
-            {
-                throw new ArgumentException("KeyAttribute is mising for " + typeof(T).GetType().ToString());
-            }
-
+            var keyProp = GetKeyProperty<T>();
             foreach (var item in items)
             {
                 var key = keyProp.GetValue(item).ToString();
                 await database.SetAsync(key, item);
             }
             return items;
+        }
+
+
+        public static PropertyInfo GetKeyProperty<T>()
+        {
+
+            var keyProp = typeof(T).GetProperties().SingleOrDefault(p => p.GetCustomAttributes(typeof(KeyAttribute), false).Any());
+
+            if (keyProp == null)
+            {
+                throw new ArgumentException("KeyAttribute is mising for " + typeof(T).ToString());
+            }
+            return keyProp;
         }
 
     }

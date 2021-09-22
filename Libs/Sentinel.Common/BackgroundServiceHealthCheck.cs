@@ -13,7 +13,6 @@ namespace Sentinel.Common
         public static IHealthChecksBuilder AddBackgroundServiceHealthCheck(this IHealthChecksBuilder builder, BackgroundServiceWithHealthCheck bgService)
         {
             return builder.AddTypeActivatedCheck<BackgroundServiceHealthCheck>($"RedisHealthCheck {bgService.GetType().ToString()}", null, null, bgService);
-            // return builder.AddTypeActivatedCheck<BackgroundServiceHealthCheck>($"RedisHealthCheck {bgService.GetType().ToString()}",  bgService);
         }
     }
 
