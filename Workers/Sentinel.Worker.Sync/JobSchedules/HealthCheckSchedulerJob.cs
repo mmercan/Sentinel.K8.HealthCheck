@@ -14,14 +14,12 @@ namespace Sentinel.Worker.Sync.JobSchedules
     {
         private readonly ILogger<HealthCheckSchedulerJob> _logger;
         private readonly IKubernetesClient _k8sclient;
-        private readonly IConnectionMultiplexer _redisMultiplexer;
         private readonly IDatabase _database;
 
         public HealthCheckSchedulerJob(ILogger<HealthCheckSchedulerJob> logger, IKubernetesClient k8sclient, IConnectionMultiplexer redisMultiplexer)
         {
             _logger = logger;
             _k8sclient = k8sclient;
-            _redisMultiplexer = redisMultiplexer;
             _database = redisMultiplexer.GetDatabase();
         }
         public async Task Execute(IJobExecutionContext context)

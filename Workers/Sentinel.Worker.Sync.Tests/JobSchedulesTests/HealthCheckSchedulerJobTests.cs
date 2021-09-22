@@ -28,7 +28,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
             var config = new MapperConfiguration(cfg =>
               {
-                  cfg.AddProfile(new K8sMapper());
+                  cfg.AddProfile(new K8SMapper());
               });
             var mapper = config.CreateMapper();
 

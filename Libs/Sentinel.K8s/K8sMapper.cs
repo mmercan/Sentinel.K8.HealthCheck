@@ -5,9 +5,9 @@ using Sentinel.Models.K8sDTOs;
 
 namespace Sentinel.K8s
 {
-    public class K8sMapper : Profile
+    public class K8SMapper : Profile
     {
-        public K8sMapper()
+        public K8SMapper()
         {
             NamespaceMapper();
 
@@ -25,6 +25,7 @@ namespace Sentinel.K8s
 
             probeMapper();
 
+            MetadataMapper();
 
         }
 

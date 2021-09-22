@@ -57,8 +57,9 @@ namespace Sentinel.Worker.Sync.Watchers
             //return Task.CompletedTask;
         }
 
-        private void OnEvent(WatchEventType arg1, V1Namespace arg2)
+        private void OnEvent(WatchEventType arg1, V1Namespace @namespace)
         {
+            _logger.LogInformation("OnEvent" + @namespace.Name());
             // throw new NotImplementedException();
         }
 
@@ -78,6 +79,8 @@ namespace Sentinel.Worker.Sync.Watchers
 
         private void OnClosed()
         {
+
+            _logger.LogInformation("OnClosed TODO: retry the connection");
             // var utc = DateTime.UtcNow.ToString();
             // var howlongran = (DateTime.UtcNow - lastrestart);
 

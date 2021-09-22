@@ -34,15 +34,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
 
         public async Task Execute(IJobExecutionContext context)
         {
-            // var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
-            // var generic = new GenericClient(config, "sentinel.mercan.io", "v1", "healthchecks");
-            // var healthChecks = await generic.ListAsync<HealthCheckResourceList>().ConfigureAwait(false);  //await generic.ReadAsync<HealthCheckResource>("kube0").ConfigureAwait(false);
-
-            // var names = string.Join(',', healthChecks.Items.Select(p => p.Name()).ToArray());
-
-            // _logger.LogWarning(names);
-            // return Task.CompletedTask;
-
             var items = await _k8sclient.ApiClient.ListDeploymentForAllNamespacesAsync();
             var dtoitems = _mapper.Map<IList<DeploymentV1>>(items.Items);
             var syncTime = DateTime.UtcNow;
@@ -54,17 +45,8 @@ namespace Sentinel.Worker.Sync.JobSchedules
                 item.SyncDate = syncTime;
 
                 _logger.LogInformation(item.NameandNamespace + " upsert");
-
-                // await deploymentMongoRepo.Upsert(item, p => p.Name == item.Name && p.Namespace == item.Namespace);
             }
             await _redisDatabase.SetListAsync(items.Items, (item) => { return "Deployment:" + item.Namespace() + ":" + item.Name(); });
-
-            // Type dep = typeof(DeploymentV1);
-            // var key = dep.GetProperties().SingleOrDefault(p => p.GetCustomAttributes(typeof(KeyAttribute), false).Count() > 0);
-            // var prodname = key?.Name;
-            //  var attrs = System.Attribute.GetCustomAttributes(dep);
-            //  var attrstring = string.Join(',', attrs.Select(p => p.TypeId.ToString()));
-            //  _logger.LogInformation(attrstring);
 
             // var mongodbservices = await deploymentMongoRepo.GetAllAsync();
             // foreach (var item in mongodbservices)
@@ -78,11 +60,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
             // }
             // _logger.LogCritical("Deployment Sync Completed ...!");
             //  logger.LogCritical(dtoitems.ToJSON());
-
-
-
-
-
         }
     }
 }
