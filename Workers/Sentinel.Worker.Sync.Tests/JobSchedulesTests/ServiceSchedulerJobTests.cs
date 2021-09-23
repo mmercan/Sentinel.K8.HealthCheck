@@ -19,12 +19,12 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
 
         [Fact]
-        public void NamespaceSchedulerJobShouldRun()
+        public void ServiceSchedulerJobShouldRun()
         {
+            var client = KubernetesClientTestHelper.GetKubernetesClient();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<ServiceSchedulerJob>();
+            ServiceSchedulerJob job = new ServiceSchedulerJob(client, logger);
 
-            // var client = KubernetesClientTestHelper.GetKubernetesClient();
-            // var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<NamespaceSchedulerJob>();
-            ServiceSchedulerJob job = new ServiceSchedulerJob();
 
 
             CancellationTokenSource source = new CancellationTokenSource();
