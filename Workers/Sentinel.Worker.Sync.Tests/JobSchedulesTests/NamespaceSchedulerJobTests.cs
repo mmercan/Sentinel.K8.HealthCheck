@@ -25,6 +25,16 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<NamespaceSchedulerJob>();
             NamespaceSchedulerJob job = new NamespaceSchedulerJob(client, logger);
 
+            // CancellationTokenSource source = new CancellationTokenSource();
+            // source.CancelAfter(3 * 1000);
+
+            // var contextMoc = new Mock<IJobExecutionContext>();
+            // contextMoc.Setup(m => m.CancellationToken).Returns(source.Token);
+            // var jobtask = job.Execute(contextMoc.Object);
+
+            // try   { jobtask.Wait(source.Token); }
+            // catch { output.WriteLine("NamespaceSchedulerJob Cancelled : ");}
+
             CancellationTokenSource source = new CancellationTokenSource();
             source.CancelAfter(3 * 1000);
 
@@ -32,14 +42,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             contextMoc.Setup(m => m.CancellationToken).Returns(source.Token);
 
             var jobtask = job.Execute(contextMoc.Object);
-            // try
-            // {
-            //    // jobtask.Wait(source.Token);
-            // }
-            // catch
-            // {
-            //     output.WriteLine("NamespaceSchedulerJob Cancelled : ");
-            // }
+            Assert.Throws<OperationCanceledException>(() => jobtask.Wait(source.Token));
 
 
         }
