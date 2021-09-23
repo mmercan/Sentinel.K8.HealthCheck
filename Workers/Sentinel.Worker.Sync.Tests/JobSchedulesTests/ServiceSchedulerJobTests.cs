@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using Moq;
 using Quartz;
@@ -33,7 +34,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             contextMoc.Setup(m => m.CancellationToken).Returns(source.Token);
 
             var jobtask = job.Execute(contextMoc.Object);
-            jobtask.Wait(source.Token);
+            Assert.Throws<OperationCanceledException>(() => jobtask.Wait(source.Token));
         }
     }
 }
