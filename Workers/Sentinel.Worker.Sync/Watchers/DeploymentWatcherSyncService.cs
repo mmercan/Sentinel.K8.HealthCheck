@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Sentinel.K8s;
 using System.Linq;
+using StackExchange.Redis;
+using Sentinel.Worker.Sync.RedisHelpers;
 
 namespace Sentinel.Worker.Sync.Watchers
 {
@@ -18,19 +20,19 @@ namespace Sentinel.Worker.Sync.Watchers
     {
         private readonly ILogger<DeploymentWatcherSyncService> _logger;
         private readonly IKubernetesClient _k8sService;
-        private readonly IDistributedCache _cache;
+        private readonly IDatabase _redisDatabase;
         private Task executingTask;
         private DateTime lastrestart = DateTime.UtcNow;
 
         public DeploymentWatcherSyncService(
             ILogger<DeploymentWatcherSyncService> logger,
             IKubernetesClient k8sService,
-            IDistributedCache cache
+            IConnectionMultiplexer redisMultiplexer
             )
         {
             this._logger = logger;
             this._k8sService = k8sService;
-            this._cache = cache;
+            this._redisDatabase = redisMultiplexer.GetDatabase();
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -96,11 +98,12 @@ namespace Sentinel.Worker.Sync.Watchers
         }
         private async Task SavetoCache(string key, V1Deployment data)
         {
-            var datajson = data.ToJSON();
-            byte[] databyte = Encoding.UTF8.GetBytes(datajson);
+            // var datajson = data.ToJSON();
+            // byte[] databyte = Encoding.UTF8.GetBytes(datajson);
             // var options = new DistributedCacheEntryOptions()
             //    .SetSlidingExpiration(TimeSpan.FromMinutes(20));
-            await _cache.SetAsync(key, databyte);
+
+            await _redisDatabase.SetAsync(key, data);
         }
 
     }
