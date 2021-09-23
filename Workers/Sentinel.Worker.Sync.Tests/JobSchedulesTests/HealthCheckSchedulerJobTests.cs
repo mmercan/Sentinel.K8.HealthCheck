@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using AutoMapper;
 using Moq;
@@ -50,7 +51,8 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
 
             var jobtask = job.Execute(contextMoc.Object);
-            jobtask.Wait(source.Token);
+
+            Assert.Throws<OperationCanceledException>(() => jobtask.Wait(source.Token));
         }
     }
 }
