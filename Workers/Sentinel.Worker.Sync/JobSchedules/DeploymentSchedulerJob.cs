@@ -22,6 +22,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
         private readonly IKubernetesClient _k8sclient;
         private readonly IMapper _mapper;
         private readonly IDatabase _redisDatabase;
+        private readonly IConnectionMultiplexer redisMultiplexer;
 
         public DeploymentSchedulerJob(ILogger<DeploymentSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
@@ -29,15 +30,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             _k8sclient = k8sclient;
             _mapper = mapper;
             _redisDatabase = redisMultiplexer.GetDatabase();
-            //redisMultiplexer.GetServer().Keys(pattern: "queue:*").ToArray();
-            //redisMultiplexer.GetServer().
-            var hostandport = redisMultiplexer.GetEndPoints().First();
-            var server = redisMultiplexer.GetServer(hostandport);
-
-
-            var arrs = server.Keys(pattern: "Deployment:*").ToArray();
-            var gets = _redisDatabase.StringGet(arrs);
-            _logger.LogWarning(arrs.Count().ToString());
+            this.redisMultiplexer = redisMultiplexer;
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -48,37 +41,15 @@ namespace Sentinel.Worker.Sync.JobSchedules
 
             foreach (var item in dtoitems)
             {
-                item.Name = item.Metadata.Name;
-                item.Namespace = item.Metadata.Namespace;
+                //  item.Name = item.Metadata.Name;
+                //  item.Namespace = item.Metadata.Namespace;
                 item.SyncDate = syncTime;
 
-                _logger.LogInformation(item.NameandNamespace + " upsert");
+                // _logger.LogInformation(item.NameandNamespace + " upsert");
             }
-            await _redisDatabase.SetListAsync(items.Items, (item) => { return "Deployment:" + item.Namespace() + ":" + item.Name(); });
 
-
-            //var fooRedis = new StackExchange.Redis({ keyPrefix: 'Deployment:' });
-
-            // var value = _redisDatabase.ListGetByIndex("Deployment:", -1);
-            // _redisDatabase.list
-            // var hasvalue = value.HasValue;
-            //var value = _redisDatabase.StringGet("Deployment:*");
-
-
-
-
-            // var mongodbservices = await deploymentMongoRepo.GetAllAsync();
-            // foreach (var item in mongodbservices)
-            // {
-            //     if (!dtoitems.Any(p => p.Metadata.Name == item.Name && p.Metadata.Namespace == item.Namespace))
-            //     {
-            //         item.Deleted = true;
-            //         _logger.LogInformation(item.NameandNamespace + " tag as deleted");
-            //         await deploymentMongoRepo.UpdateAsync(item);
-            //     }
-            // }
-            // _logger.LogCritical("Deployment Sync Completed ...!");
-            //  logger.LogCritical(dtoitems.ToJSON());
+            var redisDic = new RedisDictionary<string, DeploymentV1>(redisMultiplexer, _logger, "Deployment");
+            redisDic.Sync(dtoitems);
         }
     }
 }

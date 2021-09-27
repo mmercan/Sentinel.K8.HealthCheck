@@ -63,7 +63,7 @@ namespace Sentinel.Worker.Sync.RedisHelpers
 
         public async static Task<List<T>> SetListAsync<T>(this IDatabase database, List<T> items)
         {
-            var keyProp = GetKeyProperty<T>();
+            var keyProp = PropertyInfoHelpers.GetKeyProperty<T>();
             foreach (var item in items)
             {
                 var key = keyProp.GetValue(item).ToString();
@@ -72,18 +72,6 @@ namespace Sentinel.Worker.Sync.RedisHelpers
             return items;
         }
 
-
-        public static PropertyInfo GetKeyProperty<T>()
-        {
-
-            var keyProp = typeof(T).GetProperties().SingleOrDefault(p => p.GetCustomAttributes(typeof(KeyAttribute), false).Any());
-
-            if (keyProp == null)
-            {
-                throw new ArgumentException("KeyAttribute is mising for " + typeof(T).ToString());
-            }
-            return keyProp;
-        }
 
     }
 }
