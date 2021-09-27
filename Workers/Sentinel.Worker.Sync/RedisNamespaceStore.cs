@@ -1,24 +1,30 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
 namespace Sentinel.Worker.Sync
 {
-    public class RedisNamespaceStore
+    public class RedisNamespaceStore<T>
     {
 
         private readonly IConnectionMultiplexer _multiplexer;
-        public IDatabase Database { get; }
-        public RedisNamespaceStore(IConnectionMultiplexer multiplexer)
+        private readonly IDatabase database;
+        private readonly IServer server;
+        private readonly string prefix;
+
+        public RedisNamespaceStore(IConnectionMultiplexer multiplexer, string prefix)
         {
-
-
             _multiplexer = multiplexer;
             if (!_multiplexer.IsConnected)
             {
                 // _multiplexer.conn
 
             }
-            Database = _multiplexer.GetDatabase();
+            database = _multiplexer.GetDatabase();
+            server = _multiplexer.GetServer(multiplexer.GetEndPoints().First());
+            this.prefix = prefix;
 
             // JsonConvert.DeserializeObject()
         }
@@ -28,7 +34,66 @@ namespace Sentinel.Worker.Sync
             return _multiplexer.GetStatus();
         }
 
-        //Get
+        public async Task<T> GetAsync(string key)
+        {
+            var value = await database.StringGetAsync(key);
+            if (!value.HasValue)
+            {
+                return default;
+            }
+            else
+            {
+                return JsonConvert.DeserializeObject<T>(value);
+            }
+        }
+
+        public IAsyncEnumerable<T> GetAsyncEnumerable() => GetAsyncEnumerable(this.prefix);
+        public async IAsyncEnumerable<T> GetAsyncEnumerable(string pattern)
+        {
+            var keys = server.Keys(pattern: pattern).ToArray();
+            var values = await database.StringGetAsync(keys);
+
+            if (values.Count() == 0)
+            {
+                yield return default;
+            }
+            else
+            {
+                foreach (var item in values)
+                {
+                    yield return JsonConvert.DeserializeObject<T>(item);
+                }
+            }
+        }
+
+
+        public async Task<IList<T>> GetListAsync() => await GetListAsync(this.prefix);
+        public async Task<IList<T>> GetListAsync(string pattern)
+        {
+            var items = new List<T>();
+            var keys = server.Keys(pattern: pattern).ToArray();
+            var values = await database.StringGetAsync(keys);
+
+            if (values.Count() == 0)
+            {
+                return default;
+            }
+            else
+            {
+                foreach (var itemStr in values)
+                {
+                    var item = JsonConvert.DeserializeObject<T>(itemStr);
+                    items.Add(item);
+                }
+                return items;
+            }
+        }
+
+        public async Task<bool> SetAsync(string key, T item)
+        {
+            var stringValue = JsonConvert.SerializeObject(item);
+            return await database.StringSetAsync(key, stringValue);
+        }
 
         //GetAll
         //Upsert

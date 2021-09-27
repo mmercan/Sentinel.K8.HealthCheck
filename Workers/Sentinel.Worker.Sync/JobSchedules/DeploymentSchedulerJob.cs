@@ -29,7 +29,15 @@ namespace Sentinel.Worker.Sync.JobSchedules
             _k8sclient = k8sclient;
             _mapper = mapper;
             _redisDatabase = redisMultiplexer.GetDatabase();
+            //redisMultiplexer.GetServer().Keys(pattern: "queue:*").ToArray();
+            //redisMultiplexer.GetServer().
+            var hostandport = redisMultiplexer.GetEndPoints().First();
+            var server = redisMultiplexer.GetServer(hostandport);
 
+
+            var arrs = server.Keys(pattern: "Deployment:*").ToArray();
+            var gets = _redisDatabase.StringGet(arrs);
+            _logger.LogWarning(arrs.Count().ToString());
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -47,6 +55,17 @@ namespace Sentinel.Worker.Sync.JobSchedules
                 _logger.LogInformation(item.NameandNamespace + " upsert");
             }
             await _redisDatabase.SetListAsync(items.Items, (item) => { return "Deployment:" + item.Namespace() + ":" + item.Name(); });
+
+
+            //var fooRedis = new StackExchange.Redis({ keyPrefix: 'Deployment:' });
+
+            // var value = _redisDatabase.ListGetByIndex("Deployment:", -1);
+            // _redisDatabase.list
+            // var hasvalue = value.HasValue;
+            //var value = _redisDatabase.StringGet("Deployment:*");
+
+
+
 
             // var mongodbservices = await deploymentMongoRepo.GetAllAsync();
             // foreach (var item in mongodbservices)
