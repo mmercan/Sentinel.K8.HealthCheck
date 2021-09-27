@@ -1,10 +1,17 @@
 ## Run Test with details and coverages
 
+
+## Current project
 ```
 dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 
 ```
 
+
+## Solution
+```
+dotnet watch -p .\Sentinel.K8.HealthCheck.sln test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
+```
 ## Pipelines
 ### test :
 [![Sentinel Test](https://github.com/mmercan/Sentinel.K8.HealthCheck/actions/workflows/docker-image.yml/badge.svg)](https://github.com/mmercan/Sentinel.K8.HealthCheck/actions/workflows/docker-image.yml)

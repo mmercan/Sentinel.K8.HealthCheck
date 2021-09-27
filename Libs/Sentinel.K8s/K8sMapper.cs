@@ -131,7 +131,58 @@ namespace Sentinel.K8s
 
         private void PodMapper()
         {
-            CreateMap<V1Pod, PodV1>();
+
+
+            CreateMap<V1Pod, PodV1>()
+            .ForMember(dto => dto.Name, map => map.MapFrom(source =>
+                source.Name()
+           ))
+            //     .ForMember(dto => dto.GenerateName, map => map.MapFrom(source =>
+            //         source.
+            //    ))
+            .ForMember(dto => dto.Namespace, map => map.MapFrom(source =>
+                source.Namespace()
+           ))
+            .ForMember(dto => dto.Labels, map => map.MapFrom(source =>
+                source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()
+           ))
+            .ForMember(dto => dto.CreationTime, map => map.MapFrom(source =>
+                source.Metadata.CreationTimestamp.Value
+           ))
+            .ForMember(dto => dto.LabelSelector, map => map.MapFrom(source =>
+                 source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()
+           ))
+            .ForMember(dto => dto.Annotations, map => map.MapFrom(source =>
+               source.Annotations().Select(p => new Label(p.Key, p.Value)).ToList()
+           ))
+            .ForMember(dto => dto.ClusterIP, map => map.MapFrom(source =>
+                source.Status.HostIP
+           ))
+            .ForMember(dto => dto.Uid, map => map.MapFrom(source =>
+                source.Uid()
+           ))
+             .ForMember(dto => dto.OwnerReferences, map => map.MapFrom(source =>
+                 source.OwnerReferences()
+            ))
+            .ForMember(dto => dto.Containers, map => map.MapFrom(source =>
+                source.Spec.Containers
+           ))
+            .ForMember(dto => dto.Status, map => map.MapFrom(source =>
+                source.Status
+           ))
+            .ForMember(dto => dto.PodIP, map => map.MapFrom(source =>
+                source.Status.PodIP
+           ))
+            .ForMember(dto => dto.StartTime, map => map.MapFrom(source =>
+                source.Status.StartTime
+           ))
+            .ForMember(dto => dto.NodeName, map => map.MapFrom(source =>
+                source.Status.NominatedNodeName
+           ))
+            .ForMember(dto => dto.Images, map => map.MapFrom(source =>
+                source.Spec.Containers.Select(p => p.Image)
+           ));
+
 
             CreateMap<V1PodTemplateSpec, PodTemplateSpecV1>();
 
