@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Sentinel.Models.K8sDTOs;
 using StackExchange.Redis;
@@ -101,6 +102,8 @@ namespace Sentinel.Worker.Sync.Tests
             Id = id;
         }
         public string Name { get; set; }
+
+        [Key]
         public string Id { get; set; }
     }
 }
