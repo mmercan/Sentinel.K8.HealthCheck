@@ -10,16 +10,15 @@ namespace Sentinel.Worker.Sync.RedisHelpers
 {
     public class RedisDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
-        private readonly IConnectionMultiplexer _multiplexer;
         private readonly IDatabase database;
         private readonly ILogger _logger;
-        private string _redisKey;
+        private readonly string _redisKey;
         public RedisDictionary(IConnectionMultiplexer multiplexer, ILogger logger, string redisKey)
         {
             _redisKey = redisKey;
-            _multiplexer = multiplexer;
+
             Logger = logger;
-            database = _multiplexer.GetDatabase();
+            database = multiplexer.GetDatabase();
             _logger = logger;
         }
 
@@ -45,13 +44,13 @@ namespace Sentinel.Worker.Sync.RedisHelpers
             await database.HashSetAsync(_redisKey, Serialize(key), Serialize(value));
         }
 
-        public void ContainsKey(TValue value) => ContainsKey(PropertyInfoHelpers.GetKeyValue<TKey, TValue>(value));
+        public bool ContainsKey(TValue value) => ContainsKey(PropertyInfoHelpers.GetKeyValue<TKey, TValue>(value));
         public bool ContainsKey(TKey key)
         {
             return database.HashExists(_redisKey, Serialize(key));
         }
 
-        public void Remove(TValue value) => Remove(PropertyInfoHelpers.GetKeyValue<TKey, TValue>(value));
+        public bool Remove(TValue value) => Remove(PropertyInfoHelpers.GetKeyValue<TKey, TValue>(value));
         public bool Remove(TKey key)
         {
             return database.HashDelete(_redisKey, Serialize(key));
