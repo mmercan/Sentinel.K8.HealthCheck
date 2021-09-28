@@ -17,8 +17,9 @@ namespace Sentinel.Worker.Sync.Tests
         [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
         public void GetDatabase(string constring)
         {
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = ConnectionMultiplexer.Connect(constring);
-            var dic = new RedisDictionary<string, TestClass>(multi, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
         }
 
 
@@ -31,9 +32,9 @@ namespace Sentinel.Worker.Sync.Tests
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
-
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = ConnectionMultiplexer.Connect(constring);
-            var dic = new RedisDictionary<string, TestClass>(multi, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
             var contain = dic.ContainsKey(t1.Id);
@@ -50,9 +51,9 @@ namespace Sentinel.Worker.Sync.Tests
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
-
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = ConnectionMultiplexer.Connect(constring);
-            var dic = new RedisDictionary<string, TestClass>(multi, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
             var contain = dic.ContainsKey(t1.Id);
@@ -71,9 +72,9 @@ namespace Sentinel.Worker.Sync.Tests
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
-
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = ConnectionMultiplexer.Connect(constring);
-            var dic = new RedisDictionary<string, TestClass>(multi, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
             var contain = dic.ContainsKey(t1.Id);
@@ -93,9 +94,9 @@ namespace Sentinel.Worker.Sync.Tests
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
-
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = ConnectionMultiplexer.Connect(constring);
-            var dic = new RedisDictionary<string, TestClass>(multi, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
             var contain = dic.ContainsKey(t1.Id);
@@ -114,9 +115,9 @@ namespace Sentinel.Worker.Sync.Tests
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
-
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = ConnectionMultiplexer.Connect(constring);
-            var dic = new RedisDictionary<string, TestClass>(multi, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
 
@@ -133,9 +134,9 @@ namespace Sentinel.Worker.Sync.Tests
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
-
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = ConnectionMultiplexer.Connect(constring);
-            var dic = new RedisDictionary<string, TestClass>(multi, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
             var contain = dic.ContainsKey(t1.Id);
