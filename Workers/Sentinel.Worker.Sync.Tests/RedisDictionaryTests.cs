@@ -210,5 +210,49 @@ namespace Sentinel.Worker.Sync.Tests
 
             Assert.NotNull(val);
         }
+
+
+        [Theory]
+        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
+        public void Clear(string constring)
+        {
+            var t1 = new TestClass("Name_T1", "test:id1");
+            var t2 = new TestClass("Name_T2", "test:id2");
+            var t3 = new TestClass("Name_T3", "test:id3");
+            List<TestClass> list = new List<TestClass> { t1, t2, t3 };
+
+
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
+            var multi = ConnectionMultiplexer.Connect(constring);
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+
+            dic.Clear();
+            var isreadonly = dic.IsReadOnly;
+        }
+
+
+
+        [Theory]
+        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
+        public void Sync(string constring)
+        {
+            var t1 = new TestClass("Name_T1", "test:id1");
+            var t2 = new TestClass("Name_T2", "test:id2");
+            var t3 = new TestClass("Name_T3", "test:id3");
+            List<TestClass> list1 = new List<TestClass> { t1, t2 };
+
+            List<TestClass> list2 = new List<TestClass> { t2, t3 };
+
+
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
+            var multi = ConnectionMultiplexer.Connect(constring);
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+
+            dic.AddMultiple(list1);
+            dic.Sync(list2);
+
+            Assert.Equal(dic.Count, 2);
+
+        }
     }
 }
