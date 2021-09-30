@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Sentinel.Worker.Sync.RedisHelpers;
+using Sentinel.Redis;
 using StackExchange.Redis;
 using Xunit;
 using Xunit.Abstractions;

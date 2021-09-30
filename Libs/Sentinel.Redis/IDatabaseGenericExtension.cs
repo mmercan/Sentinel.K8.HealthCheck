@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace Sentinel.Worker.Sync.RedisHelpers
+namespace Sentinel.Redis
 {
     public static class IDatabaseGenericExtension
     {

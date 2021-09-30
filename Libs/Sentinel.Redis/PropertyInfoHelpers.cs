@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace Sentinel.Worker.Sync.RedisHelpers
+namespace Sentinel.Redis
 {
     public static class PropertyInfoHelpers
     {

@@ -11,8 +11,7 @@ using System;
 using AutoMapper;
 using System.Collections.Generic;
 using Sentinel.Models.K8sDTOs;
-using Sentinel.Worker.Sync.RedisHelpers;
-
+using Sentinel.Redis;
 
 namespace Sentinel.Worker.Sync.JobSchedules
 {

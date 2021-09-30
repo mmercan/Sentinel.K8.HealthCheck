@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Sentinel.K8s;
 using System.Linq;
 using StackExchange.Redis;
-using Sentinel.Worker.Sync.RedisHelpers;
+using Sentinel.Redis;
 
 namespace Sentinel.Worker.Sync.Watchers
 {

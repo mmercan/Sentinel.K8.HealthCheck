@@ -1,9 +1,9 @@
 using StackExchange.Redis;
 using Xunit.Abstractions;
-using Sentinel.Worker.Sync.RedisHelpers;
 using Xunit;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Sentinel.Redis;
 
 namespace Sentinel.Worker.Sync.Tests
 {

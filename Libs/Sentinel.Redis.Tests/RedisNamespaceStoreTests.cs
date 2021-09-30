@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Sentinel.Models.K8sDTOs;
+using Sentinel.Redis;
 using StackExchange.Redis;
 using Xunit;
 using Xunit.Abstractions;
-using static Sentinel.Worker.Sync.RedisHelpers.IDatabaseGenericExtension;
+
 
 namespace Sentinel.Worker.Sync.Tests
 {

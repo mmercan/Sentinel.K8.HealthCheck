@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace Sentinel.Worker.Sync.RedisHelpers
+namespace Sentinel.Redis
 {
     public class RedisDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {

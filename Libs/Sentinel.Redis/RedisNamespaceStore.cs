@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace Sentinel.Worker.Sync
+namespace Sentinel.Redis
 {
     public class RedisNamespaceStore<T>
     {
