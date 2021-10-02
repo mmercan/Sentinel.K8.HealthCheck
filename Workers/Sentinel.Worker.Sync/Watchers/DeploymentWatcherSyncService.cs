@@ -15,7 +15,6 @@ using Sentinel.Redis;
 
 namespace Sentinel.Worker.Sync.Watchers
 {
-
     public class DeploymentWatcherSyncService : BackgroundService
     {
         private readonly ILogger<DeploymentWatcherSyncService> _logger;

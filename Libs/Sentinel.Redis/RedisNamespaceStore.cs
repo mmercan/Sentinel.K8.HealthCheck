@@ -53,7 +53,7 @@ namespace Sentinel.Redis
             var keys = server.Keys(pattern: pattern).ToArray();
             var values = await database.StringGetAsync(keys);
 
-            if (values.Count() == 0)
+            if (!values.Any())
             {
                 yield return default;
             }
@@ -74,7 +74,7 @@ namespace Sentinel.Redis
             var keys = server.Keys(pattern: pattern).ToArray();
             var values = await database.StringGetAsync(keys);
 
-            if (values.Count() == 0)
+            if (!values.Any())
             {
                 return default;
             }

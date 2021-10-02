@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using k8s;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using Sentinel.K8s;
 using Sentinel.Models.CRDs;
+using Sentinel.Redis;
 using StackExchange.Redis;
 
 namespace Sentinel.Worker.Sync.JobSchedules
@@ -14,19 +16,30 @@ namespace Sentinel.Worker.Sync.JobSchedules
     {
         private readonly ILogger<HealthCheckSchedulerJob> _logger;
         private readonly IKubernetesClient _k8sclient;
-        private readonly IDatabase _database;
+        private readonly IConnectionMultiplexer _redisMultiplexer;
 
         public HealthCheckSchedulerJob(ILogger<HealthCheckSchedulerJob> logger, IKubernetesClient k8sclient, IConnectionMultiplexer redisMultiplexer)
         {
             _logger = logger;
             _k8sclient = k8sclient;
-            _database = redisMultiplexer.GetDatabase();
+            _redisMultiplexer = redisMultiplexer;
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            var checks = await _k8sclient.List<HealthCheckResourceList>();
-            var names = string.Join(',', checks.Select(p => p.Name()).ToArray());
-            _logger.LogWarning(names);
+            var checks = await _k8sclient.List<HealthCheckResource>();
+
+            var syncTime = DateTime.UtcNow;
+
+            foreach (var item in checks)
+            {
+                item.SyncDate = syncTime;
+            }
+
+
+            var str = checks.ToJSON();
+
+            var redisDic = new RedisDictionary<string, HealthCheckResource>(_redisMultiplexer, _logger, "HealthChecks");
+            redisDic.Sync(checks);
         }
     }
 }

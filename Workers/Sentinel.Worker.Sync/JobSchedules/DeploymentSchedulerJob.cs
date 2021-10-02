@@ -20,7 +20,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
         private readonly ILogger<DeploymentSchedulerJob> _logger;
         private readonly IKubernetesClient _k8sclient;
         private readonly IMapper _mapper;
-        private readonly IDatabase _redisDatabase;
+
         private readonly IConnectionMultiplexer redisMultiplexer;
 
         public DeploymentSchedulerJob(ILogger<DeploymentSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
@@ -28,7 +28,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
             _logger = logger;
             _k8sclient = k8sclient;
             _mapper = mapper;
-            _redisDatabase = redisMultiplexer.GetDatabase();
             this.redisMultiplexer = redisMultiplexer;
         }
 
@@ -40,11 +39,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
 
             foreach (var item in dtoitems)
             {
-                //  item.Name = item.Metadata.Name;
-                //  item.Namespace = item.Metadata.Namespace;
                 item.SyncDate = syncTime;
-
-                // _logger.LogInformation(item.NameandNamespace + " upsert");
             }
 
             var redisDic = new RedisDictionary<string, DeploymentV1>(redisMultiplexer, _logger, "Deployment");

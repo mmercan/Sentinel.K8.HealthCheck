@@ -35,15 +35,9 @@ namespace Sentinel.Worker.Sync.Watchers
 
             await _client.Watch<k8s.Models.V1Namespace>(timeout: TimeSpan.FromMinutes(3),
             onEvent: OnEvent,
-            onError: (error) =>
-             {
-                 _logger.LogWarning("Error NamespaceWatcherJob : ", error.Message);
-             },
-             onClose: () =>
-             {
-
-             },
-             cancellationToken: stoppingToken);
+            onError: OnError,
+            onClose: OnClosed,
+            cancellationToken: stoppingToken);
 
             // using (var scope = Services.CreateScope())
             // {

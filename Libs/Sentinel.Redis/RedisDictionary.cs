@@ -22,11 +22,11 @@ namespace Sentinel.Redis
             _logger = logger;
         }
 
-        private string Serialize(object obj)
+        private static string Serialize(object obj)
         {
             return JsonConvert.SerializeObject(obj);
         }
-        private T Deserialize<T>(string serialized)
+        private static T Deserialize<T>(string serialized)
         {
             return JsonConvert.DeserializeObject<T>(serialized);
         }
@@ -50,6 +50,7 @@ namespace Sentinel.Redis
             return database.HashExists(_redisKey, Serialize(key));
         }
 
+        public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
         public bool Remove(TValue value) => Remove(PropertyInfoHelpers.GetKeyValue<TKey, TValue>(value));
         public bool Remove(TKey key)
         {
@@ -60,6 +61,7 @@ namespace Sentinel.Redis
             var redisValue = database.HashGet(_redisKey, Serialize(key));
             if (redisValue.IsNull)
             {
+                _logger.LogInformation(key.ToJSON() + " Value not found");
                 value = default(TValue);
                 return false;
             }
@@ -68,12 +70,22 @@ namespace Sentinel.Redis
         }
         public ICollection<TValue> Values
         {
-            get { return new Collection<TValue>(database.HashValues(_redisKey).Select(h => Deserialize<TValue>(h.ToString())).ToList()); }
+            get { return getValues(); }
+        }
+
+        private ICollection<TValue> getValues()
+        {
+            return new Collection<TValue>(database.HashValues(_redisKey).Select(h => Deserialize<TValue>(h.ToString())).ToList());
         }
         public ICollection<TKey> Keys
         {
-            get { return new Collection<TKey>(database.HashKeys(_redisKey).Select(h => Deserialize<TKey>(h.ToString())).ToList()); }
+            get { return getKeys(); }
         }
+        private ICollection<TKey> getKeys()
+        {
+            return new Collection<TKey>(database.HashKeys(_redisKey).Select(h => Deserialize<TKey>(h.ToString())).ToList());
+        }
+
         public TValue this[TKey key]
         {
             get
@@ -110,8 +122,6 @@ namespace Sentinel.Redis
         }
 
         public ILogger Logger { get; }
-
-        public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
 
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
