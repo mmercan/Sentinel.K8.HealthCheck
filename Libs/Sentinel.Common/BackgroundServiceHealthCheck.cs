@@ -47,21 +47,14 @@ namespace Sentinel.Common
             count++;
         }
 
-
-        public BackgroundServiceHealthCheck()
-        {
-
-        }
-
         public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
 
-            if (LastProcessUtc == null || LastProcessUtc > DateTime.UtcNow.AddHours(-1))
+            if (LastProcessUtc == DateTime.MinValue || LastProcessUtc > DateTime.UtcNow.AddHours(-1))
             {
-
+                ReportDegraded("Just started or havent heard over an hour");
             }
 
-            //var lastProcess = _bgService.Witness.GetLastProcessTime();
             var timeAgo = DateTime.UtcNow.Subtract(LastProcessUtc);
             var data = new Dictionary<string, object> {
                 { "Last process", LastProcessUtc },
@@ -69,16 +62,8 @@ namespace Sentinel.Common
                 {"Count", count.ToString()}
             } as IReadOnlyDictionary<string, object>;
 
-
             var result = new HealthCheckResult(status, message, data: data);
             return Task.FromResult(result);
-
-            //Task.FromResult(HealthCheckResult("Processing as much as we can", data));
-            // if (lastProcess > DateTime.UtcNow.AddSeconds(-90))
-            // {
-            //     return Task.FromResult(HealthCheckResult.Healthy("Processing as much as we can", data));
-            // }
-            // return Task.FromResult(HealthCheckResult.Unhealthy("Processing is stuck somewhere", null, data));
         }
     }
 }

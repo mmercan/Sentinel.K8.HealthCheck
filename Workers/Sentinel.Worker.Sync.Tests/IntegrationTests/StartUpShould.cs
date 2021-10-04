@@ -30,7 +30,7 @@ namespace Sentinel.Worker.Sync.Tests.IntegrationTests
         [Theory]
         [InlineData("/")]
         // [InlineData("/Health/IsAlive")]
-        // [InlineData("/Health/IsAliveAndWell")]
+        [InlineData("/Health/IsAliveAndWell")]
         public void Run(string url)
         {
             Task.Run(() =>
