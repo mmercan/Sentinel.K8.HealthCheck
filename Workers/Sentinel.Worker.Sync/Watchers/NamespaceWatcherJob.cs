@@ -20,7 +20,6 @@ namespace Sentinel.Worker.Sync.Watchers
     public class NamespaceWatcherJob : BackgroundServiceWithHealthCheck
     {
         private readonly IKubernetesClient _k8sService;
-        private readonly IDatabase redisDb;
         private readonly IMapper _mapper;
         private readonly RedisDictionary<string, NamespaceV1> redisDic;
         private Task executingTask;
@@ -34,7 +33,6 @@ namespace Sentinel.Worker.Sync.Watchers
             IOptions<HealthCheckServiceOptions> hcoptions) : base(logger, hcoptions)
         {
             _k8sService = k8sService;
-            redisDb = redisMultiplexer.GetDatabase();
             _mapper = mapper;
             redisDic = new RedisDictionary<string, NamespaceV1>(redisMultiplexer, _logger, "Namespaces");
         }
@@ -63,8 +61,8 @@ namespace Sentinel.Worker.Sync.Watchers
             {
                 this._logger.LogCritical("=== on watch Done ===");
                 var ctrlc = new ManualResetEventSlim(false);
-                ctrlc.Wait();
-            };
+                ctrlc.Wait(CancellationToken.None);
+            }
 
             // using (var scope = Services.CreateScope())
             // {
@@ -90,7 +88,7 @@ namespace Sentinel.Worker.Sync.Watchers
             else if (arg1 == WatchEventType.Deleted)
             {
                 var dtons = _mapper.Map<V1Namespace, NamespaceV1>(@namespace);
-                redisDic.Add(@dtons);
+                redisDic.Remove(@dtons);
             }
         }
 

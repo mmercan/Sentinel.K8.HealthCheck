@@ -47,7 +47,7 @@ namespace Sentinel.Worker.Sync.Tests.WatchersTests
             // .BuildServiceProvider();
 
             CancellationTokenSource source = new CancellationTokenSource();
-            source.CancelAfter(3 * 1000);
+            source.CancelAfter(40 * 1000);
 
             var hcoptions = Options.Create(new HealthCheckServiceOptions());
 

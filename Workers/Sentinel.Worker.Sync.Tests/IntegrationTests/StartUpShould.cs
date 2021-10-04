@@ -47,7 +47,7 @@ namespace Sentinel.Worker.Sync.Tests.IntegrationTests
                 var response = responseTask.Result;
                 // Assert
                 // response.EnsureSuccessStatusCode();
-            }).Wait(5000);
+            }).Wait(40000);
         }
 
     }
