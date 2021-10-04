@@ -24,6 +24,7 @@ namespace Sentinel.Worker.Sync.Watchers
         private readonly IMapper _mapper;
         private readonly RedisDictionary<string, NamespaceV1> redisDic;
         private Task executingTask;
+        private CancellationToken cancellationToken;
 
         public NamespaceWatcherJob(
             ILogger<NamespaceWatcherJob> logger,
@@ -39,8 +40,9 @@ namespace Sentinel.Worker.Sync.Watchers
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            cancellationToken = stoppingToken;
             //executingTask = Task.Factory.StartNew(new Action(namespaceWatchStarter), TaskCreationOptions.LongRunning);
-            executingTask = Task.Factory.StartNew(async () => await namespaceWatchStarter(stoppingToken), TaskCreationOptions.LongRunning);
+            executingTask = Task.Factory.StartNew(() => namespaceWatchStarter(stoppingToken), TaskCreationOptions.LongRunning);
             if (executingTask.IsCompleted)
             {
                 return executingTask;
@@ -48,7 +50,7 @@ namespace Sentinel.Worker.Sync.Watchers
             return Task.CompletedTask;
         }
 
-        private async Task namespaceWatchStarter(CancellationToken stoppingToken)
+        private void namespaceWatchStarter(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Consume Scoped Service Hosted Service is working.");
             this.ReportHealthy();
@@ -90,7 +92,6 @@ namespace Sentinel.Worker.Sync.Watchers
                 var dtons = _mapper.Map<V1Namespace, NamespaceV1>(@namespace);
                 redisDic.Add(@dtons);
             }
-
         }
 
         private void OnError(Exception ex)
@@ -102,15 +103,15 @@ namespace Sentinel.Worker.Sync.Watchers
         private void OnClosed()
         {
             _logger.LogInformation("OnClosed TODO: retry the connection");
-            // var utc = DateTime.UtcNow.ToString();
-            // var howlongran = (DateTime.UtcNow - lastrestart);
+            var utc = DateTime.UtcNow.ToString();
+            var howlongran = (DateTime.UtcNow - lastrestart);
 
-            // this._logger.LogError("===on watch Connection  Closed after " + howlongran.TotalMinutes.ToString() + ":" + howlongran.Seconds.ToString() + " min:sec : re-running delay 30 seconds " + utc);
+            this._logger.LogError("===on watch Connection  Closed after " + howlongran.TotalMinutes.ToString() + ":" + howlongran.Seconds.ToString() + " min:sec : re-running delay 30 seconds " + utc);
 
-            // Task.Delay(TimeSpan.FromSeconds(30)).Wait();
-            // lastrestart = DateTime.UtcNow;
-            // this._logger.LogError("=== on watch Restarting Now.... ===" + lastrestart.ToString());
-            // executingTask = Task.Factory.StartNew(new Action(deployWatchStarter), TaskCreationOptions.LongRunning);
+            Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+            lastrestart = DateTime.UtcNow;
+            this._logger.LogError("=== on watch Restarting Now.... ===" + lastrestart.ToString());
+            executingTask = Task.Factory.StartNew(() => namespaceWatchStarter(cancellationToken), TaskCreationOptions.LongRunning);
         }
 
 
