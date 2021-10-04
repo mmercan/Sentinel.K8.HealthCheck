@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -170,8 +171,31 @@ namespace Sentinel.Redis
                     Remove(key);
                 }
             }
-
         }
+
+        public void Sync(IEnumerable<TValue> items, Func<TValue, string> keyFunc)
+        {
+            var keys = Keys;
+            foreach (var item in items)
+            {
+                //string itemKey = PropertyInfoHelpers.GetKeyValue<TKey, TValue>(item).ToJSON();
+                var key = keyFunc.Invoke(item).ToJSON();
+                if (!keys.Any(p => p.ToJSON() == key))
+                {
+                    Add(item);
+                }
+            }
+
+            foreach (var key in Keys)
+            {
+                if (!items.Any(p => PropertyInfoHelpers.GetKeyValue<TKey, TValue>(p).ToJSON() == key.ToJSON()))
+                {
+                    Remove(key);
+                }
+            }
+        }
+
+
 
 
     }

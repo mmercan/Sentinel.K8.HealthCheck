@@ -4,6 +4,7 @@ using Xunit;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Sentinel.Redis;
+using Sentinel.Tests.Helpers;
 
 namespace Sentinel.Worker.Sync.Tests
 {
@@ -15,11 +16,10 @@ namespace Sentinel.Worker.Sync.Tests
             this.output = output;
         }
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void GetSet(string constring)
+        [Fact]
+        public void GetSet()
         {
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var tt = new TestClass("Name_test", "test:id");
             var db = multi.GetDatabase();
             db.Set<TestClass>("test:id", tt);
@@ -29,12 +29,10 @@ namespace Sentinel.Worker.Sync.Tests
 
         }
 
-
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public async Task GetSetAsync(string constring)
+        [Fact]
+        public async Task GetSetAsync()
         {
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var tt = new TestClass("Name_test", "test:id");
             var db = multi.GetDatabase();
             await db.SetAsync<TestClass>("test:id", tt);
@@ -45,11 +43,10 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public async Task SetListAsyncFromKeyAttr(string constring)
+        [Fact]
+        public async Task SetListAsyncFromKeyAttr()
         {
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var tt = new TestClass("Name_test", "test:id");
             List<TestClass> lists = new List<TestClass>();
             lists.Add(tt);
@@ -58,11 +55,10 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public async Task SetListAsyncFromFunc(string constring)
+        [Fact]
+        public async Task SetListAsyncFromFunc()
         {
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var tt = new TestClass("Name_test", "test:id");
             List<TestClass> lists = new List<TestClass>();
             lists.Add(tt);

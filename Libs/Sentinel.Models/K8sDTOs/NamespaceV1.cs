@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sentinel.Models.K8sDTOs
 {
     public class NamespaceV1
     {
         public string Uid { get; set; }
+
+        [Key]
         public string Name { get; set; }
         public List<Label> Labels { get; set; }
         public DateTime CreationTime { get; set; }

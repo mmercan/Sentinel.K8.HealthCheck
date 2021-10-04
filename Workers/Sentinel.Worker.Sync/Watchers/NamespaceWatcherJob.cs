@@ -44,7 +44,6 @@ namespace Sentinel.Worker.Sync.Watchers
             //     // var scopedProcessingService = 
             //     //     scope.ServiceProvider
             //     //         .GetRequiredService<IScopedProcessingService>();
-
             //     await scopedProcessingService.DoWork(stoppingToken);
             // }
             // await Task.Delay(100);

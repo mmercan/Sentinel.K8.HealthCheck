@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using Moq;
 using Quartz;
+using Sentinel.K8s;
+using Sentinel.Tests.Helpers;
 using Sentinel.Worker.Sync.JobSchedules;
 using Sentinel.Worker.Sync.TestsHelpers;
 using Xunit;
@@ -23,7 +25,11 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
         {
             var client = KubernetesClientTestHelper.GetKubernetesClient();
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<ServiceSchedulerJob>();
-            ServiceSchedulerJob job = new ServiceSchedulerJob(client, logger);
+
+            var mapper = GetIMapperExtension.GetIMapper(cfg => { cfg.AddProfile(new K8SMapper()); });
+            var rediscon = RedisExtensions.GetRedisMultiplexer();
+
+            ServiceSchedulerJob job = new ServiceSchedulerJob(logger, client, mapper, rediscon);
 
 
 

@@ -1,29 +1,43 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Sentinel.K8s;
+using Sentinel.Models.K8sDTOs;
+using Sentinel.Redis;
+using StackExchange.Redis;
+using System.Linq;
 
 namespace Sentinel.Worker.Sync.JobSchedules
 {
     public class ServiceSchedulerJob : IJob
     {
 
-        private readonly IKubernetesClient _client;
+        private readonly IKubernetesClient _k8sclient;
         private readonly ILogger<ServiceSchedulerJob> _logger;
+        private readonly IMapper _mapper;
+        private readonly IConnectionMultiplexer _redisMultiplexer;
 
-        public ServiceSchedulerJob(IKubernetesClient client, ILogger<ServiceSchedulerJob> logger)
+        public ServiceSchedulerJob(ILogger<ServiceSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
-            _client = client;
+            _k8sclient = k8sclient;
             _logger = logger;
+            _mapper = mapper;
+            _redisMultiplexer = redisMultiplexer;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var services = await _client.ApiClient.ListServiceForAllNamespacesWithHttpMessagesAsync();
+            var services = await _k8sclient.ApiClient.ListServiceForAllNamespacesWithHttpMessagesAsync();
+            var dtoitems = _mapper.Map<IList<ServiceV1>>(services.Body.Items);
 
-            await Task.Delay(TimeSpan.FromSeconds(15));
-            _logger.LogCritical("current NS : " + _client.ToString());
+            var syncTime = DateTime.UtcNow;
+            dtoitems.ForEach(p => p.LatestSyncDateUTC = syncTime);
+
+            var redisDic = new RedisDictionary<string, ServiceV1>(_redisMultiplexer, _logger, "Services");
+            redisDic.Sync(dtoitems);
         }
     }
 }

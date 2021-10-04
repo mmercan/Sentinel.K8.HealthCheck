@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Sentinel.Redis;
+using Sentinel.Tests.Helpers;
 using StackExchange.Redis;
 using Xunit;
 using Xunit.Abstractions;
@@ -15,27 +16,25 @@ namespace Sentinel.Worker.Sync.Tests
             this.output = output;
         }
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void GetDatabase(string constring)
+        [Fact]
+        public void GetDatabase()
         {
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
         }
 
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void Add(string constring)
+        [Fact]
+        public void Add()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1);
@@ -45,16 +44,15 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public async Task AddAsync(string constring)
+        [Fact]
+        public async Task AddAsync()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             await dic.AddAsync(t1);
@@ -63,16 +61,15 @@ namespace Sentinel.Worker.Sync.Tests
 
         }
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void Remove(string constring)
+        [Fact]
+        public void Remove()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
@@ -84,16 +81,15 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void TryGetValue(string constring)
+        [Fact]
+        public void TryGetValue()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
@@ -106,16 +102,15 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void Values(string constring)
+        [Fact]
+        public void Values()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
@@ -127,16 +122,15 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void Keys(string constring)
+        [Fact]
+        public void Keys()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
@@ -146,16 +140,15 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void Key(string constring)
+        [Fact]
+        public void Key()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
@@ -167,16 +160,15 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void GetEnumerator(string constring)
+        [Fact]
+        public void GetEnumerator()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Add(t1.Id, t1);
@@ -191,9 +183,8 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void AddMultiple(string constring)
+        [Fact]
+        public void AddMultiple()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
@@ -202,7 +193,7 @@ namespace Sentinel.Worker.Sync.Tests
 
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.AddMultiple(list);
@@ -212,9 +203,8 @@ namespace Sentinel.Worker.Sync.Tests
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void Clear(string constring)
+        [Fact]
+        public void Clear()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
@@ -223,7 +213,7 @@ namespace Sentinel.Worker.Sync.Tests
 
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.Clear();
@@ -232,9 +222,8 @@ namespace Sentinel.Worker.Sync.Tests
 
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void Sync(string constring)
+        [Fact]
+        public void Sync()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
@@ -245,7 +234,7 @@ namespace Sentinel.Worker.Sync.Tests
 
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
 
             dic.AddMultiple(list1);

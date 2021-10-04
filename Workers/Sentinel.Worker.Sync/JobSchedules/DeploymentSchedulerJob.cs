@@ -35,12 +35,9 @@ namespace Sentinel.Worker.Sync.JobSchedules
         {
             var items = await _k8sclient.ApiClient.ListDeploymentForAllNamespacesAsync();
             var dtoitems = _mapper.Map<IList<DeploymentV1>>(items.Items);
-            var syncTime = DateTime.UtcNow;
 
-            foreach (var item in dtoitems)
-            {
-                item.SyncDate = syncTime;
-            }
+            var syncTime = DateTime.UtcNow;
+            dtoitems.ForEach(p => p.SyncDate = syncTime);
 
             var redisDic = new RedisDictionary<string, DeploymentV1>(redisMultiplexer, _logger, "Deployment");
             redisDic.Sync(dtoitems);

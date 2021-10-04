@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Sentinel.Models.K8sDTOs;
 using Sentinel.Redis;
+using Sentinel.Tests.Helpers;
 using StackExchange.Redis;
 using Xunit;
 using Xunit.Abstractions;
@@ -17,21 +18,19 @@ namespace Sentinel.Worker.Sync.Tests
             this.output = output;
         }
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public void GetDatabase(string constring)
+        [Fact]
+        public void GetDatabase()
         {
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
         }
 
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public async Task GetAsyncEnumerable(string constring)
+        [Fact]
+        public async Task GetAsyncEnumerable()
         {
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             var items = store.GetAsyncEnumerable();
             await foreach (var item in items)
@@ -40,11 +39,10 @@ namespace Sentinel.Worker.Sync.Tests
             }
         }
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public async Task GetSet(string constring)
+        [Fact]
+        public async Task GetSet()
         {
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
 
@@ -55,11 +53,10 @@ namespace Sentinel.Worker.Sync.Tests
             Assert.NotNull(ttt);
         }
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public async Task GetSetAsync(string constring)
+        [Fact]
+        public async Task GetSetAsync()
         {
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
 
@@ -71,11 +68,10 @@ namespace Sentinel.Worker.Sync.Tests
 
         }
 
-        [Theory]
-        [InlineData("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc")]
-        public async Task GetListAsync(string constring)
+        [Fact]
+        public async Task GetListAsync()
         {
-            var multi = ConnectionMultiplexer.Connect(constring);
+            var multi = RedisExtensions.GetRedisMultiplexer();
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
 

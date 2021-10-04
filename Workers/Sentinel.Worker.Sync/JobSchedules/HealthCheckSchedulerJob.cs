@@ -29,17 +29,10 @@ namespace Sentinel.Worker.Sync.JobSchedules
             var checks = await _k8sclient.List<HealthCheckResource>();
 
             var syncTime = DateTime.UtcNow;
-
-            foreach (var item in checks)
-            {
-                item.SyncDate = syncTime;
-            }
-
-
-            var str = checks.ToJSON();
+            checks.ForEach(p => p.SyncDate = syncTime);
 
             var redisDic = new RedisDictionary<string, HealthCheckResource>(_redisMultiplexer, _logger, "HealthChecks");
-            redisDic.Sync(checks);
+            redisDic.Sync(checks, (ch) => { return ch.Metadata.Name + "." + ch.Metadata.Namespace(); });
         }
     }
 }
