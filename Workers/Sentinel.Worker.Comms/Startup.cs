@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using EasyNetQ;
+using StackExchange.Redis;
 
 namespace Sentinel.Worker.Comms
 {
@@ -28,6 +30,17 @@ namespace Sentinel.Worker.Comms
 
             services.AddSingleton<IServiceCollection>(services);
             services.AddSingleton<IConfiguration>(Configuration);
+
+
+            services.AddSingleton<EasyNetQ.IBus>((ctx) =>
+            {
+                return RabbitHutch.CreateBus(Configuration["RabbitMQConnection"]);
+            });
+
+            services.AddSingleton<IConnectionMultiplexer>((ctx) =>
+            {
+                return ConnectionMultiplexer.Connect(Configuration["RedisConnection"]);
+            });
 
         }
 
