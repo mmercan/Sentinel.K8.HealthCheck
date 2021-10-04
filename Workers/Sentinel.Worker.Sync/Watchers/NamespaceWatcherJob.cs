@@ -1,43 +1,68 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using k8s;
 using k8s.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sentinel.Common;
 using Sentinel.K8s;
+using Sentinel.Models.K8sDTOs;
+using Sentinel.Redis;
+using StackExchange.Redis;
 
 namespace Sentinel.Worker.Sync.Watchers
 {
     public class NamespaceWatcherJob : BackgroundServiceWithHealthCheck
     {
-        private readonly IKubernetesClient _client;
-        public IServiceProvider Services { get; }
+        private readonly IKubernetesClient _k8sService;
+        private readonly IDatabase redisDb;
+        private readonly IMapper _mapper;
+        private readonly RedisDictionary<string, NamespaceV1> redisDic;
+        private Task executingTask;
 
-        public NamespaceWatcherJob(IServiceProvider serviceProvider, ILogger<NamespaceWatcherJob> logger,
-        IServiceCollection services, IKubernetesClient client) : base(serviceProvider, logger, services)
+        public NamespaceWatcherJob(
+            ILogger<NamespaceWatcherJob> logger,
+            IKubernetesClient k8sService,
+            IConnectionMultiplexer redisMultiplexer,
+            IMapper mapper,
+            IOptions<HealthCheckServiceOptions> hcoptions) : base(logger, hcoptions)
         {
-            _client = client;
+            _k8sService = k8sService;
+            redisDb = redisMultiplexer.GetDatabase();
+            _mapper = mapper;
+            redisDic = new RedisDictionary<string, NamespaceV1>(redisMultiplexer, _logger, "Namespaces");
         }
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Consume Scoped Service Hosted Service running.");
-
-            await DoWork(stoppingToken);
+            //executingTask = Task.Factory.StartNew(new Action(namespaceWatchStarter), TaskCreationOptions.LongRunning);
+            executingTask = Task.Factory.StartNew(async () => await namespaceWatchStarter(stoppingToken), TaskCreationOptions.LongRunning);
+            if (executingTask.IsCompleted)
+            {
+                return executingTask;
+            }
+            return Task.CompletedTask;
         }
 
-        private async Task DoWork(CancellationToken stoppingToken)
+        private async Task namespaceWatchStarter(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Consume Scoped Service Hosted Service is working.");
+            this.ReportHealthy();
 
-
-            await _client.Watch<k8s.Models.V1Namespace>(timeout: TimeSpan.FromMinutes(3),
+            using (_k8sService.Watch<k8s.Models.V1Namespace>(timeout: TimeSpan.FromMinutes(3),
             onEvent: OnEvent,
             onError: OnError,
             onClose: OnClosed,
-            cancellationToken: stoppingToken);
+            cancellationToken: stoppingToken))
+            {
+                this._logger.LogCritical("=== on watch Done ===");
+                var ctrlc = new ManualResetEventSlim(false);
+                ctrlc.Wait();
+            };
 
             // using (var scope = Services.CreateScope())
             // {
@@ -53,32 +78,34 @@ namespace Sentinel.Worker.Sync.Watchers
         private void OnEvent(WatchEventType arg1, V1Namespace @namespace)
         {
             _logger.LogInformation("OnEvent" + @namespace.Name());
-            // throw new NotImplementedException();
-        }
+            this.ReportHealthy("received new namespace" + @namespace.Name());
 
-        // private void OnEvent(WatchEventType type, V1Deployment item)
-        // {
-        //     this._logger.LogCritical("==on watch event==");
-        //     this._logger.LogCritical(type.ToString());
-        //     this._logger.LogCritical(item.Metadata.Name);
-        //     this._logger.LogCritical("===on watch event===");
-        //     //SavetoCache(item).Wait();
-        // }
+            if (arg1 == WatchEventType.Added || arg1 == WatchEventType.Modified)
+            {
+                var dtons = _mapper.Map<V1Namespace, NamespaceV1>(@namespace);
+                redisDic.Add(@dtons);
+            }
+            else if (arg1 == WatchEventType.Deleted)
+            {
+                var dtons = _mapper.Map<V1Namespace, NamespaceV1>(@namespace);
+                redisDic.Add(@dtons);
+            }
+
+        }
 
         private void OnError(Exception ex)
         {
             this._logger.LogError("===on watch Exception : " + ex.Message);
+            this.ReportUnhealthy("Error " + ex.Message);
         }
 
         private void OnClosed()
         {
-
             _logger.LogInformation("OnClosed TODO: retry the connection");
             // var utc = DateTime.UtcNow.ToString();
             // var howlongran = (DateTime.UtcNow - lastrestart);
 
             // this._logger.LogError("===on watch Connection  Closed after " + howlongran.TotalMinutes.ToString() + ":" + howlongran.Seconds.ToString() + " min:sec : re-running delay 30 seconds " + utc);
-
 
             // Task.Delay(TimeSpan.FromSeconds(30)).Wait();
             // lastrestart = DateTime.UtcNow;

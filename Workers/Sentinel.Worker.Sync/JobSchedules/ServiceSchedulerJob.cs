@@ -14,7 +14,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
 {
     public class ServiceSchedulerJob : IJob
     {
-
         private readonly IKubernetesClient _k8sclient;
         private readonly ILogger<ServiceSchedulerJob> _logger;
         private readonly IMapper _mapper;

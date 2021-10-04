@@ -29,6 +29,7 @@ using Microsoft.Extensions.Logging;
 using Sentinel.Worker.Sync.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Turquoise.HealthChecks.Common;
+using Sentinel.Worker.Sync.Watchers;
 
 namespace Sentinel.Worker.Sync
 {
@@ -154,6 +155,12 @@ namespace Sentinel.Worker.Sync
             {
                 return ConnectionMultiplexer.Connect(Configuration["RedisConnection"]);
             });
+
+            if (Configuration["Watchers:NamespaceWatcher:enabled"] != null
+            && Configuration["Watchers:NamespaceWatcher:enabled"] == "true")
+            {
+                services.AddHostedService<NamespaceWatcherJob>();
+            }
 
         }
 

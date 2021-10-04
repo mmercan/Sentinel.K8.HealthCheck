@@ -3,57 +3,33 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Sentinel.Common
 {
     public abstract class BackgroundServiceWithHealthCheck : BackgroundService
     {
-        protected readonly IServiceProvider _serviceProvider;
+        protected DateTime lastrestart = DateTime.UtcNow;
         protected readonly ILogger<BackgroundServiceWithHealthCheck> _logger;
-        protected readonly IServiceCollection _services;
-
-        public WorkerWitness Witness { get; set; }
-
-        public BackgroundServiceWithHealthCheck(IServiceProvider serviceProvider, ILogger<BackgroundServiceWithHealthCheck> logger, IServiceCollection services)
+        private readonly BackgroundServiceHealthCheck bgHealthCheck;
+        protected BackgroundServiceWithHealthCheck(ILogger<BackgroundServiceWithHealthCheck> logger, IOptions<HealthCheckServiceOptions> hcoptions)
         {
-            _serviceProvider = serviceProvider;
             _logger = logger;
-            _services = services;
-            Witness = new WorkerWitness();
-
-
-            services.Configure<HealthCheckServiceOptions>(options =>
+            if (hcoptions.Value != null)
             {
                 var name = this.GetType().ToString();
-                var registration = new HealthCheckRegistration(name, new BackgroundServiceHealthCheck(this), null, null);
-                options.Registrations.Add(registration);
-            });
-
+                bgHealthCheck = new BackgroundServiceHealthCheck();
+                var registration = new HealthCheckRegistration(name, bgHealthCheck, null, null);
+                hcoptions.Value.Registrations.Add(registration);
+                ReportHealthy(name + " initialized");
+            }
 
         }
+
+        public void ReportHealthy(string message = null) => bgHealthCheck.ReportHealthy(message);
+        public void ReportUnhealthy(string message = null) => bgHealthCheck.ReportUnhealthy(message);
+        public void ReportDegraded(string message = null) => bgHealthCheck.ReportDegraded(message);
 
     }
 
-
-
-    public class WorkerWitness
-    {
-        private DateTime _lastProcessTime;
-        private int _count;
-
-        public DateTime GetLastProcessTime()
-        {
-            return _lastProcessTime;
-        }
-
-        public int GetCount()
-        {
-            return _count;
-        }
-        public void SetProcessTime()
-        {
-            _lastProcessTime = DateTime.UtcNow;
-            _count++;
-        }
-    }
 }
