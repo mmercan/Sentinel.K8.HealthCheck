@@ -51,3 +51,11 @@ jobs:
       - name: Build Redis Docker Image
         run: |
           docker-compose --file ./Containers/Redis/docker-compose.yml --log-level DEBUG build
+
+      - name: tag Images
+        run: |
+          images=$(cat ./Containers/Redis/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"') \
+          for image in $images \
+          do \
+            docker tag "${image}":"${{ env.GITHUB_RUN_ID }}" "${image}":latest \
+          done
