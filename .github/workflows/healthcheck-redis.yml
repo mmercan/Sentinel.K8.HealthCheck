@@ -47,3 +47,7 @@ jobs:
       - name: View Docker Compose config
         run: |
           docker-compose --file ./Containers/Redis/docker-compose.yml --log-level DEBUG config
+
+      - name: Build Redis Docker Image
+        run: |
+          docker-compose --file ./Containers/Redis/docker-compose.yml --log-level DEBUG build
