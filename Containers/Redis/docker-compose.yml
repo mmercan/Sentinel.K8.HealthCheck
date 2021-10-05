@@ -1,0 +1,11 @@
+version: "3.4"
+
+services:
+  healthcheck-db-redis:
+    image: mmercan/healthcheck-redis:${TAGVersion}-prod-linux
+    build:
+      context: ./
+      dockerfile: dockerfile
+    hostname: redis
+    ports:
+      - "6379:6379"

@@ -1,0 +1,38 @@
+{{- $name := include "healthcheck-redis.fullname" . -}}
+{{- $cfgname := printf "%s-%s" $name "config" -}}
+{{- $secretname := printf "%s-%s" $name "secret" -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "healthcheck-redis.fullname" . }}
+  labels:
+    {{- include "healthcheck-redis.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      {{- include "healthcheck-redis.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "healthcheck-redis.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "healthcheck-redis.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 6379
+              protocol: TCP
+          volumeMounts:
+          - mountPath: /redis-master
+            name: config
+      volumes:
+        - name: config
+          configMap:
+            name: {{$cfgname}}
+            items:
+            - key: redis-config
+              path: redis.conf

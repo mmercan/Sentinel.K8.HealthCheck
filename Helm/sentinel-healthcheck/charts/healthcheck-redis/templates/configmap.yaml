@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ include "healthcheck-redis.fullname" . }}-config"
+data:
+ redis-config: "databases 16\nmaxclients 2000\nrequirepass \"{{.Values.password}}\"\n\n"
+ requirepass: {{.Values.password}}
+ servicename: {{ include "healthcheck-redis.fullname" . }}
+ {{- if .Values.configmap -}}
+{{- range $key, $value := .Values.configmap }}
+ {{ $key }}: {{ default "" $value | b64enc | quote }}
+{{- end -}}
+{{- end }}
+
+
