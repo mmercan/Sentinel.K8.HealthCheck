@@ -61,6 +61,7 @@ jobs:
             docker image push --all-tags ${image}
           done
   deploy-dev:
+    needs: build
     runs-on: ubuntu-latest
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
