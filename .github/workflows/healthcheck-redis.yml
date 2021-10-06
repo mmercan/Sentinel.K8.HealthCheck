@@ -118,3 +118,18 @@ jobs:
           --set branch=master \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
+
+      - name: output env vars
+        run: |
+          echo   $ARTIFACT_PATH
+          echo   $IMAGE_NAME
+          echo   $chartName
+          echo   $namespace
+          echo   $releaseName
+          echo   $pipelines_pipeline
+          echo   $pipelines_run
+          echo   $pipelines_org
+          echo   $pipelines_repo
+          echo   $pipelines_gitsha
+          echo   $pipelines_branch
+          echo   $pipelines_runuri
