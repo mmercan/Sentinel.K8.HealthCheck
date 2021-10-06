@@ -69,13 +69,13 @@ jobs:
       chartName: "healthcheck-redis"
       namespace: "sentinel-healthcheck"
       releaseName: "healthcheck-redis-dev"
-      #    pipelines_pipeline: '"$(Build.DefinitionName)"'
-      #    pipelines_run: '"$(Build.BuildNumber)"'
-      #    pipelines_pipelineId: '"$(System.DefinitionId)"'
-      #    pipelines_project: '"$(System.TeamProject)"'
-      #    pipelines_org: '"$(System.TeamFoundationCollectionUri)"'
-      #    pipelines_jobName: '"$(Agent.JobName)"'
-      #    pipelines_runuri: '"$(pipelines_org)$(pipelines_project)/_build/results?buildId=$(Build.BuildId)"'
+      pipelines_pipeline: '"$GITHUB_WORKFLOW"'
+      pipelines_run: '"$GITHUB_RUN_ID"'
+      pipelines_org: '"$GITHUB_SERVER_URL"'
+      pipelines_repo: $GITHUB_REPOSITORY
+      pipelines_gitsha: $GITHUB_SHA
+      pipelines_branch: $GITHUB_REF
+      pipelines_runuri: '"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

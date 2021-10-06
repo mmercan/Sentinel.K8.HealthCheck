@@ -60,3 +60,12 @@ affinity: {}
 password: pn3FHuee2kxFzQmm
 configmap:
   databases: "16"
+
+pipelines:
+  run: "run"
+  pipeline: "pipeline"
+  pipelineId: "pipelineId"
+  jobName: "jobName"
+  runuri: "runuri url url * (kk)-"
+  project: "project * (kk)-"
+  org: "org"
