@@ -66,6 +66,16 @@ jobs:
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
+      chartName: "healthcheck-redis"
+      namespace: "sentinel-healthcheck"
+      releaseName: "healthcheck-redis-dev"
+      #    pipelines_pipeline: '"$(Build.DefinitionName)"'
+      #    pipelines_run: '"$(Build.BuildNumber)"'
+      #    pipelines_pipelineId: '"$(System.DefinitionId)"'
+      #    pipelines_project: '"$(System.TeamProject)"'
+      #    pipelines_org: '"$(System.TeamFoundationCollectionUri)"'
+      #    pipelines_jobName: '"$(Agent.JobName)"'
+      #    pipelines_runuri: '"$(pipelines_org)$(pipelines_project)/_build/results?buildId=$(Build.BuildId)"'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -92,6 +102,10 @@ jobs:
         run: |
           helm version
 
-      - name: Check Helm Version
+      - name: Helm Package
         run: |
-          helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/healthcheck-redis
+          helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartName
+
+      - name: Validate Helm Package
+        run: |
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"'
