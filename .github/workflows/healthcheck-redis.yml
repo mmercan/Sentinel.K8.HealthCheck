@@ -75,7 +75,7 @@ jobs:
       pipelines_repo: ${{ github.repository }}
       pipelines_gitsha: ${{ github.sha }}
       pipelines_branch: ${{ github.ref }}
-      pipelines_runuri: '"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"'
+      pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
