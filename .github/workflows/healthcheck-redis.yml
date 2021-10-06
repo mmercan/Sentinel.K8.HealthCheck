@@ -108,4 +108,4 @@ jobs:
 
       - name: Validate Helm Package
         run: |
-          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"'
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
