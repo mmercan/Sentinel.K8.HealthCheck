@@ -52,10 +52,6 @@ jobs:
         run: |
           docker-compose --file ./Containers/Redis/docker-compose.yml --log-level DEBUG build
 
-      - name: list Images
-        run: |
-          docker images
-
       - name: tag Images
         run: |
           images=$(cat ./Containers/Redis/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
@@ -63,4 +59,16 @@ jobs:
           do 
             docker tag "${image}":"01-prod-linux" "${image}":"$GITHUB_RUN_ID"
             docker tag "${image}":"01-prod-linux" "${image}":"latest"
+          done
+
+      - name: list Images
+        run: |
+          docker images
+
+      - name: Push Images
+        run: |
+          images=$(cat ./Containers/Redis/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
+          for image in $images 
+          do 
+            docker image push --all-tags ${image}
           done
