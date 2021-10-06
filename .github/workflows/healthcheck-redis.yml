@@ -52,14 +52,14 @@ jobs:
         run: |
           docker-compose --file ./Containers/Redis/docker-compose.yml --log-level DEBUG build
 
-      - name: tag Images
-        run: |
-          IMAGES=$(cat ./Containers/Redis/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
-          for image in $IMAGES 
-          do 
-            docker tag "${image}":"$GITHUB_RUN_ID" "${image}":latest 
-          done
-
       - name: list Images
         run: |
           docker images
+
+      - name: tag Images
+        run: |
+          images=$(cat ./Containers/Redis/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
+          for image in $images 
+          do 
+           echo docker tag "${image}":"$GITHUB_RUN_ID" "${image}":latest 
+          done
