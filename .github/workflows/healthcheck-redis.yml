@@ -109,3 +109,12 @@ jobs:
       - name: Validate Helm Package
         run: |
           helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
+
+      - name: Helm upgrade
+        run: |
+          helm upgrade --namespace $namespace --install \
+          --values ./Helm/values/$chartName/dev-values.yaml \
+          --set image.tag=$GITHUB_RUN_ID \
+          --set branch=master \
+          --wait $releaseName \
+          /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
