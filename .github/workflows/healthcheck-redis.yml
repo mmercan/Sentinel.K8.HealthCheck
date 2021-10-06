@@ -69,12 +69,12 @@ jobs:
       chartName: "healthcheck-redis"
       namespace: "sentinel-healthcheck"
       releaseName: "healthcheck-redis-dev"
-      pipelines_pipeline: '"$GITHUB_WORKFLOW"'
-      pipelines_run: '"$GITHUB_RUN_ID"'
-      pipelines_org: '"$GITHUB_SERVER_URL"'
-      pipelines_repo: $GITHUB_REPOSITORY
-      pipelines_gitsha: $GITHUB_SHA
-      pipelines_branch: $GITHUB_REF
+      pipelines_pipeline: '"${{ github.WORKFLOW }}"'
+      pipelines_run: ${{ github.RUN_ID }}
+      pipelines_org: '"${{ github.SERVER_URL }}"'
+      pipelines_repo: ${{ github.repository }}
+      pipelines_gitsha: ${{ github.sha }}
+      pipelines_branch: ${{ github.ref }}
       pipelines_runuri: '"$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"'
     steps:
       - name: Checkout repository
@@ -121,15 +121,15 @@ jobs:
 
       - name: output env vars
         run: |
-          echo   $ARTIFACT_PATH
-          echo   $IMAGE_NAME
-          echo   $chartName
-          echo   $namespace
-          echo   $releaseName
-          echo   $pipelines_pipeline
-          echo   $pipelines_run
-          echo   $pipelines_org
-          echo   $pipelines_repo
-          echo   $pipelines_gitsha
-          echo   $pipelines_branch
-          echo   $pipelines_runuri
+          echo  " $ARTIFACT_PATH "
+          echo  " $IMAGE_NAME "
+          echo  " $chartName "
+          echo  " $namespace "
+          echo  " $releaseName "
+          echo  " $pipelines_pipeline "
+          echo  " $pipelines_run "
+          echo  " $pipelines_org "
+          echo  " $pipelines_repo "
+          echo  " $pipelines_gitsha "
+          echo  " $pipelines_branch "
+          echo  " $pipelines_runuri "
