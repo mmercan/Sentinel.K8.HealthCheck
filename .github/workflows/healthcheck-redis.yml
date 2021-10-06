@@ -88,6 +88,10 @@ jobs:
           cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
           ls /home/runner/work/_temp
 
-      - name: View Docker Compose config
+      - name: Check Helm Version
         run: |
           helm version
+
+      - name: Check Helm Version
+        run: |
+          helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/healthcheck-redis
