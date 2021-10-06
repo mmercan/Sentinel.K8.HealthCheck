@@ -59,3 +59,7 @@ jobs:
           do \
             docker tag "${image}":"$GITHUB_RUN_ID" "${image}":latest \
           done
+
+      - name: list Images
+        run: |
+          docker images
