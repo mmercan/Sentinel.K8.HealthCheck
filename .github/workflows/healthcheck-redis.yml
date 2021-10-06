@@ -57,5 +57,5 @@ jobs:
           images=$(cat ./Containers/Redis/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"') \
           for image in $images \
           do \
-            docker tag "${image}":"${{ env.GITHUB_RUN_ID }}" "${image}":latest \
+            docker tag "${image}":"$GITHUB_RUN_ID" "${image}":latest \
           done
