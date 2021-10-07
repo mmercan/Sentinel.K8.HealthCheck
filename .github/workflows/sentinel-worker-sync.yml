@@ -22,7 +22,7 @@ jobs:
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
-      dockercomposeLoc: Workers/Sentinel.Worker.Sync/Redis/docker-compose.yml
+      dockercomposeLoc: Workers/Sentinel.Worker.Sync/docker-compose.yml
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
