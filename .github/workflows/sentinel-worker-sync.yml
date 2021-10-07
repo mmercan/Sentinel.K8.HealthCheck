@@ -1,4 +1,4 @@
-name: Healthcheck Redis
+name: Sentinel Worker Sync
 
 on:
   push:
