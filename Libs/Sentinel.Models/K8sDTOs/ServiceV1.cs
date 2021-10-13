@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sentinel.Models.K8sDTOs
 {
     public class ServiceV1
     {
+        [Key]
         public string NameandNamespace { get { return Name + "." + Namespace; } }
         public string Uid { get; set; }
 
