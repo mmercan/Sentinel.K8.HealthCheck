@@ -75,6 +75,7 @@ jobs:
       pipelines_repo: ${{ github.repository }}
       pipelines_gitsha: ${{ github.sha }}
       pipelines_branch: ${{ github.ref }}
+      pipelines_job: ${{ github.job }}
       pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
     steps:
       - name: Checkout repository
@@ -113,6 +114,7 @@ jobs:
       - name: Helm upgrade
         run: |
           helm upgrade --namespace $namespace --install \
+          --history-max 3 \
           --values ./Helm/values/$chartName/dev-values.yaml \
           --set image.tag=$GITHUB_RUN_ID \
           --set branch=master \
