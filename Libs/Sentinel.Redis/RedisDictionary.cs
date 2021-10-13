@@ -38,6 +38,12 @@ namespace Sentinel.Redis
             database.HashSet(_redisKey, Serialize(key), Serialize(value));
         }
 
+        public void Add(string key, TValue value)
+        {
+            database.HashSet(_redisKey, key, Serialize(value));
+        }
+
+
 
         public async Task AddAsync(TValue value) => await AddAsync(PropertyInfoHelpers.GetKeyValue<TKey, TValue>(value), value);
         public async Task AddAsync(TKey key, TValue value)
@@ -57,6 +63,7 @@ namespace Sentinel.Redis
         {
             return database.HashDelete(_redisKey, Serialize(key));
         }
+
         public bool TryGetValue(TKey key, out TValue value)
         {
             var redisValue = database.HashGet(_redisKey, Serialize(key));
@@ -182,13 +189,13 @@ namespace Sentinel.Redis
                 var key = keyFunc.Invoke(item).ToJSON();
                 if (!keys.Any(p => p.ToJSON() == key))
                 {
-                    Add(item);
+                    Add(key, item);
                 }
             }
 
             foreach (var key in Keys)
             {
-                if (!items.Any(p => PropertyInfoHelpers.GetKeyValue<TKey, TValue>(p).ToJSON() == key.ToJSON()))
+                if (!items.Any(p => keyFunc.Invoke(p).ToJSON() == key.ToJSON()))
                 {
                     Remove(key);
                 }
