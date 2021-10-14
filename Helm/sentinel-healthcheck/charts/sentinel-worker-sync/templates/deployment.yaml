@@ -9,6 +9,7 @@ metadata:
     {{- include "sentinel-worker-sync.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       {{- include "sentinel-worker-sync.selectorLabels" . | nindent 6 }}
