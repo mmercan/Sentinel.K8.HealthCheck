@@ -21,14 +21,18 @@ namespace Sentinel.Redis
             Logger = logger;
             database = multiplexer.GetDatabase();
             _logger = logger;
+
         }
 
-        private static string Serialize(object obj)
+        private string Serialize(object obj)
         {
+            _logger.LogWarning("Serialize :");
             return JsonConvert.SerializeObject(obj);
         }
-        private static T Deserialize<T>(string serialized)
+        private T Deserialize<T>(string serialized)
         {
+
+            _logger.LogWarning("Deserialize Func :" + serialized);
             return JsonConvert.DeserializeObject<T>(serialized);
         }
 
@@ -40,7 +44,7 @@ namespace Sentinel.Redis
 
         public void Add(string key, TValue value)
         {
-            database.HashSet(_redisKey, key, Serialize(value));
+            database.HashSet(_redisKey, Serialize(key), Serialize(value));
         }
 
 
@@ -91,7 +95,13 @@ namespace Sentinel.Redis
         }
         private ICollection<TKey> getKeys()
         {
-            return new Collection<TKey>(database.HashKeys(_redisKey).Select(h => Deserialize<TKey>(h.ToString())).ToList());
+            return new Collection<TKey>(database.HashKeys(_redisKey).Select(
+                h =>
+                {
+                    return Deserialize<TKey>(h);
+                }
+
+                ).ToList());
         }
 
         public TValue this[TKey key]

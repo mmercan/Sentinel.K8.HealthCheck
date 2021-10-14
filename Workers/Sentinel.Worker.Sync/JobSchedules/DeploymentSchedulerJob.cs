@@ -41,6 +41,9 @@ namespace Sentinel.Worker.Sync.JobSchedules
 
             var redisDic = new RedisDictionary<string, DeploymentV1>(redisMultiplexer, _logger, "Deployment");
             redisDic.Sync(dtoitems);
+
+
+            _logger.LogInformation(dtoitems.Count().ToString() + " Deployments have been synced");
         }
     }
 }

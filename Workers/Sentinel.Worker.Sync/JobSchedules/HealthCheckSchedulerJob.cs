@@ -33,6 +33,9 @@ namespace Sentinel.Worker.Sync.JobSchedules
 
             var redisDic = new RedisDictionary<string, HealthCheckResource>(_redisMultiplexer, _logger, "HealthChecks");
             redisDic.Sync(checks, (ch) => { return ch.Metadata.Name + "." + ch.Metadata.Namespace(); });
+
+
+            _logger.LogInformation(checks.Count().ToString() + " HealthChecks have been synced");
         }
     }
 }

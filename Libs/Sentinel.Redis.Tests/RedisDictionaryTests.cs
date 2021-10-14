@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Sentinel.Redis;
 using Sentinel.Tests.Helpers;
@@ -21,7 +22,7 @@ namespace Sentinel.Worker.Sync.Tests
         {
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-1");
         }
 
 
@@ -35,7 +36,7 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-2");
 
             dic.Add(t1);
             var contain = dic.ContainsKey(t1.Id);
@@ -53,7 +54,7 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-3");
 
             await dic.AddAsync(t1);
             var contain = dic.ContainsKey(t1.Id);
@@ -70,7 +71,7 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-4");
 
             dic.Add(t1.Id, t1);
             var contain = dic.ContainsKey(t1.Id);
@@ -90,7 +91,7 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-5");
 
             dic.Add(t1.Id, t1);
             var contain = dic.ContainsKey(t1.Id);
@@ -111,7 +112,7 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-6");
 
             dic.Add(t1.Id, t1);
             var contain = dic.ContainsKey(t1.Id);
@@ -128,12 +129,13 @@ namespace Sentinel.Worker.Sync.Tests
             var t1 = new TestClass("Name_T1", "test:id1");
             var t2 = new TestClass("Name_T2", "test:id2");
             var t3 = new TestClass("Name_T3", "test:id3");
+            List<TestClass> list = new List<TestClass> { t1, t2, t3 };
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-7");
 
-            dic.Add(t1.Id, t1);
+            dic.AddMultiple(list);
 
             var vals = dic.Keys;
             Assert.NotEmpty(vals);
@@ -149,7 +151,7 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-8");
 
             dic.Add(t1.Id, t1);
             var contain = dic.ContainsKey(t1);
@@ -169,15 +171,15 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-9");
 
-            dic.Add(t1.Id, t1);
+            dic.Add(t1.Id.ToJSON(), t1);
 
             foreach (var item in dic)
             {
                 output.WriteLine(item.Value.Name);
             }
-            var val = dic[t1.Id];
+            var val = dic[t1.Id].ToJSON();
 
             Assert.NotNull(val);
         }
@@ -194,7 +196,7 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-10");
 
             dic.AddMultiple(list);
             var val = dic[t1.Id];
@@ -214,7 +216,7 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-11");
 
             dic.Clear();
             var isreadonly = dic.IsReadOnly;
@@ -235,7 +237,7 @@ namespace Sentinel.Worker.Sync.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
             var multi = RedisExtensions.GetRedisMultiplexer();
-            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests");
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-12");
 
             dic.AddMultiple(list1);
             dic.Sync(list2);

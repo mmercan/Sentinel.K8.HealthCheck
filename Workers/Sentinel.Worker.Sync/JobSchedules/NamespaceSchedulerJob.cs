@@ -38,6 +38,8 @@ namespace Sentinel.Worker.Sync.JobSchedules
 
             var redisDic = new RedisDictionary<string, NamespaceV1>(_redisMultiplexer, _logger, "Namespaces");
             redisDic.Sync(dtoitems);
+
+            _logger.LogInformation(dtoitems.Count().ToString() + " Namespaces have been synced");
         }
     }
 }
