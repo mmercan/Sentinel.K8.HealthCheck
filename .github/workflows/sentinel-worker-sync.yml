@@ -117,7 +117,7 @@ jobs:
       - name: Helm upgrade
         run: |
           helm upgrade --namespace $namespace --install \
-          --history-max 3 \
+          --history-max 1 \
           --values ./Helm/values/$chartName/dev-values.yaml \
           --set image.tag=$GITHUB_RUN_ID \
           --set branch=master \

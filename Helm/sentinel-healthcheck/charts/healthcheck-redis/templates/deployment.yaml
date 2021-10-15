@@ -9,7 +9,7 @@ metadata:
     {{- include "healthcheck-redis.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  revisionHistoryLimit: 1
+  revisionHistoryLimit: 0
   selector:
     matchLabels:
       {{- include "healthcheck-redis.selectorLabels" . | nindent 6 }}
