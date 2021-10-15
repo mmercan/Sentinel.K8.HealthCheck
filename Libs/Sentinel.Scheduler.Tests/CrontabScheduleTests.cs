@@ -65,5 +65,20 @@ namespace Sentinel.Scheduler.Tests
             var nextOccurrences = schedule.GetNextOccurrences(DateTime.Now, DateTime.Now.AddHours(3));
             Assert.NotNull(when);
         }
+
+
+
+        [Fact]
+        public void CrontabScheduleShouldHandleLastDayofYear()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");
+            var dt = new DateTime(2021, 12, 31, 23, 58, 0);
+            var when = schedule.GetNextOccurrence(dt, dt.AddHours(2));
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+
+            var nextOccurrences = schedule.GetNextOccurrences(dt, dt.AddHours(3));
+            Assert.NotNull(when);
+        }
     }
 }
