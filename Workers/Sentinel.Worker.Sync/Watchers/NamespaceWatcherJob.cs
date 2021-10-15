@@ -34,7 +34,7 @@ namespace Sentinel.Worker.Sync.Watchers
         {
             _k8sService = k8sService;
             _mapper = mapper;
-            redisDic = new RedisDictionary<string, NamespaceV1>(redisMultiplexer, _logger, "Namespaces");
+            redisDic = new RedisDictionary<string, NamespaceV1>(redisMultiplexer, _logger, "NamespacesWatch");
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
