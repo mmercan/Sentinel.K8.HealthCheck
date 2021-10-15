@@ -24,15 +24,12 @@ namespace Sentinel.Redis
 
         }
 
-        private string Serialize(object obj)
+        private static string Serialize(object obj)
         {
-            _logger.LogWarning("Serialize :");
             return JsonConvert.SerializeObject(obj);
         }
-        private T Deserialize<T>(string serialized)
+        private static T Deserialize<T>(string serialized)
         {
-
-            _logger.LogWarning("Deserialize Func :" + serialized);
             return JsonConvert.DeserializeObject<T>(serialized);
         }
 
@@ -96,12 +93,7 @@ namespace Sentinel.Redis
         private ICollection<TKey> getKeys()
         {
             return new Collection<TKey>(database.HashKeys(_redisKey).Select(
-                h =>
-                {
-                    return Deserialize<TKey>(h);
-                }
-
-                ).ToList());
+                h => Deserialize<TKey>(h)).ToList());
         }
 
         public TValue this[TKey key]
