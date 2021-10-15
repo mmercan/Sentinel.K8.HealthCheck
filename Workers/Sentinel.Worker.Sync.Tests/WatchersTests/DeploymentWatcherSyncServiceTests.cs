@@ -26,7 +26,7 @@ namespace Sentinel.Worker.Sync.Tests.WatchersTests
         {
 
             var client = KubernetesClientTestHelper.GetKubernetesClient();
-            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<DeploymentWatcherSyncService>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<DeploymentWatcherJob>();
 
             var config = new MapperConfiguration(cfg =>
               {
@@ -42,7 +42,7 @@ namespace Sentinel.Worker.Sync.Tests.WatchersTests
 
             var hcoptions = Options.Create(new HealthCheckServiceOptions());
 
-            DeploymentWatcherSyncService service = new DeploymentWatcherSyncService(logger, client, rediscon, maper, hcoptions);
+            DeploymentWatcherJob service = new DeploymentWatcherJob(logger, client, rediscon, maper, hcoptions);
             service.StartAsync(source.Token);
         }
 
