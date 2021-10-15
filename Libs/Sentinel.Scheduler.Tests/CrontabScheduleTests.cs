@@ -17,6 +17,21 @@ namespace Sentinel.Scheduler.Tests
 
 
         [Fact]
+        public void CrontabScheduleShouldThrowIfpatternNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => CrontabSchedule.Parse(null));
+        }
+
+
+        [Fact]
+        public void CrontabScheduleShouldThrowIfpatternNotCorrect()
+        {
+            // This doesn;t work with seconds.
+            Assert.Throws<FormatException>(() => CrontabSchedule.Parse("* * * * * *"));
+        }
+
+
+        [Fact]
         public void CrontabScheduleShouldGiveNextTrigger()
         {
             CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");
@@ -36,7 +51,6 @@ namespace Sentinel.Scheduler.Tests
             var whendate = when.ToShortDateString();
             Assert.NotNull(when);
         }
-
 
 
         [Fact]
@@ -78,6 +92,20 @@ namespace Sentinel.Scheduler.Tests
             var whendate = when.ToShortDateString();
 
             var nextOccurrences = schedule.GetNextOccurrences(dt, dt.AddHours(3));
+            Assert.NotNull(when);
+        }
+
+
+        [Fact]
+        public void CrontabScheduleShouldHandleSameDatetoend()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");
+            var dt = new DateTime(2021, 12, 31, 23, 58, 0);
+            var when = schedule.GetNextOccurrence(dt, dt);
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+
+            var nextOccurrences = schedule.GetNextOccurrences(dt, dt);
             Assert.NotNull(when);
         }
     }
