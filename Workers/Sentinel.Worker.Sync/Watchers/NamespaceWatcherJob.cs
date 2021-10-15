@@ -53,7 +53,7 @@ namespace Sentinel.Worker.Sync.Watchers
             _logger.LogInformation("Consume Scoped Service Hosted Service is working.");
             this.ReportHealthy();
 
-            using (_k8sService.Watch<k8s.Models.V1Namespace>(timeout: TimeSpan.FromMinutes(3),
+            using (_k8sService.Watch<k8s.Models.V1Namespace>(timeout: TimeSpan.FromMinutes(60),
             onEvent: OnEvent,
             onError: OnError,
             onClose: OnClosed,
@@ -116,7 +116,7 @@ namespace Sentinel.Worker.Sync.Watchers
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Consume Scoped Service Hosted Service is stopping.");
+            _logger.LogInformation("Namespace Watch Hosted Service is stopping.");
             await base.StopAsync(cancellationToken);
         }
 

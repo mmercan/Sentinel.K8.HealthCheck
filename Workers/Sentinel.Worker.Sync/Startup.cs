@@ -138,6 +138,13 @@ namespace Sentinel.Worker.Sync
                 services.AddHostedService<NamespaceWatcherJob>();
             }
 
+
+            if (Configuration["Watchers:DeploymentWatcher:enabled"] != null
+            && Configuration["Watchers:DeploymentWatcher:enabled"] == "true")
+            {
+                services.AddHostedService<DeploymentWatcherJob>();
+            }
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
