@@ -43,7 +43,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             redisDic.Sync(dtoitems);
 
 
-            _logger.LogInformation(dtoitems.Count().ToString() + " Deployments have been synced");
+            _logger.LogInformation(dtoitems.Count.ToString() + " Deployments have been synced");
         }
     }
 }

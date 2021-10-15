@@ -35,7 +35,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             redisDic.Sync(checks, (ch) => { return ch.Metadata.Name + "." + ch.Metadata.Namespace(); });
 
 
-            _logger.LogInformation(checks.Count().ToString() + " HealthChecks have been synced");
+            _logger.LogInformation(checks.Count.ToString() + " HealthChecks have been synced");
         }
     }
 }
