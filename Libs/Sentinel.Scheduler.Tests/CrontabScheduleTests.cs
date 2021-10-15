@@ -25,5 +25,45 @@ namespace Sentinel.Scheduler.Tests
             var whendate = when.ToShortDateString();
             Assert.NotNull(when);
         }
+
+
+        [Fact]
+        public void CrontabScheduleShouldGiveNextTriggerwithEndDate()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");
+            var when = schedule.GetNextOccurrence(DateTime.Now, DateTime.Now.AddHours(2));
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+            Assert.NotNull(when);
+        }
+
+
+
+        [Fact]
+        public void CrontabScheduleShouldGiveToString()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");
+            var when = schedule.GetNextOccurrence(DateTime.Now, DateTime.Now.AddHours(2));
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+
+            schedule.ToString();
+
+            Assert.NotNull(when);
+        }
+
+
+
+        [Fact]
+        public void CrontabScheduleShouldGetNextOccurrences()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");
+            var when = schedule.GetNextOccurrence(DateTime.Now, DateTime.Now.AddHours(2));
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+
+            var nextOccurrences = schedule.GetNextOccurrences(DateTime.Now, DateTime.Now.AddHours(3));
+            Assert.NotNull(when);
+        }
     }
 }
