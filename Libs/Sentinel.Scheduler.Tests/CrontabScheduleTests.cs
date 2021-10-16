@@ -53,6 +53,17 @@ namespace Sentinel.Scheduler.Tests
         }
 
 
+        public void CrontabScheduleShouldGiveNextTriggerwithEndDateinthepast()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");
+            var when = schedule.GetNextOccurrence(DateTime.Now, DateTime.Now.AddHours(-2));
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+            Assert.NotNull(when);
+        }
+
+
+
         [Fact]
         public void CrontabScheduleShouldGiveToString()
         {
@@ -101,12 +112,17 @@ namespace Sentinel.Scheduler.Tests
         {
             CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");
             var dt = new DateTime(2021, 12, 31, 23, 58, 0);
-            var when = schedule.GetNextOccurrence(dt, dt);
-            var whentime = when.ToShortTimeString();
-            var whendate = when.ToShortDateString();
-
             var nextOccurrences = schedule.GetNextOccurrences(dt, dt);
-            Assert.NotNull(when);
+
+        }
+
+        [Fact]
+        public void CrontabScheduleShouldHandleSameDatetoendinthepast()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");
+            var dt = new DateTime(2021, 12, 31, 23, 58, 0);
+            var nextOccurrences = schedule.GetNextOccurrences(dt, dt.AddDays(-1));
+
         }
     }
 }
