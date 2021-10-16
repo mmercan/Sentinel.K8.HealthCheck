@@ -8,7 +8,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
     /// <summary>
     /// Represents a single crontab field.
     /// </summary>
-    [Serializable]
+  //  [Serializable]
     public sealed class CrontabField
     {
         private readonly BitArray _bits;
