@@ -1,10 +1,16 @@
 using Sentinel.Scheduler.GeneralScheduler.Cron;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Sentinel.Scheduler.Tests
 {
     public class CrontabFieldTests
     {
+        private readonly ITestOutputHelper _output;
+        public CrontabFieldTests(ITestOutputHelper output)
+        {
+            this._output = output;
+        }
 
         [Fact]
         public void CrontabFieldShouldbeCreated()
