@@ -25,7 +25,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
             _minValueSet = int.MaxValue;
             _maxValueSet = -1;
 
-            _impl.Parse(expression, Accumulate);
+            _impl.Parse(expression, accumulate);
         }
 
         #region ICrontabField Members
@@ -47,13 +47,13 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
             if (start < _minValueSet)
                 return _minValueSet;
 
-            var startIndex = ValueToIndex(start);
-            var lastIndex = ValueToIndex(_maxValueSet);
+            var startIndex = valueToIndex(start);
+            var lastIndex = valueToIndex(_maxValueSet);
 
             for (var i = startIndex; i <= lastIndex; i++)
             {
                 if (_bits[i])
-                    return IndexToValue(i);
+                    return indexToValue(i);
             }
 
             return -1;
@@ -64,7 +64,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
         /// </summary>
         public bool Contains(int value)
         {
-            return _bits[ValueToIndex(value)];
+            return _bits[valueToIndex(value)];
         }
 
         #endregion
@@ -117,12 +117,12 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
             return new CrontabField(CrontabFieldImpl.DayOfWeek, expression);
         }
 
-        private int IndexToValue(int index)
+        private int indexToValue(int index)
         {
             return index + _impl.MinValue;
         }
 
-        private int ValueToIndex(int value)
+        private int valueToIndex(int value)
         {
             return value - _impl.MinValue;
         }
@@ -136,7 +136,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
         /// set <param name="start" /> and <param name="end" /> to -1 and
         /// <param name="interval" /> to 1.
         /// </remarks>
-        private void Accumulate(int start, int end, int interval)
+        private void accumulate(int start, int end, int interval)
         {
             var minValue = _impl.MinValue;
             var maxValue = _impl.MaxValue;

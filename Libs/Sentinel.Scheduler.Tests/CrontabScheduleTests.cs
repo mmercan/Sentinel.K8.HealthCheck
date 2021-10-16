@@ -17,6 +17,64 @@ namespace Sentinel.Scheduler.Tests
 
 
         [Fact]
+        public void CrontabScheduleShouldwithwithstar()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("* * * * *");
+            var when = schedule.GetNextOccurrence(DateTime.Now);
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+            Assert.NotNull(when);
+        }
+
+
+        [Fact]
+        public void CrontabScheduleShouldwithruneverysecondmonite()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("*/2 * * * *");
+            var when = schedule.GetNextOccurrence(DateTime.Now);
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+            Assert.NotNull(when);
+        }
+
+
+        [Fact]
+        public void CrontabScheduleShouldwithruneveryhourbetween9to5()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("0 9-17 * * *");
+            var when = schedule.GetNextOccurrence(DateTime.Now);
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+            Assert.NotNull(when);
+        }
+
+
+
+        [Fact]
+        public void CrontabScheduleShouldwithrunMondaytoFridayOnce()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("0 0 * * 1-5");
+            var when = schedule.GetNextOccurrence(DateTime.Now);
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+            Assert.NotNull(when);
+        }
+
+
+        [Fact]
+        public void CrontabScheduleShouldwithrunMonWedFridayOnce()
+        {
+            CrontabSchedule schedule = CrontabSchedule.Parse("0 0 * * 1,3,5");
+            var when = schedule.GetNextOccurrence(DateTime.Now);
+            var whentime = when.ToShortTimeString();
+            var whendate = when.ToShortDateString();
+            Assert.NotNull(when);
+        }
+
+
+
+
+        [Fact]
         public void CrontabScheduleShouldThrowIfpatternNull()
         {
             Assert.Throws<ArgumentNullException>(() => CrontabSchedule.Parse(null));

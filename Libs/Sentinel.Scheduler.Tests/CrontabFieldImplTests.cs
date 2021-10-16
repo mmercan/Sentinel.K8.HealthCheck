@@ -7,6 +7,12 @@ namespace Sentinel.Scheduler.Tests
         public void CrontabFieldImplShouldCreateHour()
         {
             var imp = CrontabFieldImpl.Hour;
+
+
+            CrontabFieldImpl.FromKind(CrontabFieldKind.Day);
+
+
+            CrontabFieldImpl.FromKind(CrontabFieldKind.DayOfWeek);
         }
     }
 }

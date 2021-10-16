@@ -26,10 +26,10 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
                 "Sunday", "Monday", "Tuesday","Wednesday", "Thursday", "Friday","Saturday"
             });
 
-        private static readonly CrontabFieldImpl[] FieldByKind = { Minute, Hour, Day, Month, DayOfWeek };
+        private static readonly CrontabFieldImpl[] fieldByKind = { Minute, Hour, Day, Month, DayOfWeek };
 
-        private static readonly CompareInfo Comparer = CultureInfo.InvariantCulture.CompareInfo;
-        private static readonly char[] Comma = { ',' };
+        private static readonly CompareInfo comparer = CultureInfo.InvariantCulture.CompareInfo;
+        private static readonly char[] comma = { ',' };
 
         private readonly CrontabFieldKind _kind;
         private readonly int _maxValue;
@@ -87,7 +87,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
                     string.Join(", ", Enum.GetNames(typeof(CrontabFieldKind)))), nameof(kind));
             }
 
-            return FieldByKind[(int)kind];
+            return fieldByKind[(int)kind];
         }
 
         public void Format(CrontabField field, TextWriter writer, bool noNames)
@@ -124,20 +124,20 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
 
                 if (first == last)
                 {
-                    FormatValue(first, writer, noNames);
+                    formatValue(first, writer, noNames);
                 }
                 else
                 {
-                    FormatValue(first, writer, noNames);
+                    formatValue(first, writer, noNames);
                     writer.Write('-');
-                    FormatValue(last, writer, noNames);
+                    formatValue(last, writer, noNames);
                 }
 
                 count++;
             }
         }
 
-        private void FormatValue(int value, TextWriter writer, bool noNames)
+        private void formatValue(int value, TextWriter writer, bool noNames)
         {
             Debug.Assert(writer != null);
 
@@ -145,7 +145,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
             {
                 if (value >= 0 && value < 100)
                 {
-                    FastFormatNumericValue(value, writer);
+                    fastFormatNumericValue(value, writer);
                 }
                 else
                 {
@@ -159,7 +159,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
             }
         }
 
-        private static void FastFormatNumericValue(int value, TextWriter writer)
+        private static void fastFormatNumericValue(int value, TextWriter writer)
         {
             Debug.Assert(value >= 0 && value < 100);
             Debug.Assert(writer != null);
@@ -218,7 +218,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
 
             if (commaIndex > 0)
             {
-                foreach (var token in str.Split(Comma))
+                foreach (var token in str.Split(comma))
                     InternalParse(token, acc);
             }
             else
@@ -302,7 +302,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
 
             for (var i = 0; i < _names.Length; i++)
             {
-                if (Comparer.IsPrefix(_names[i], str, CompareOptions.IgnoreCase))
+                if (comparer.IsPrefix(_names[i], str, CompareOptions.IgnoreCase))
                     return i + _minValue;
             }
 
