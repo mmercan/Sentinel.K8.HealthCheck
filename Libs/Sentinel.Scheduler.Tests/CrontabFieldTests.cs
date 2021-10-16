@@ -12,6 +12,7 @@ namespace Sentinel.Scheduler.Tests
             this._output = output;
         }
 
+
         [Fact]
         public void CrontabFieldShouldbeCreated()
         {
