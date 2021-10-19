@@ -2,9 +2,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using k8s.Models;
 using Sentinel.K8s.Tests.Helpers;
+using Sentinel.Models.CRDs;
 using Sentinel.Models.K8sDTOs;
 using Xunit;
 using Xunit.Abstractions;
+using static Sentinel.Models.CRDs.HealthCheckResource;
 
 namespace Sentinel.K8s.Tests
 {
@@ -148,6 +150,34 @@ namespace Sentinel.K8s.Tests
             var service = services.Body.Items[0];
             // V1Service port = new V1Service();
             var mapped = mapper.Map<ServiceV1>(service);
+            Assert.NotNull(mapped);
+        }
+
+
+        [Fact]
+        public void Map_HealthCheckResourceV1()
+        {
+            HealthCheckResource port = new HealthCheckResource();
+            var mapped = mapper.Map<HealthCheckResourceV1>(port);
+            Assert.NotNull(mapped);
+        }
+
+
+
+        [Fact]
+        public void Map_HealthCheckResourceSpecV1()
+        {
+            HealthCheckResourceSpec port = new HealthCheckResourceSpec();
+            var mapped = mapper.Map<HealthCheckResourceSpecV1>(port);
+            Assert.NotNull(mapped);
+        }
+
+
+        [Fact]
+        public void Map_HealthCheckResourceStatusV1()
+        {
+            HealthCheckResourceStatus port = new HealthCheckResourceStatus();
+            var mapped = mapper.Map<HealthCheckResourceStatusV1>(port);
             Assert.NotNull(mapped);
         }
 

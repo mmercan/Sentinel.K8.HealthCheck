@@ -1,4 +1,5 @@
 using System;
+using Sentinel.Models.Scheduler;
 using Sentinel.Scheduler.GeneralScheduler.Cron;
 
 namespace Sentinel.Scheduler.GeneralScheduler
@@ -7,7 +8,7 @@ namespace Sentinel.Scheduler.GeneralScheduler
     {
         public string Uid { get; set; }
         public CrontabSchedule Schedule { get; set; }
-        public IScheduledTask<T> Task { get; set; }
+        public IScheduledTask Task { get; set; }
 
         public DateTime LastRunTime { get; set; }
         public DateTime NextRunTime { get; set; }

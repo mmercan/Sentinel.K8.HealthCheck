@@ -313,23 +313,29 @@ namespace Sentinel.K8s
         private void HealthcheckMapper()
         {
             CreateMap<HealthCheckResource, HealthCheckResourceV1>()
-              .ForMember(dto => dto.Name, map => map.MapFrom(source =>
+            .ForMember(dto => dto.Name, map => map.MapFrom(source =>
                source.Name()
-          ))
+            ))
+            .ForMember(dto => dto.Uid, map => map.MapFrom(source =>
+                source.Metadata.Uid
+            ))
            .ForMember(dto => dto.Namespace, map => map.MapFrom(source =>
                source.Namespace()
-          ))
+            ))
            .ForMember(dto => dto.Labels, map => map.MapFrom(source =>
                source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()
-          ))
+            ))
            .ForMember(dto => dto.CreationTime, map => map.MapFrom(source =>
                source.Metadata.CreationTimestamp.Value
-          ))
+            ))
            .ForMember(dto => dto.Annotations, map => map.MapFrom(source =>
               source.Annotations().Select(p => new Label(p.Key, p.Value)).ToList()
-          ))
-          .ForMember(dto => dto.Labels, map => map.MapFrom(source =>
-            source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()
+            ))
+            .ForMember(dto => dto.Labels, map => map.MapFrom(source =>
+                source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()
+            ))
+             .ForMember(dto => dto.Schedule, map => map.MapFrom(source =>
+               source.Spec.Crontab
             ));
 
             CreateMap<HealthCheckResourceSpec, HealthCheckResourceSpecV1>();

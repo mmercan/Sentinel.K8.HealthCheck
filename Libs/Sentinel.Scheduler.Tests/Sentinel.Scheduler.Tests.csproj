@@ -25,6 +25,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sentinel.Scheduler\Sentinel.Scheduler.csproj" />
+    <ProjectReference Include="..\Sentinel.Redis\Sentinel.Redis.csproj" />
+    <ProjectReference Include="..\Sentinel.Tests.Helpers\Sentinel.Tests.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

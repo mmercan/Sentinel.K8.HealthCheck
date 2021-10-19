@@ -4,27 +4,28 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Sentinel.Models.Scheduler;
 using Sentinel.Scheduler.GeneralScheduler;
 using Sentinel.Scheduler.GeneralScheduler.Cron;
 
 namespace Sentinel.Scheduler
 {
-    public class SchedulerRepository<T> where T : new()
+    public class SchedulerRepository<T> where T : IScheduledTask, new()
     {
-        public ObservableCollection<IScheduledTask<T>> Items { get => items; set => items = value; }
+        public ObservableCollection<T> Items { get => items; set => items = value; }
         public List<SchedulerTaskWrapper<T>> ScheduledTasks { get; }
 
         private ILogger<SchedulerRepository<T>> logger;
-        private ObservableCollection<IScheduledTask<T>> items;
+        private ObservableCollection<T> items;
 
         public SchedulerRepository(ILogger<SchedulerRepository<T>> logger)
         {
             this.logger = logger;
-            Items = new ObservableCollection<IScheduledTask<T>>();
+            Items = new ObservableCollection<T>();
             ScheduledTasks = new List<SchedulerTaskWrapper<T>>();
 
             this.logger = logger;
-            foreach (IScheduledTask<T> item in Items)
+            foreach (T item in Items)
             {
                 addItem(item);
             }
@@ -35,16 +36,16 @@ namespace Sentinel.Scheduler
         {
             if (e.NewItems != null)
             {
-                foreach (IScheduledTask<T> x in e.NewItems) { addItem(x); };
+                foreach (T x in e.NewItems) { addItem(x); };
             };
             if (e.OldItems != null)
             {
-                foreach (IScheduledTask<T> y in e.OldItems) { deleteItem(y); }
+                foreach (T y in e.OldItems) { deleteItem(y); }
             }
             if (e.Action == NotifyCollectionChangedAction.Move) { }
         }
 
-        private void addItem(IScheduledTask<T> item)
+        private void addItem(T item)
         {
             var referenceTime = DateTime.UtcNow;
 
@@ -61,7 +62,7 @@ namespace Sentinel.Scheduler
             logger.LogCritical(scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
-        private void editItem(IScheduledTask<T> item)
+        private void editItem(T item)
         {
             var itemToUpdate = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
             var referenceTime = DateTime.UtcNow;
@@ -77,7 +78,7 @@ namespace Sentinel.Scheduler
             itemToUpdate = scheduledTask;
         }
 
-        private void deleteItem(IScheduledTask<T> item)
+        private void deleteItem(T item)
         {
             var itemtodelete = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
             if (itemtodelete != null)
