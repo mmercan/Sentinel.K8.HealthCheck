@@ -20,6 +20,9 @@ namespace Sentinel.Scheduler.Tests
             var repo = new SchedulerRepository<HealthCheckResourceV1>(logger);
 
             var hc = new HealthCheckResourceV1();
+            hc.Schedule = "* * * * *";
+            hc.Name = "test";
+            hc.Namespace = "default";
 
             repo.Items.Add(hc);
 
