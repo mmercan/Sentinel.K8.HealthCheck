@@ -1,13 +1,22 @@
 using Sentinel.Models.K8sDTOs;
 using Sentinel.Scheduler.GeneralScheduler;
 using Sentinel.Scheduler.GeneralScheduler.Cron;
+using Xunit;
+using Xunit.Abstractions;
 
 namespace Sentinel.Scheduler.Tests
 {
     public class SchedulerTaskWrapperTests
     {
 
+        private readonly ITestOutputHelper _output;
 
+        public SchedulerTaskWrapperTests(ITestOutputHelper output)
+        {
+            this._output = output;
+        }
+
+        [Fact]
         public void SchedulerTaskWrapperShouldCreateaNewInstance()
         {
             SchedulerTaskWrapper<HealthCheckResourceV1> wrapper = new GeneralScheduler.SchedulerTaskWrapper<HealthCheckResourceV1>();
