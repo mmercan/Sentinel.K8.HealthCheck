@@ -8,7 +8,7 @@ using Sentinel.Models.Scheduler;
 
 namespace Sentinel.Scheduler
 {
-    public abstract class SchedulerRepositoryFeeder<T, TKey>
+    public class SchedulerRepositoryFeeder<T, TKey>
     where T : IScheduledTask, new()
 
     {

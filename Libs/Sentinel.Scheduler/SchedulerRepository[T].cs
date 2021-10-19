@@ -15,7 +15,7 @@ namespace Sentinel.Scheduler
         public ObservableCollection<T> Items { get => items; set => items = value; }
         public List<SchedulerTaskWrapper<T>> ScheduledTasks { get; }
 
-        private ILogger<SchedulerRepository<T>> logger;
+        private readonly ILogger<SchedulerRepository<T>> logger;
         private ObservableCollection<T> items;
 
         public SchedulerRepository(ILogger<SchedulerRepository<T>> logger)
@@ -42,7 +42,7 @@ namespace Sentinel.Scheduler
             {
                 foreach (T y in e.OldItems) { deleteItem(y); }
             }
-            if (e.Action == NotifyCollectionChangedAction.Move) { }
+            // if (e.Action == NotifyCollectionChangedAction.Move) { }
         }
 
         private void addItem(T item)
@@ -62,21 +62,21 @@ namespace Sentinel.Scheduler
             logger.LogCritical(scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
-        private void editItem(T item)
-        {
-            var itemToUpdate = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
-            var referenceTime = DateTime.UtcNow;
+        // private void editItem(T item)
+        // {
+        //     var itemToUpdate = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
+        //     var referenceTime = DateTime.UtcNow;
 
-            var scheduledTask = new SchedulerTaskWrapper<T>
-            {
-                Uid = item.Uid,
-                Schedule = CrontabSchedule.Parse(item.Schedule),
-                Task = item,
-                NextRunTime = referenceTime,
+        //     var scheduledTask = new SchedulerTaskWrapper<T>
+        //     {
+        //         Uid = item.Uid,
+        //         Schedule = CrontabSchedule.Parse(item.Schedule),
+        //         Task = item,
+        //         NextRunTime = referenceTime,
 
-            };
-            itemToUpdate = scheduledTask;
-        }
+        //     };
+        //     itemToUpdate = scheduledTask;
+        // }
 
         private void deleteItem(T item)
         {
