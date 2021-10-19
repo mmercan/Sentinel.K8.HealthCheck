@@ -41,6 +41,16 @@ namespace Sentinel.K8s.Tests
         {
             V1Container port = new V1Container();
             var mapped = mapper.Map<ContainerV1>(port);
+
+            mapped.StartupProbeV1 = "";
+            mapped.ReadinessProbeV1 = "";
+            mapped.LivenessProbeV1 = "";
+
+
+            mapped.ConfigMapRef = "";
+            mapped.SecretMapRef = "";
+
+
             Assert.NotNull(mapped);
         }
 
@@ -49,6 +59,7 @@ namespace Sentinel.K8s.Tests
         {
             V1DeploymentCondition port = new V1DeploymentCondition();
             var mapped = mapper.Map<DeploymentConditionV1>(port);
+
             Assert.NotNull(mapped);
         }
 
@@ -75,7 +86,12 @@ namespace Sentinel.K8s.Tests
             var dep = deps.Body.Items[0];
             // V1Deployment port = new V1Deployment();
             var mapped = mapper.Map<DeploymentV1>(dep);
+            mapped.SyncDate = System.DateTime.UtcNow;
+            mapped.Deleted = false;
+
             Assert.NotNull(mapped);
+            Assert.NotNull(mapped.NameandNamespace);
+
         }
 
         // [Fact]
@@ -99,6 +115,12 @@ namespace Sentinel.K8s.Tests
         {
             V1Namespace port = new V1Namespace();
             var mapped = mapper.Map<NamespaceV1>(port);
+            mapped.LatestSyncDateUTC = System.DateTime.UtcNow;
+            mapped.ErrorCount = 10;
+            mapped.ServiceCount = 10;
+            mapped.WarningCount = 10;
+            mapped.DeploymentCount = 10;
+
             Assert.NotNull(mapped);
         }
 
@@ -150,6 +172,20 @@ namespace Sentinel.K8s.Tests
             var service = services.Body.Items[0];
             // V1Service port = new V1Service();
             var mapped = mapper.Map<ServiceV1>(service);
+
+            mapped.IngressUrl = "";
+            mapped.VirtualServiceUrl = "";
+            mapped.LatestSyncDateUTC = System.DateTime.UtcNow;
+
+            mapped.LivenessProbe = new ProbeV1();
+            mapped.ReadinessProbe = new ProbeV1();
+            mapped.StartupProbe = new ProbeV1();
+
+
+            mapped.CronDescription = "";
+            mapped.CronTab = "";
+            mapped.CronTabException = "";
+
             Assert.NotNull(mapped);
         }
 

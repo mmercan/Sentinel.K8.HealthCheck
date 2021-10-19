@@ -31,6 +31,8 @@ namespace Sentinel.K8s
 
             HealthcheckMapper();
 
+            //CreateMap<V1HttpHeader,HttpHeaderV1>()
+
         }
 
         private void NamespaceMapper()

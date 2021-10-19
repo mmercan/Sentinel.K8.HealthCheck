@@ -17,11 +17,7 @@ namespace Sentinel.Redis
         public RedisNamespaceStore(IConnectionMultiplexer multiplexer, string prefix)
         {
             _multiplexer = multiplexer;
-            if (!_multiplexer.IsConnected)
-            {
-                // _multiplexer.conn
 
-            }
             database = _multiplexer.GetDatabase();
             server = _multiplexer.GetServer(multiplexer.GetEndPoints().First());
             this.prefix = prefix;

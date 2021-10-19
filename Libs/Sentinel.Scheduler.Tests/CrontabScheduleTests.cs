@@ -9,7 +9,6 @@ namespace Sentinel.Scheduler.Tests
     {
 
         private readonly ITestOutputHelper _output;
-
         public CrontabScheduleTests(ITestOutputHelper output)
         {
             this._output = output;
@@ -110,7 +109,7 @@ namespace Sentinel.Scheduler.Tests
             Assert.NotNull(when);
         }
 
-
+        [Fact]
         public void CrontabScheduleShouldGiveNextTriggerwithEndDateinthepast()
         {
             CrontabSchedule schedule = CrontabSchedule.Parse("*/3 * * * *");

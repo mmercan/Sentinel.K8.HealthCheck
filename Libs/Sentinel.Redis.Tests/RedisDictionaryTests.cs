@@ -46,6 +46,24 @@ namespace Sentinel.Worker.Sync.Tests
 
 
         [Fact]
+        public void SetByIndex()
+        {
+            var t1 = new TestClass("Name_T1", "test:id1");
+            var t2 = new TestClass("Name_T2", "test:id2");
+            var t3 = new TestClass("Name_T3", "test:id3");
+
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
+            var multi = RedisExtensions.GetRedisMultiplexer();
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-2");
+
+            dic["Name_T1"] = t1;
+            var contain = dic.ContainsKey(t1.Id);
+            Assert.True(contain);
+
+        }
+
+
+        [Fact]
         public async Task AddAsync()
         {
             var t1 = new TestClass("Name_T1", "test:id1");
@@ -100,6 +118,8 @@ namespace Sentinel.Worker.Sync.Tests
             var valuegot = dic.TryGetValue(t1.Id, out tout);
             Assert.True(valuegot);
 
+            var valuegotnotexits = dic.TryGetValue(t3.Id, out tout);
+
         }
 
 
@@ -122,6 +142,25 @@ namespace Sentinel.Worker.Sync.Tests
             Assert.NotEmpty(vals);
         }
 
+
+        [Fact]
+        public void Contains()
+        {
+            var t1 = new TestClass("Name_T1", "test:id1");
+            var t2 = new TestClass("Name_T2", "test:id2");
+            var t3 = new TestClass("Name_T3", "test:id3");
+
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
+            var multi = RedisExtensions.GetRedisMultiplexer();
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-6");
+
+            dic.Add(t1.Id, t1);
+            var contain = dic.Contains(new KeyValuePair<string, TestClass>(t1.Id, t1));
+            Assert.True(contain);
+            var vals = dic.Values;
+
+            Assert.NotEmpty(vals);
+        }
 
         [Fact]
         public void Keys()
@@ -180,7 +219,7 @@ namespace Sentinel.Worker.Sync.Tests
                 output.WriteLine(item.Value.Name);
             }
             var val = dic[t1.Id].ToJSON();
-
+            var enuma = dic.GetEnumerator();
             Assert.NotNull(val);
         }
 
@@ -200,6 +239,29 @@ namespace Sentinel.Worker.Sync.Tests
 
             dic.AddMultiple(list);
             var val = dic[t1.Id];
+
+            Assert.NotNull(val);
+        }
+
+
+        [Fact]
+        public void AddMultipleKeyValuePair()
+        {
+            var t1 = new KeyValuePair<string, TestClass>("Name_T1", new TestClass("Name_T1", "test:id1"));
+            var t2 = new KeyValuePair<string, TestClass>("Name_T2", new TestClass("Name_T2", "test:id2"));
+            var t3 = new KeyValuePair<string, TestClass>("Name_T3", new TestClass("Name_T3", "test:id3"));
+
+
+
+            var list = new List<KeyValuePair<string, TestClass>> { t1, t2, t3 };
+
+
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
+            var multi = RedisExtensions.GetRedisMultiplexer();
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-10");
+
+            dic.AddMultiple(list);
+            var val = dic[t1.Key];
 
             Assert.NotNull(val);
         }
@@ -244,6 +306,28 @@ namespace Sentinel.Worker.Sync.Tests
 
             Assert.Equal(dic.Count, 2);
 
+        }
+
+
+        [Fact]
+        public void SyncFunc()
+        {
+            var t1 = new TestClass("Name_T1", "test:id1");
+            var t2 = new TestClass("Name_T2", "test:id2");
+            var t3 = new TestClass("Name_T3", "test:id3");
+            List<TestClass> list1 = new List<TestClass> { t1, t2 };
+
+            List<TestClass> list2 = new List<TestClass> { t2, t3 };
+
+
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<string, TestClass>>();
+            var multi = RedisExtensions.GetRedisMultiplexer();
+            var dic = new RedisDictionary<string, TestClass>(multi, logger, "tests-12");
+
+            dic.AddMultiple(list1);
+            dic.Sync(list2, p => p.Id);
+
+            Assert.Equal(dic.Count, 2);
         }
     }
 }
