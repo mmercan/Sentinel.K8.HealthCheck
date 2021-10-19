@@ -40,6 +40,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             HealthCheckSchedulerJob job = new HealthCheckSchedulerJob(
                 logger: logger,
                 k8sclient: client,
+                mapper: mapper,
                 redisMultiplexer: rediscon
             );
 

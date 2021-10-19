@@ -1,7 +1,9 @@
 using System.Linq;
 using AutoMapper;
 using k8s.Models;
+using Sentinel.Models.CRDs;
 using Sentinel.Models.K8sDTOs;
+using static Sentinel.Models.CRDs.HealthCheckResource;
 
 namespace Sentinel.K8s
 {
@@ -26,6 +28,8 @@ namespace Sentinel.K8s
             probeMapper();
 
             MetadataMapper();
+
+            HealthcheckMapper();
 
         }
 
@@ -303,6 +307,34 @@ namespace Sentinel.K8s
             .ForMember(dto => dto.HttpGetScheme, map => map.MapFrom(source =>
               source.HttpGet == null ? default : source.HttpGet.Scheme
            ));
+        }
+
+
+        private void HealthcheckMapper()
+        {
+            CreateMap<HealthCheckResource, HealthCheckResourceV1>()
+              .ForMember(dto => dto.Name, map => map.MapFrom(source =>
+               source.Name()
+          ))
+           .ForMember(dto => dto.Namespace, map => map.MapFrom(source =>
+               source.Namespace()
+          ))
+           .ForMember(dto => dto.Labels, map => map.MapFrom(source =>
+               source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()
+          ))
+           .ForMember(dto => dto.CreationTime, map => map.MapFrom(source =>
+               source.Metadata.CreationTimestamp.Value
+          ))
+           .ForMember(dto => dto.Annotations, map => map.MapFrom(source =>
+              source.Annotations().Select(p => new Label(p.Key, p.Value)).ToList()
+          ))
+          .ForMember(dto => dto.Labels, map => map.MapFrom(source =>
+            source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()
+            ));
+
+            CreateMap<HealthCheckResourceSpec, HealthCheckResourceSpecV1>();
+            CreateMap<HealthCheckResourceStatus, HealthCheckResourceStatusV1>();
+
         }
     }
 }

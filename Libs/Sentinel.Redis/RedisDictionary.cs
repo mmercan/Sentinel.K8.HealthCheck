@@ -5,11 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Sentinel.Models.Redis;
 using StackExchange.Redis;
 
 namespace Sentinel.Redis
 {
-    public class RedisDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    public class RedisDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IRedisDictionary<TKey, TValue>
     {
         private readonly IDatabase database;
         private readonly ILogger _logger;
@@ -41,7 +42,8 @@ namespace Sentinel.Redis
 
         public void Add(string key, TValue value)
         {
-            database.HashSet(_redisKey, Serialize(key), Serialize(value));
+            var result = database.HashSet(_redisKey, Serialize(key), Serialize(value));
+            _logger.LogCritical("Add result" + result.ToString());
         }
 
 
@@ -187,7 +189,6 @@ namespace Sentinel.Redis
             var keys = Keys;
             foreach (var item in items)
             {
-                //string itemKey = PropertyInfoHelpers.GetKeyValue<TKey, TValue>(item).ToJSON();
                 var key = keyFunc.Invoke(item).ToJSON();
                 if (!keys.Any(p => p.ToJSON() == key))
                 {
@@ -197,8 +198,9 @@ namespace Sentinel.Redis
 
             foreach (var key in Keys)
             {
-                if (!items.Any(p => keyFunc.Invoke(p).ToJSON() == key.ToJSON()))
+                if (!items.Any(p => keyFunc.Invoke(p).ToJSON() == key.ToString()))
                 {
+                    _logger.LogCritical("Deleting the key...");
                     Remove(key);
                 }
             }

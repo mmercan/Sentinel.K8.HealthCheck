@@ -36,11 +36,9 @@ namespace Sentinel.Models.CRDs
                 }
             }
             var labels = labelsbld.ToString().TrimEnd(',', ' ') + "}";
-
             return $"{Metadata.Name} (Labels: {labels}), Spec: {Spec.Service}";
-
-
         }
+
         public DateTime SyncDate { get; set; }
 
         public class HealthCheckResourceSpec
@@ -62,9 +60,6 @@ namespace Sentinel.Models.CRDs
 
             [JsonProperty(PropertyName = "cert", NullValueHandling = NullValueHandling.Ignore)]
             public string Cert { get; set; }
-
-
-
         }
 
         public class HealthCheckResourceStatus : V1Status
