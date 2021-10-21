@@ -23,15 +23,13 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
         [Fact]
         public void ServiceSchedulerJobShouldRun()
         {
+
             var client = KubernetesClientTestHelper.GetKubernetesClient();
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<ServiceSchedulerJob>();
-
             var mapper = GetIMapperExtension.GetIMapper(cfg => { cfg.AddProfile(new K8SMapper()); });
             var rediscon = RedisExtensions.GetRedisMultiplexer();
 
             ServiceSchedulerJob job = new ServiceSchedulerJob(logger, client, mapper, rediscon);
-
-
 
             CancellationTokenSource source = new CancellationTokenSource();
             source.CancelAfter(3 * 1000);
