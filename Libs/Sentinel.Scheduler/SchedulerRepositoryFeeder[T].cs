@@ -14,12 +14,12 @@ namespace Sentinel.Scheduler
     {
         protected readonly ILogger<SchedulerRepositoryFeeder<T, TKey>> _logger;
         protected readonly SchedulerRepository<T> _schedulerRepository;
-        protected readonly IRedisDictionary<TKey, T> _redisDictionary;
+        protected readonly IRedisDictionary<T> _redisDictionary;
 
         public SchedulerRepositoryFeeder(
             SchedulerRepository<T> schedulerRepository,
             ILogger<SchedulerRepositoryFeeder<T, TKey>> logger,
-            IRedisDictionary<TKey, T> redisDictionary
+            IRedisDictionary<T> redisDictionary
             )
         {
             _logger = logger;

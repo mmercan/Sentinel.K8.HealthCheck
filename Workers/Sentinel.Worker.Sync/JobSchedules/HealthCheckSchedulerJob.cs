@@ -21,7 +21,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
         private readonly IKubernetesClient _k8sclient;
         private readonly IMapper _mapper;
 
-        private readonly RedisDictionary<string, HealthCheckResourceV1> redisDic;
+        private readonly RedisDictionary<HealthCheckResourceV1> redisDic;
 
         public HealthCheckSchedulerJob(ILogger<HealthCheckSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
@@ -29,7 +29,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             _k8sclient = k8sclient;
             _mapper = mapper;
             //_redisMultiplexer = redisMultiplexer;
-            redisDic = new RedisDictionary<string, HealthCheckResourceV1>(redisMultiplexer, _logger, "HealthChecks");
+            redisDic = new RedisDictionary<HealthCheckResourceV1>(redisMultiplexer, _logger, "HealthChecks");
         }
         public async Task Execute(IJobExecutionContext context)
         {

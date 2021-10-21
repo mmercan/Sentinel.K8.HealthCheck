@@ -19,14 +19,15 @@ namespace Sentinel.Worker.Sync.JobSchedules
         private readonly IKubernetesClient _k8sclient;
         private readonly ILogger<NamespaceSchedulerJob> _logger;
         private readonly IMapper _mapper;
-        private readonly IConnectionMultiplexer _redisMultiplexer;
+        private readonly RedisDictionary<NamespaceV1> redisDic;
 
         public NamespaceSchedulerJob(ILogger<NamespaceSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
             _k8sclient = k8sclient;
             _logger = logger;
             _mapper = mapper;
-            _redisMultiplexer = redisMultiplexer;
+
+            redisDic = new RedisDictionary<NamespaceV1>(redisMultiplexer, _logger, "Namespaces");
         }
         public async Task Execute(IJobExecutionContext context)
         {
@@ -36,7 +37,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             var syncTime = DateTime.UtcNow;
             dtoitems.ForEach(p => p.LatestSyncDateUTC = syncTime);
 
-            var redisDic = new RedisDictionary<string, NamespaceV1>(_redisMultiplexer, _logger, "Namespaces");
+
             redisDic.Sync(dtoitems);
 
             _logger.LogInformation(dtoitems.Count.ToString() + " Namespaces have been synced");

@@ -17,6 +17,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
         private readonly IKubernetesClient _k8sclient;
         private readonly ILogger<ServiceSchedulerJob> _logger;
         private readonly IMapper _mapper;
+        private readonly RedisDictionary<ServiceV1> redisDic;
         private readonly IConnectionMultiplexer _redisMultiplexer;
 
         public ServiceSchedulerJob(ILogger<ServiceSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
@@ -24,7 +25,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             _k8sclient = k8sclient;
             _logger = logger;
             _mapper = mapper;
-            _redisMultiplexer = redisMultiplexer;
+            redisDic = new RedisDictionary<ServiceV1>(_redisMultiplexer, _logger, "Services");
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -35,7 +36,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
             var syncTime = DateTime.UtcNow;
             dtoitems.ForEach(p => p.LatestSyncDateUTC = syncTime);
 
-            var redisDic = new RedisDictionary<string, ServiceV1>(_redisMultiplexer, _logger, "Services");
             redisDic.Sync(dtoitems);
             _logger.LogInformation(dtoitems.Count.ToString() + " Services have been synced");
         }

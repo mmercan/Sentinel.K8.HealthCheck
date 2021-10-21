@@ -24,7 +24,7 @@ namespace Sentinel.Worker.Sync.Watchers
     {
         private readonly IKubernetesClient _k8sService;
         private readonly IMapper _mapper;
-        private readonly RedisDictionary<string, DeploymentV1> redisDic;
+        private readonly RedisDictionary<DeploymentV1> redisDic;
         private Task executingTask;
         private CancellationToken cancellationToken;
 
@@ -37,7 +37,7 @@ namespace Sentinel.Worker.Sync.Watchers
         {
             _k8sService = k8sService;
             _mapper = mapper;
-            redisDic = new RedisDictionary<string, DeploymentV1>(redisMultiplexer, _logger, "DeploymentWatch");
+            redisDic = new RedisDictionary<DeploymentV1>(redisMultiplexer, _logger, "DeploymentWatch");
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)

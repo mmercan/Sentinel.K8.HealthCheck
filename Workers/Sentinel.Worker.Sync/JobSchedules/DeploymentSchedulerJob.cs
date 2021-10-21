@@ -20,15 +20,15 @@ namespace Sentinel.Worker.Sync.JobSchedules
         private readonly ILogger<DeploymentSchedulerJob> _logger;
         private readonly IKubernetesClient _k8sclient;
         private readonly IMapper _mapper;
-
-        private readonly IConnectionMultiplexer redisMultiplexer;
+        private readonly RedisDictionary<DeploymentV1> redisDic;
 
         public DeploymentSchedulerJob(ILogger<DeploymentSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
             _logger = logger;
             _k8sclient = k8sclient;
             _mapper = mapper;
-            this.redisMultiplexer = redisMultiplexer;
+            redisDic = new RedisDictionary<DeploymentV1>(redisMultiplexer, _logger, "Deployment");
+
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -39,7 +39,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             var syncTime = DateTime.UtcNow;
             dtoitems.ForEach(p => p.SyncDate = syncTime);
 
-            var redisDic = new RedisDictionary<string, DeploymentV1>(redisMultiplexer, _logger, "Deployment");
+
             redisDic.Sync(dtoitems);
 
 
