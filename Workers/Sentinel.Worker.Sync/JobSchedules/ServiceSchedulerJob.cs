@@ -18,14 +18,13 @@ namespace Sentinel.Worker.Sync.JobSchedules
         private readonly ILogger<ServiceSchedulerJob> _logger;
         private readonly IMapper _mapper;
         private readonly RedisDictionary<ServiceV1> redisDic;
-        private readonly IConnectionMultiplexer _redisMultiplexer;
 
         public ServiceSchedulerJob(ILogger<ServiceSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
             _k8sclient = k8sclient;
             _logger = logger;
             _mapper = mapper;
-            redisDic = new RedisDictionary<ServiceV1>(_redisMultiplexer, _logger, "Services");
+            redisDic = new RedisDictionary<ServiceV1>(redisMultiplexer, _logger, "Services");
         }
 
         public async Task Execute(IJobExecutionContext context)
