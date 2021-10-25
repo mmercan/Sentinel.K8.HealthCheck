@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sentinel.Models.K8sDTOs;
+using Sentinel.Scheduler;
 
 namespace Sentinel.Worker.Scheduler
 {
@@ -28,6 +30,10 @@ namespace Sentinel.Worker.Scheduler
 
             services.AddSingleton<IServiceCollection>(services);
             services.AddSingleton<IConfiguration>(Configuration);
+
+            services.AddAutoMapper(typeof(Startup).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
+
+            services.AddSingleton<SchedulerRepository<HealthCheckResourceV1>>();
 
         }
 

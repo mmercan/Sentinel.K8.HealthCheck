@@ -14,12 +14,14 @@ namespace Sentinel.Scheduler
     {
         public ObservableCollection<T> Items { get => items; set => items = value; }
         public List<SchedulerTaskWrapper<T>> ScheduledTasks { get; }
-
         private readonly ILogger<SchedulerRepository<T>> logger;
         private ObservableCollection<T> items;
+        private readonly string genericTypeName;
 
         public SchedulerRepository(ILogger<SchedulerRepository<T>> logger)
         {
+
+            var genericTypeName = typeof(T).Name;
             this.logger = logger;
             Items = new ObservableCollection<T>();
             ScheduledTasks = new List<SchedulerTaskWrapper<T>>();
@@ -59,7 +61,7 @@ namespace Sentinel.Scheduler
             };
 
             ScheduledTasks.Add(scheduledTask);
-            logger.LogCritical(scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
+            logger.LogCritical("SchedulerRepository Added" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
         // private void editItem(T item)

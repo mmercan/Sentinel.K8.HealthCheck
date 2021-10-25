@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using Polly;
 using Polly.Extensions.Http;
+using System.Linq;
 
 namespace Sentinel.Common.HttpClientHelpers
 {
@@ -28,11 +29,14 @@ namespace Sentinel.Common.HttpClientHelpers
 
         public static X509Certificate2 FindCert(X509Store store, string thumbprint)
         {
-            foreach (var cert in store.Certificates)
-                if (cert.Thumbprint.Equals(thumbprint,
-                    StringComparison.CurrentCultureIgnoreCase))
-                    return cert;
-            return null;
+
+            return store.Certificates.OfType<X509Certificate2>().FirstOrDefault(x =>
+                 x.Thumbprint.Equals(thumbprint, StringComparison.CurrentCultureIgnoreCase));
+
+            // foreach (var cert in store.Certificates)
+            //     if (cert.Thumbprint.Equals(thumbprint, StringComparison.CurrentCultureIgnoreCase))
+            //         return cert;
+            // return null;
         }
 
         public static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

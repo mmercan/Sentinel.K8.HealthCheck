@@ -29,8 +29,8 @@ namespace Sentinel.Scheduler
 
         public void Sync()
         {
-            var ItemsInRedisButNotinRepo = _redisDictionary.Keys.Where(redisKey => !_schedulerRepository.Items.Any(repo => repo.Key == redisKey.ToJSON()));
-            var ItemsInRepoButNotinRedis = _schedulerRepository.Items.Where(repo => !_redisDictionary.Keys.Any(redisKey => redisKey.ToJSON() == repo.Key));
+            var ItemsInRedisButNotinRepo = _redisDictionary.Keys.Where(redisKey => !_schedulerRepository.Items.Any(repo => repo.Key == redisKey));
+            var ItemsInRepoButNotinRedis = _schedulerRepository.Items.Where(repo => !_redisDictionary.Keys.Any(redisKey => redisKey == repo.Key));
 
             //Add items To Repo
             foreach (var itemKey in ItemsInRedisButNotinRepo)

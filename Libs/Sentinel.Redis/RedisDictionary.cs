@@ -11,8 +11,6 @@ using StackExchange.Redis;
 namespace Sentinel.Redis
 {
 
-    //TODO reove serialize on Keys
-
     //Key value has to be string Type
     public class RedisDictionary<TValue> : IDictionary<string, TValue>, IRedisDictionary<TValue>
     {
