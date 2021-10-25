@@ -19,13 +19,13 @@ namespace Sentinel.K8s
             var underlyingHandlerProperty = realHandler.GetType().GetField("_underlyingHandler", BindingFlags.NonPublic | BindingFlags.Instance);
             if (underlyingHandlerProperty == null)
             {
-                throw new NullReferenceException("Expected _underlyingHandler property not found.");
+                throw new ArgumentNullException("Expected _underlyingHandler property not found.");
             }
 
             var underlyingHandler = underlyingHandlerProperty.GetValue(realHandler);
             if (underlyingHandler == null)
             {
-                throw new NullReferenceException("_underlyingHandler is null.");
+                throw new ArgumentNullException("_underlyingHandler is null.");
             }
 
             if (underlyingHandler is SocketsHttpHandler socketHandler)

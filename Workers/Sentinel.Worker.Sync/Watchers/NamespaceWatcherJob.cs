@@ -39,7 +39,6 @@ namespace Sentinel.Worker.Sync.Watchers
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             cancellationToken = stoppingToken;
-            //executingTask = Task.Factory.StartNew(new Action(namespaceWatchStarter), TaskCreationOptions.LongRunning);
             executingTask = Task.Factory.StartNew(() => namespaceWatchStarter(stoppingToken), TaskCreationOptions.LongRunning);
             if (executingTask.IsCompleted)
             {

@@ -256,12 +256,12 @@ namespace Sentinel.K8s
             TimeSpan timeout, Action<WatchEventType, TResource> onEvent, Action<Exception>? onError = null, Action? onClose = null,
             string? @namespace = null, CancellationToken cancellationToken = default, params ILabelSelector[] labelSelectors)
             where TResource : IKubernetesObject<V1ObjectMeta>
-            => Watch<TResource>(timeout, onEvent, onError, onClose, @namespace, cancellationToken, string.Join(",", labelSelectors.Select(l => l.ToExpression())));
+            => Watch<TResource>(timeout, onEvent, onError, onClose, @namespace, string.Join(",", labelSelectors.Select(l => l.ToExpression())), cancellationToken);
 
         /// <inheritdoc />
         public Task<Watcher<TResource>> Watch<TResource>(
             TimeSpan timeout, Action<WatchEventType, TResource> onEvent, Action<Exception>? onError = null, Action? onClose = null,
-            string? @namespace = null, CancellationToken cancellationToken = default, string? labelSelector = null)
+            string? @namespace = null, string? labelSelector = null, CancellationToken cancellationToken = default)
             where TResource : IKubernetesObject<V1ObjectMeta>
         {
             var crd = CustomEntityDefinitionExtensions.CreateResourceDefinition<TResource>();

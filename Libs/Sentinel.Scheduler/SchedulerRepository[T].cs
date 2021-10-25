@@ -12,25 +12,21 @@ namespace Sentinel.Scheduler
 {
     public class SchedulerRepository<T> where T : IScheduledTask, new()
     {
-        public ObservableCollection<T> Items { get => items; set => items = value; }
+        public ObservableCollection<T> Items { get; set; }
         public List<SchedulerTaskWrapper<T>> ScheduledTasks { get; }
         private readonly ILogger<SchedulerRepository<T>> logger;
-        private ObservableCollection<T> items;
         private readonly string genericTypeName;
 
         public SchedulerRepository(ILogger<SchedulerRepository<T>> logger)
         {
-
-            var genericTypeName = typeof(T).Name;
+            genericTypeName = typeof(T).Name;
             this.logger = logger;
             Items = new ObservableCollection<T>();
             ScheduledTasks = new List<SchedulerTaskWrapper<T>>();
 
             this.logger = logger;
-            foreach (T item in Items)
-            {
-                addItem(item);
-            }
+            Items.ForEach(p => addItem(p));
+
             Items.CollectionChanged += new NotifyCollectionChangedEventHandler(collectionChanged);
         }
 
@@ -38,8 +34,8 @@ namespace Sentinel.Scheduler
         {
             if (e.NewItems != null)
             {
-                foreach (T x in e.NewItems) { addItem(x); };
-            };
+                foreach (T x in e.NewItems) { addItem(x); }
+            }
             if (e.OldItems != null)
             {
                 foreach (T y in e.OldItems) { deleteItem(y); }
@@ -68,14 +64,12 @@ namespace Sentinel.Scheduler
         // {
         //     var itemToUpdate = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
         //     var referenceTime = DateTime.UtcNow;
-
         //     var scheduledTask = new SchedulerTaskWrapper<T>
         //     {
         //         Uid = item.Uid,
         //         Schedule = CrontabSchedule.Parse(item.Schedule),
         //         Task = item,
         //         NextRunTime = referenceTime,
-
         //     };
         //     itemToUpdate = scheduledTask;
         // }

@@ -55,8 +55,6 @@ namespace Sentinel.Worker.Sync.Watchers
         private void deployWatchStarter(CancellationToken stoppingToken)
         {
             this.ReportHealthy();
-
-            //var deploylistResp = _k8sService.ApiClient.ListNamespacedDeploymentWithHttpMessagesAsync("", watch: true);
             this._logger.LogCritical("Watch Started");
 
             using (_k8sService.Watch<V1Deployment>(timeout: TimeSpan.FromMinutes(60),

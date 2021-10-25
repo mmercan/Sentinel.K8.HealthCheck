@@ -12,7 +12,7 @@ namespace Sentinel.Redis
 {
 
     //Key value has to be string Type
-    public class RedisDictionary<TValue> : IDictionary<string, TValue>, IRedisDictionary<TValue>
+    public class RedisDictionary<TValue> : IRedisDictionary<TValue>
     {
         private readonly IDatabase database;
         private readonly ILogger _logger;
