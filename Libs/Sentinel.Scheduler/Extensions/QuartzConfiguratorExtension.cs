@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Quartz;
 
-namespace Sentinel.Worker.Sync
+namespace Sentinel.Scheduler.Extensions
 {
     public static class QuartzConfiguratorExtension
     {
@@ -14,7 +14,6 @@ namespace Sentinel.Worker.Sync
             if (configurationSection["enabled"] != null
             && configurationSection["enabled"] == "true")
             {
-
                 var name = typeof(T).Name;
 
                 configurator.ScheduleJob<T>(trigger => trigger

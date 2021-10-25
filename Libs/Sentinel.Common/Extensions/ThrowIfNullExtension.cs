@@ -17,8 +17,7 @@ namespace Sentinel.Common.Extensions
             // {
             //     paramName = name;
             // }
-            // if (param.GetValue(item, null) == null)
-            //     throw new ArgumentNullException(param.Name);
+            // if (param.GetValue(item, null) == null) throw new ArgumentNullException(param.Name);
         }
     }
 }

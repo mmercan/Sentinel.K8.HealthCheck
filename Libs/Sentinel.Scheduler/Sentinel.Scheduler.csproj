@@ -5,12 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Quartz" Version="3.3.3" />
+    <PackageReference Include="Quartz.AspNetCore" Version="3.3.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Sentinel.Models\Sentinel.Models.csproj" />
     <ProjectReference Include="..\Sentinel.Common\Sentinel.Common.csproj" />
+    <ProjectReference Include="..\Sentinel.Redis\Sentinel.Redis.csproj" />
   </ItemGroup>
 
 </Project>

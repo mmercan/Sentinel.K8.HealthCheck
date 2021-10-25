@@ -4,38 +4,43 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using Sentinel.Models.Redis;
 using Sentinel.Models.Scheduler;
-
+using Sentinel.Redis;
+using StackExchange.Redis;
 
 namespace Sentinel.Scheduler
 {
-    public class SchedulerRepositoryFeeder<T, TKey>
-    where T : IScheduledTask, new()
-
+    public class SchedulerRepositoryFeeder<T> where T : IScheduledTask, new()
     {
-        protected readonly ILogger<SchedulerRepositoryFeeder<T, TKey>> _logger;
+        protected readonly ILogger<SchedulerRepositoryFeeder<T>> _logger;
         protected readonly SchedulerRepository<T> _schedulerRepository;
         protected readonly IRedisDictionary<T> _redisDictionary;
+        private readonly IConnectionMultiplexer _multiplexer;
+        private RedisDictionary<T> redisDictionary;
 
         public SchedulerRepositoryFeeder(
             SchedulerRepository<T> schedulerRepository,
-            ILogger<SchedulerRepositoryFeeder<T, TKey>> logger,
-            IRedisDictionary<T> redisDictionary
-            )
+            ILogger<SchedulerRepositoryFeeder<T>> logger,
+            IConnectionMultiplexer multiplexer)
         {
             _logger = logger;
             _schedulerRepository = schedulerRepository;
-            _redisDictionary = redisDictionary;
+            _multiplexer = multiplexer;
+        }
+
+        public void Initiate(string redisKey)
+        {
+            redisDictionary = new RedisDictionary<T>(_multiplexer, _logger, redisKey);
         }
 
         public void Sync()
         {
-            var ItemsInRedisButNotinRepo = _redisDictionary.Keys.Where(redisKey => !_schedulerRepository.Items.Any(repo => repo.Key == redisKey));
-            var ItemsInRepoButNotinRedis = _schedulerRepository.Items.Where(repo => !_redisDictionary.Keys.Any(redisKey => redisKey == repo.Key));
+            var ItemsInRedisButNotinRepo = redisDictionary.Keys.Where(redisKey => !_schedulerRepository.Items.Any(repo => repo.Key == redisKey));
+            var ItemsInRepoButNotinRedis = _schedulerRepository.Items.Where(repo => !redisDictionary.Keys.Any(redisKey => redisKey == repo.Key));
 
             //Add items To Repo
             foreach (var itemKey in ItemsInRedisButNotinRepo)
             {
-                var itm = _redisDictionary[itemKey];
+                var itm = redisDictionary[itemKey];
                 _schedulerRepository.Items.Add(itm);
             }
 

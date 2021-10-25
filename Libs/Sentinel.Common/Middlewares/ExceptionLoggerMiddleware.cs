@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Sentinel.Worker.Sync.Middlewares
+namespace Sentinel.Common.Middlewares
 {
     public class ExceptionLoggerMiddleware
     {

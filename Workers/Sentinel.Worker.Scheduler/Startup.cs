@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EasyNetQ;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,8 +10,22 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.FeatureManagement.FeatureFilters;
+using Microsoft.FeatureManagement;
+using Microsoft.FeatureManagement.FeatureFilters;
+using Quartz;
+using Sentinel.Common.CustomFeatureFilter;
 using Sentinel.Models.K8sDTOs;
 using Sentinel.Scheduler;
+using Sentinel.Scheduler.Extensions;
+using Sentinel.Worker.Scheduler.JobSchedules;
+using StackExchange.Redis;
+using Serilog;
+using Serilog.Events;
+using Microsoft.Extensions.Logging;
+using CrystalQuartz.Application;
+using CrystalQuartz.AspNetCore;
+using Sentinel.Common.Middlewares;
 
 namespace Sentinel.Worker.Scheduler
 {
@@ -34,16 +49,92 @@ namespace Sentinel.Worker.Scheduler
             services.AddAutoMapper(typeof(Startup).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
             services.AddSingleton<SchedulerRepository<HealthCheckResourceV1>>();
+            services.AddSingleton<SchedulerRepositoryFeeder<HealthCheckResourceV1>>();
+
+            services.AddHttpContextAccessor();
+
+            services.AddFeatureManagement()
+            .AddFeatureFilter<PercentageFilter>()
+            .AddFeatureFilter<HeadersFeatureFilter>();
+
+            services.AddHealthChecks();
+
+            services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
+            services.Configure<QuartzOptions>(options =>
+            {
+                options.Scheduling.IgnoreDuplicates = true; // default: false
+                options.Scheduling.OverWriteExistingData = true; // default: true
+            });
+
+
+            services.AddQuartz(q =>
+            {
+
+                q.SchedulerId = "scheduler-scheduler";
+                q.UseMicrosoftDependencyInjectionJobFactory();
+
+                q.UseSimpleTypeLoader();
+                q.UseInMemoryStore();
+                q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = 10; });
+
+
+                q.AddSchedulerJob<HealthCheckResourceFeederJob>(
+                    Configuration.GetSection("Schedules:HealthCheckResourceFeederJob"), 5);
+
+            });
+
+            services.AddQuartzServer(options =>
+            {
+                options.WaitForJobsToComplete = true;
+                options.StartDelay = TimeSpan.FromSeconds(2);
+            });
+
+
+
+            services.AddSingleton<EasyNetQ.IBus>((ctx) =>
+            {
+                return RabbitHutch.CreateBus(Configuration["RabbitMQConnection"]);
+            });
+
+            services.AddSingleton<IConnectionMultiplexer>((ctx) =>
+            {
+                return ConnectionMultiplexer.Connect(Configuration["RedisConnection"]);
+            });
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ISchedulerFactory schedulerFactory, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            var logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(Configuration)
+            .Enrich.FromLogContext()
+            .Enrich.WithProperty("Enviroment", env.EnvironmentName)
+            .Enrich.WithProperty("ApplicationName", "Sentinel.Worker.Scheduler")
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .WriteTo.Console()
+            .WriteTo.File("Logs/logs.txt");
+            //.WriteTo.Elasticsearch()
+            logger.WriteTo.Console();
+            loggerFactory.AddSerilog();
+            Log.Logger = logger.CreateLogger();
+            app.UseExceptionLogger();
+
+
+            var options = new CrystalQuartzOptions
+            {
+                ErrorDetectionOptions = new CrystalQuartz.Application.ErrorDetectionOptions
+                { VerbosityLevel = ErrorVerbosityLevel.Detailed }
+            };
+
+
+            var scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
+            app.UseCrystalQuartz(() => scheduler, options);
+
 
             app.UseRouting();
 

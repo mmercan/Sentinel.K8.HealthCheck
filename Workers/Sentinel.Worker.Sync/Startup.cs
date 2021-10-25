@@ -26,10 +26,11 @@ using StackExchange.Redis;
 using Serilog;
 using Serilog.Events;
 using Microsoft.Extensions.Logging;
-using Sentinel.Worker.Sync.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Turquoise.HealthChecks.Common;
 using Sentinel.Worker.Sync.Watchers;
+using Sentinel.Scheduler.Extensions;
+using Sentinel.Common.Middlewares;
 
 namespace Sentinel.Worker.Sync
 {
@@ -44,8 +45,6 @@ namespace Sentinel.Worker.Sync
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             if (Configuration["RunOnCluster"] == "true") { services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.InClusterConfig()); }
             else { services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.BuildConfigFromConfigFile()); }
 
@@ -97,8 +96,6 @@ namespace Sentinel.Worker.Sync
                 q.UseInMemoryStore();
                 q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = 10; });
 
-
-
                 q.AddSchedulerJob<NamespaceSchedulerJob>(
                     Configuration.GetSection("Schedules:NamespaceScheduler"), 5);
 
@@ -107,7 +104,6 @@ namespace Sentinel.Worker.Sync
 
                 q.AddSchedulerJob<DeploymentSchedulerJob>(
                     Configuration.GetSection("Schedules:DeploymentScheduler"), 15);
-
 
                 q.AddSchedulerJob<HealthCheckSchedulerJob>(
                     Configuration.GetSection("Schedules:HealthCheckScheduler"), 20);
@@ -131,6 +127,7 @@ namespace Sentinel.Worker.Sync
             {
                 return ConnectionMultiplexer.Connect(Configuration["RedisConnection"]);
             });
+
 
             if (Configuration["Watchers:NamespaceWatcher:enabled"] != null
             && Configuration["Watchers:NamespaceWatcher:enabled"] == "true")

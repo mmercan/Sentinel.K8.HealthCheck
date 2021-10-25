@@ -4,6 +4,7 @@
     <ProjectReference Include="..\..\Libs\Sentinel.K8s\Sentinel.K8s.csproj" />
     <ProjectReference Include="..\..\Libs\Sentinel.Common\Sentinel.Common.csproj" />
     <ProjectReference Include="..\..\Libs\Sentinel.Redis\Sentinel.Redis.csproj" />
+    <ProjectReference Include="..\..\Libs\Sentinel.Scheduler\Sentinel.Scheduler.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
