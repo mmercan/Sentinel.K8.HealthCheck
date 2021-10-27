@@ -116,13 +116,6 @@ namespace Sentinel.Worker.Sync
                 options.StartDelay = TimeSpan.FromSeconds(2);
             });
 
-
-
-            services.AddSingleton<EasyNetQ.IBus>((ctx) =>
-            {
-                return RabbitHutch.CreateBus(Configuration["RabbitMQConnection"]);
-            });
-
             services.AddSingleton<IConnectionMultiplexer>((ctx) =>
             {
                 return ConnectionMultiplexer.Connect(Configuration["RedisConnection"]);
@@ -134,7 +127,6 @@ namespace Sentinel.Worker.Sync
             {
                 services.AddHostedService<NamespaceWatcherJob>();
             }
-
 
             if (Configuration["Watchers:DeploymentWatcher:enabled"] != null
             && Configuration["Watchers:DeploymentWatcher:enabled"] == "true")
@@ -160,7 +152,6 @@ namespace Sentinel.Worker.Sync
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .WriteTo.Console()
                 .WriteTo.File("Logs/logs.txt");
-            //.WriteTo.Elasticsearch()
             logger.WriteTo.Console();
             loggerFactory.AddSerilog();
             Log.Logger = logger.CreateLogger();

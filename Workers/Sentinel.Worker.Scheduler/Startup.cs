@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using EasyNetQ;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +22,8 @@ using Microsoft.Extensions.Logging;
 using CrystalQuartz.Application;
 using CrystalQuartz.AspNetCore;
 using Sentinel.Common.Middlewares;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Turquoise.HealthChecks.Common;
 
 namespace Sentinel.Worker.Scheduler
 {
@@ -68,14 +67,12 @@ namespace Sentinel.Worker.Scheduler
 
             services.AddQuartz(q =>
             {
-
                 q.SchedulerId = "scheduler-scheduler";
                 q.UseMicrosoftDependencyInjectionJobFactory();
 
                 q.UseSimpleTypeLoader();
                 q.UseInMemoryStore();
                 q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = 10; });
-
 
                 q.AddSchedulerJob<HealthCheckResourceFeederJob>(
                     Configuration.GetSection("Schedules:HealthCheckResourceFeederJob"), 5);
@@ -87,8 +84,6 @@ namespace Sentinel.Worker.Scheduler
                 options.WaitForJobsToComplete = true;
                 options.StartDelay = TimeSpan.FromSeconds(2);
             });
-
-
 
             services.AddSingleton<EasyNetQ.IBus>((ctx) =>
             {
@@ -117,7 +112,6 @@ namespace Sentinel.Worker.Scheduler
             .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
             .WriteTo.Console()
             .WriteTo.File("Logs/logs.txt");
-            //.WriteTo.Elasticsearch()
             logger.WriteTo.Console();
             loggerFactory.AddSerilog();
             Log.Logger = logger.CreateLogger();
@@ -134,14 +128,19 @@ namespace Sentinel.Worker.Scheduler
             var scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
             app.UseCrystalQuartz(() => scheduler, options);
 
-
             app.UseRouting();
+
+            app.UseHealthChecks("/Health/IsAliveAndWell", new HealthCheckOptions()
+            {
+                ResponseWriter = WriteResponses.WriteListResponse,
+            });
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsync("{\"IsAlive\":true}");
                 });
             });
         }
