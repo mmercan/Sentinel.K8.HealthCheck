@@ -1,4 +1,4 @@
-{{- $name := include "sentinel-worker-sync.fullname" . -}}
+{{- $name := include "sentinel-worker-scheduler.fullname" . -}}
 {{- $cfgname := printf "%s-%s" $name "config" -}}
 {{- $secretname := printf "%s-%s" $name "secret" -}}
 apiVersion: apps/v1
