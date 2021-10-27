@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.FeatureManagement.FeatureFilters;
 using Microsoft.FeatureManagement;
-using Microsoft.FeatureManagement.FeatureFilters;
 using Quartz;
 using Sentinel.Common.CustomFeatureFilter;
 using Sentinel.Models.K8sDTOs;

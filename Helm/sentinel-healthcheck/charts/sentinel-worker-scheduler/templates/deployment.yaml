@@ -4,32 +4,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "sentinel-worker-sync.fullname" . }}
+  name: {{ include "sentinel-worker-scheduler.fullname" . }}
   labels:
-    {{- include "sentinel-worker-sync.labels" . | nindent 4 }}
+    {{- include "sentinel-worker-scheduler.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 1
   selector:
     matchLabels:
-      {{- include "sentinel-worker-sync.selectorLabels" . | nindent 6 }}
+      {{- include "sentinel-worker-scheduler.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "sentinel-worker-sync.selectorLabels" . | nindent 8 }}
+        {{- include "sentinel-worker-scheduler.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "sentinel-worker-sync.serviceAccountName" . }}
+      serviceAccountName: {{ include "sentinel-worker-scheduler.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -69,7 +69,7 @@ spec:
           {{- end -}}
           {{- end -}}
 
-
+          
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

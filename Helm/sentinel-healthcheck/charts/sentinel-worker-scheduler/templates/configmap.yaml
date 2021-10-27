@@ -1,0 +1,16 @@
+{{- if .Values.configmap -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ include "sentinel-worker-scheduler.fullname" . }}-config"
+  labels:
+    {{- include "sentinel-worker-scheduler.labels" . | nindent 4 }}
+data:
+ {{- if .Values.configmap -}}
+{{- range $key, $value := .Values.configmap }}
+ {{ $key }}: {{ default "" $value  | quote }}
+{{- end -}}
+{{- end }}
+
+{{- end }}
+
