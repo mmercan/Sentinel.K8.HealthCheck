@@ -45,3 +45,7 @@ dotnet watch -p .\Sentinel.K8.HealthCheck.sln test --logger:"console;verbosity=d
   :gear: Workers
   :blue_book: Class Library
   :cloud: Api Web Apps
+
+
+# Port-forward
+  kubectl port-forward service/sentinel-worker-scheduler-dev 8080:80 -n sentinel-healthcheck

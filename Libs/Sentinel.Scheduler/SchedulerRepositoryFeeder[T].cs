@@ -16,6 +16,7 @@ namespace Sentinel.Scheduler
         protected readonly IRedisDictionary<T> _redisDictionary;
         private readonly IConnectionMultiplexer _multiplexer;
         private RedisDictionary<T> redisDictionary;
+        private readonly string genericTypeName = typeof(T).Name;
 
         public SchedulerRepositoryFeeder(
             SchedulerRepository<T> schedulerRepository,
@@ -49,6 +50,9 @@ namespace Sentinel.Scheduler
             {
                 _schedulerRepository.Items.Remove(item);
             }
+
+            _logger.LogInformation("Repository " + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");
+
         }
 
 
