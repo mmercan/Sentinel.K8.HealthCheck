@@ -24,6 +24,7 @@ using CrystalQuartz.AspNetCore;
 using Sentinel.Common.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Turquoise.HealthChecks.Common;
+using Sentinel.Worker.Scheduler.Schedules;
 
 namespace Sentinel.Worker.Scheduler
 {
@@ -95,6 +96,7 @@ namespace Sentinel.Worker.Scheduler
                 return ConnectionMultiplexer.Connect(Configuration["RedisConnection"]);
             });
 
+            services.AddHostedService<BusScheduler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
