@@ -51,7 +51,7 @@ namespace Sentinel.Scheduler
                 _schedulerRepository.Items.Remove(item);
             }
 
-            _logger.LogInformation("Repository " + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");
+            _logger.LogInformation("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");
 
         }
 
