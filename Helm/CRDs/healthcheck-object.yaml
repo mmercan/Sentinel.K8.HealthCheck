@@ -4,5 +4,5 @@ metadata:
   name: my-new-healthcheck-object
 spec:
   service: "my-existed-service"
-  crontab: "*/2 * * * *"
+  crontab: "*/6 * * * *"
   cert: ""

@@ -148,7 +148,7 @@ namespace Sentinel.Worker.Sync
                 .ReadFrom.Configuration(Configuration)
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Enviroment", env.EnvironmentName)
-                .Enrich.WithProperty("ApplicationName", "Turquoise.Worker.Sync")
+                .Enrich.WithProperty("ApplicationName", "Sentinel.Worker.Sync")
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .WriteTo.Console()
                 .WriteTo.File("Logs/logs.txt");
