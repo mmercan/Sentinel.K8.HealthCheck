@@ -37,7 +37,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             var syncTime = DateTime.UtcNow;
             dtoitems.ForEach(p => p.LatestSyncDateUTC = syncTime);
 
-            redisDic.Sync(dtoitems);
+            redisDic.UpSert(dtoitems);
             _logger.LogInformation(checks.Count.ToString() + " HealthChecks have been synced");
         }
     }

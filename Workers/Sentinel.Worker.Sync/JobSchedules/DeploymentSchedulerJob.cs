@@ -38,7 +38,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
 
             var syncTime = DateTime.UtcNow;
             dtoitems.ForEach(p => p.SyncDate = syncTime);
-            redisDic.Sync(dtoitems);
+            redisDic.UpSert(dtoitems);
             _logger.LogInformation(dtoitems.Count.ToString() + " Deployments have been synced");
         }
     }

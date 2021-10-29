@@ -51,6 +51,14 @@ namespace Sentinel.Scheduler
                 _schedulerRepository.Items.Remove(item);
             }
 
+            foreach (var item in _schedulerRepository.Items)
+            {
+                if (item.Schedule != redisDictionary[item.Key].Schedule)
+                {
+                    _schedulerRepository.UpdateItem(item);
+                }
+            }
+
             _logger.LogInformation("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");
 
         }

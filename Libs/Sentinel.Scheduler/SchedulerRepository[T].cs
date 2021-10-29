@@ -53,26 +53,29 @@ namespace Sentinel.Scheduler
                 Schedule = CrontabSchedule.Parse(item.Schedule),
                 Task = item,
                 NextRunTime = referenceTime,
-
             };
 
             ScheduledTasks.Add(scheduledTask);
             logger.LogCritical("SchedulerRepository Added" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
-        // private void editItem(T item)
-        // {
-        //     var itemToUpdate = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
-        //     var referenceTime = DateTime.UtcNow;
-        //     var scheduledTask = new SchedulerTaskWrapper<T>
-        //     {
-        //         Uid = item.Uid,
-        //         Schedule = CrontabSchedule.Parse(item.Schedule),
-        //         Task = item,
-        //         NextRunTime = referenceTime,
-        //     };
-        //     itemToUpdate = scheduledTask;
-        // }
+        public void UpdateItem(T item)
+        {
+            var itemToUpdateScheduled = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
+            var itemToUpdate = Items.FirstOrDefault(e => e.Uid == item.Uid);
+
+            var referenceTime = DateTime.UtcNow;
+            var scheduledTask = new SchedulerTaskWrapper<T>
+            {
+                Uid = item.Uid,
+                Schedule = CrontabSchedule.Parse(item.Schedule),
+                Task = item,
+                NextRunTime = referenceTime,
+            };
+            itemToUpdate = item;
+            itemToUpdateScheduled = scheduledTask;
+
+        }
 
         private void deleteItem(T item)
         {

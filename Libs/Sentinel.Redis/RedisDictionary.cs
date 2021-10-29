@@ -106,6 +106,13 @@ namespace Sentinel.Redis
                 Add(key, value);
             }
         }
+
+        private string originalValue(string key)
+        {
+            var redisValue = database.HashGet(_redisKey, key);
+            return redisValue.IsNull ? null : redisValue.ToString();
+        }
+
         public void Add(KeyValuePair<string, TValue> item) => Add(item.Key, item.Value);
 
         public void Clear()
@@ -159,6 +166,24 @@ namespace Sentinel.Redis
         }
 
 
+        public void UpSert(IEnumerable<TValue> items)
+        {
+            var keys = Keys;
+            foreach (var item in items)
+            {
+                Add(item);
+            }
+
+            foreach (var key in Keys)
+            {
+                if (!items.Any(p => PropertyInfoHelpers.GetKeyValue<string, TValue>(p) == key))
+                {
+                    Remove(key);
+                }
+            }
+
+        }
+
         public void Sync(IEnumerable<TValue> items)
         {
             var keys = Keys;
@@ -178,6 +203,7 @@ namespace Sentinel.Redis
                     Remove(key);
                 }
             }
+
         }
 
         public void Sync(IEnumerable<TValue> items, Func<TValue, string> keyFunc)
@@ -201,8 +227,29 @@ namespace Sentinel.Redis
             }
         }
 
+        // private void UpdatePropertiesExceptDateTime(IEnumerable<TValue> items)
+        // {
+        //     foreach (var item in items)
+        //     {
 
 
+        //             var newValue = item;
+        //             var properties = PropertyInfoHelpers.GetProperties<TValue>();
+        //             foreach (var property in properties)
+        //             {
+        //                 if (property.GetType() != typeof(DateTime))
+        //                 {
+        //                     var originalValue = property.GetValue(original);
+        //                     var newValueValue = property.GetValue(newValue);
+        //                     if (originalValue != newValueValue)
+        //                     {
+        //                         property.SetValue(original, newValueValue);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
     }
 }

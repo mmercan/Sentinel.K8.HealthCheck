@@ -26,5 +26,10 @@ namespace Sentinel.Redis
             var key = keyProp.GetValue(item);
             return (TKey)key;
         }
+
+        internal static PropertyInfo[] GetProperties<T>()
+        {
+            return typeof(T).GetProperties();
+        }
     }
 }
