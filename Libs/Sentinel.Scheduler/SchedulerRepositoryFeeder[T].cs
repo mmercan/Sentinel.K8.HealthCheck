@@ -58,7 +58,7 @@ namespace Sentinel.Scheduler
                     _schedulerRepository.UpdateItem(redisDictionary[item.Key]);
                 }
             }
-            _logger.LogInformation("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");
+            _logger.LogDebug("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");
         }
 
 

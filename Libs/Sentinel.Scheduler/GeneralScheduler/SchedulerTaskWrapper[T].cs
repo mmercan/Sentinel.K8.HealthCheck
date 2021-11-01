@@ -38,7 +38,7 @@ namespace Sentinel.Scheduler.GeneralScheduler
             var localCurrentTime = TimeZoneInfo.ConvertTime(currentTime, timeZone);
             var localLastRunTime = TimeZoneInfo.ConvertTime(LastRunTime, timeZone);
 
-            _logger.LogInformation($"SchedulerTaskWrapper: ShouldRun: localNextRunTime : {localNextRunTime.ToString()} localCurrentTime: {localCurrentTime.ToString()} localLastRunTime: {localLastRunTime.ToString()}");
+            _logger.LogDebug($"SchedulerTaskWrapper: ShouldRun: localNextRunTime : {localNextRunTime.ToString()} localCurrentTime: {localCurrentTime.ToString()} localLastRunTime: {localLastRunTime.ToString()}");
 
             return localNextRunTime < localCurrentTime && localLastRunTime != localNextRunTime;
         }

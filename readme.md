@@ -49,3 +49,16 @@ dotnet watch -p .\Sentinel.K8.HealthCheck.sln test --logger:"console;verbosity=d
 
 # Port-forward
   kubectl port-forward service/sentinel-worker-scheduler-dev 8080:80 -n sentinel-healthcheck
+
+
+# LogLevel 
+  // https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel?view=dotnet-plat-ext-5.0
+
+-  Trace
+-  Debug
+-  Critical
+-  Information
+-  Warning
+-  Error
+-  Critical
+-  None

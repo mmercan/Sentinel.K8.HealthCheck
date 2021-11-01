@@ -52,13 +52,13 @@ namespace Sentinel.Worker.Scheduler.Schedules
 
             var tasksThatShouldRun = _healthCheckRepository.ScheduledTasks.Where(t => t.ShouldRun(referenceTime, tzi)).ToList();
 
-            _logger.LogInformation("BusScheduler : Checking for HealthCheckRepository ScheduledTasks " + _healthCheckRepository.ScheduledTasks.Count.ToString() + " Counted " +
+            _logger.LogTrace("BusScheduler : Checking for HealthCheckRepository ScheduledTasks " + _healthCheckRepository.ScheduledTasks.Count.ToString() + " Counted " +
             tasksThatShouldRun.Count.ToString() + " will be triggered");
 
             try
             {
-                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Task.Key + " is scheduled to run at " + t.NextRunTime.ToString()));
-                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Task.Key + " is scheduled local to run at " + TimeZoneInfo.ConvertTime(t.NextRunTime, tzi).ToString()));
+                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogTrace("BusScheduler : ScheduledTasks " + t.Task.Key + " is scheduled to run at " + t.NextRunTime.ToString()));
+                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogTrace("BusScheduler : ScheduledTasks " + t.Task.Key + " is scheduled local to run at " + TimeZoneInfo.ConvertTime(t.NextRunTime, tzi).ToString()));
             }
             catch (Exception ex)
             {
@@ -68,7 +68,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
             foreach (var taskThatShouldRun in tasksThatShouldRun)
             {
                 taskThatShouldRun.Increment();
-                _logger.LogCritical("BusScheduler : Task Adding to RabbitMQ " + taskThatShouldRun.Task.Key);
+                _logger.LogInformation("BusScheduler : Task Adding to RabbitMQ " + taskThatShouldRun.Task.Key);
             }
 
             return Task.CompletedTask;

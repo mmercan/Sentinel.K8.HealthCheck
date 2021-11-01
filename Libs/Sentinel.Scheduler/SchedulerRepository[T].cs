@@ -57,7 +57,7 @@ namespace Sentinel.Scheduler
             };
 
             ScheduledTasks.Add(scheduledTask);
-            _logger.LogCritical("SchedulerRepository Added" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
+            _logger.LogInformation("SchedulerRepository Added" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
         public void UpdateItem(T item)
@@ -87,7 +87,7 @@ namespace Sentinel.Scheduler
             {
                 ScheduledTasks[scheduledIndex] = scheduledTask;
             }
-            _logger.LogCritical("SchedulerRepository Updated" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
+            _logger.LogInformation("SchedulerRepository Updated" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
         private void deleteItem(T item)
@@ -97,7 +97,7 @@ namespace Sentinel.Scheduler
             {
                 ScheduledTasks.Remove(itemtodelete);
             }
-            _logger.LogCritical("SchedulerRepository Deleted" + genericTypeName + " Key : " + item.Key);
+            _logger.LogInformation("SchedulerRepository Deleted" + genericTypeName + " Key : " + item.Key);
         }
 
     }
