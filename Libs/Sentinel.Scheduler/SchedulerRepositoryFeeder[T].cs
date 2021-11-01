@@ -55,7 +55,7 @@ namespace Sentinel.Scheduler
             {
                 if (item.Schedule != redisDictionary[item.Key].Schedule)
                 {
-                    _schedulerRepository.UpdateItem(item);
+                    _schedulerRepository.UpdateItem(redisDictionary[item.Key]);
                 }
             }
 

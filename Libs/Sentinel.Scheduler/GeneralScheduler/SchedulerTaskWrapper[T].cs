@@ -23,9 +23,13 @@ namespace Sentinel.Scheduler.GeneralScheduler
             string nxt = NextRunTime.ToString();
         }
 
-        public bool ShouldRun(DateTime currentTime)
+        public bool ShouldRun(DateTime currentTime, TimeZoneInfo timeZone)
         {
-            return NextRunTime < currentTime && LastRunTime != NextRunTime;
+            var localNextRunTime = TimeZoneInfo.ConvertTime(NextRunTime, timeZone);
+            var localCurrentTime = TimeZoneInfo.ConvertTime(currentTime, timeZone);
+            var localLastRunTime = TimeZoneInfo.ConvertTime(LastRunTime, timeZone);
+
+            return localNextRunTime < localCurrentTime && localLastRunTime != localNextRunTime;
         }
     }
 }

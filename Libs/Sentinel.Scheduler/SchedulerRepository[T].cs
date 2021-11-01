@@ -61,8 +61,8 @@ namespace Sentinel.Scheduler
 
         public void UpdateItem(T item)
         {
-            var itemToUpdateScheduled = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
-            var itemToUpdate = Items.FirstOrDefault(e => e.Uid == item.Uid);
+            // var itemToUpdateScheduled = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
+            // var itemToUpdate = Items.FirstOrDefault(e => e.Uid == item.Uid);
 
             var referenceTime = DateTime.UtcNow;
             var scheduledTask = new SchedulerTaskWrapper<T>
@@ -72,8 +72,19 @@ namespace Sentinel.Scheduler
                 Task = item,
                 NextRunTime = referenceTime,
             };
-            itemToUpdate = item;
-            itemToUpdateScheduled = scheduledTask;
+
+            var itemIndex = Items.IndexOf(Items.FirstOrDefault(e => e.Uid == item.Uid));
+            if (itemIndex > -1)
+            {
+                Items[itemIndex] = item;
+            }
+
+
+            var scheduledIndex = ScheduledTasks.IndexOf(ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid));
+            if (scheduledIndex > -1)
+            {
+                ScheduledTasks[scheduledIndex] = scheduledTask;
+            }
 
         }
 
