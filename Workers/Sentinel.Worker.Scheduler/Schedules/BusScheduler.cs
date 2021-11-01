@@ -52,8 +52,6 @@ namespace Sentinel.Worker.Scheduler.Schedules
             var tasksThatShouldRun = _healthCheckRepository.ScheduledTasks.Where(t => t.ShouldRun(localtime, tzi)).ToList();
 
             _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Item.Key + " is scheduled to run at " + t.NextRunTime.ToString()));
-
-
             _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Item.Key + " is scheduled local to run at " + TimeZoneInfo.ConvertTime(t.NextRunTime, tzi).ToString()));
 
             _logger.LogInformation("BusScheduler : Checking for HealthCheckRepository ScheduledTasks " + _healthCheckRepository.ScheduledTasks.Count.ToString() + " Counted " +
@@ -63,6 +61,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
                 taskThatShouldRun.Increment();
                 _logger.LogCritical("BusScheduler : Task Adding to RabbitMQ " + taskThatShouldRun.Task.Key);
             }
+
             return Task.CompletedTask;
         }
     }
