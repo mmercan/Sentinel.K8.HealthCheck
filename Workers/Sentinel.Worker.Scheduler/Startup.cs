@@ -137,6 +137,7 @@ namespace Sentinel.Worker.Scheduler
                 ResponseWriter = WriteResponses.WriteListResponse,
             });
 
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/", async context =>
