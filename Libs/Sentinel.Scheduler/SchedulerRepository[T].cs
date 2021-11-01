@@ -52,6 +52,7 @@ namespace Sentinel.Scheduler
                 Uid = item.Uid,
                 Schedule = CrontabSchedule.Parse(item.Schedule),
                 Task = item,
+                Item = item,
                 NextRunTime = referenceTime,
             };
 
@@ -70,6 +71,7 @@ namespace Sentinel.Scheduler
                 Uid = item.Uid,
                 Schedule = CrontabSchedule.Parse(item.Schedule),
                 Task = item,
+                Item = item,
                 NextRunTime = referenceTime,
             };
 

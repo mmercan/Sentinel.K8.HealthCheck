@@ -58,8 +58,8 @@ namespace Sentinel.Worker.Scheduler.Schedules
 
             try
             {
-                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Item.Key + " is scheduled to run at " + t.NextRunTime.ToString()));
-                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Item.Key + " is scheduled local to run at " + TimeZoneInfo.ConvertTime(t.NextRunTime, tzi).ToString()));
+                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Task.Key + " is scheduled to run at " + t.NextRunTime.ToString()));
+                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Task.Key + " is scheduled local to run at " + TimeZoneInfo.ConvertTime(t.NextRunTime, tzi).ToString()));
             }
             catch (Exception ex)
             {
