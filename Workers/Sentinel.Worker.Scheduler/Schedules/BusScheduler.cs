@@ -51,6 +51,11 @@ namespace Sentinel.Worker.Scheduler.Schedules
 
             var tasksThatShouldRun = _healthCheckRepository.ScheduledTasks.Where(t => t.ShouldRun(localtime, tzi)).ToList();
 
+            _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Item.Key + " is scheduled to run at " + t.NextRunTime.ToString()));
+
+
+            _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogInformation("BusScheduler : ScheduledTasks " + t.Item.Key + " is scheduled local to run at " + TimeZoneInfo.ConvertTime(t.NextRunTime, tzi).ToString()));
+
             _logger.LogInformation("BusScheduler : Checking for HealthCheckRepository ScheduledTasks " + _healthCheckRepository.ScheduledTasks.Count.ToString() + " Counted " +
             tasksThatShouldRun.Count.ToString() + " will be triggered");
             foreach (var taskThatShouldRun in tasksThatShouldRun)
