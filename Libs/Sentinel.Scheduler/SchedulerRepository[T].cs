@@ -47,7 +47,7 @@ namespace Sentinel.Scheduler
         {
             var referenceTime = DateTime.UtcNow;
 
-            var scheduledTask = new SchedulerTaskWrapper<T>
+            var scheduledTask = new SchedulerTaskWrapper<T>(_logger)
             {
                 Uid = item.Uid,
                 Schedule = CrontabSchedule.Parse(item.Schedule),
@@ -66,7 +66,7 @@ namespace Sentinel.Scheduler
             // var itemToUpdate = Items.FirstOrDefault(e => e.Uid == item.Uid);
 
             var referenceTime = DateTime.UtcNow;
-            var scheduledTask = new SchedulerTaskWrapper<T>
+            var scheduledTask = new SchedulerTaskWrapper<T>(_logger)
             {
                 Uid = item.Uid,
                 Schedule = CrontabSchedule.Parse(item.Schedule),

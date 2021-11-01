@@ -50,8 +50,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
             _logger.LogInformation("BusScheduler : Local time zone: " + tzi.DisplayName + " and Local Time is " + localtime.ToString());
 
 
-            var tasksThatShouldRun = _healthCheckRepository.ScheduledTasks.Where(t => t.ShouldRun(localtime, tzi)).ToList();
-
+            var tasksThatShouldRun = _healthCheckRepository.ScheduledTasks.Where(t => t.ShouldRun(referenceTime, tzi)).ToList();
 
             _logger.LogInformation("BusScheduler : Checking for HealthCheckRepository ScheduledTasks " + _healthCheckRepository.ScheduledTasks.Count.ToString() + " Counted " +
             tasksThatShouldRun.Count.ToString() + " will be triggered");
