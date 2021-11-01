@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - Workers/Sentinel.Worker.Scheduler/**
+      - Libs/Sentinel.Scheduler/**
       - Helm/sentinel-healthcheck/charts/sentinel-worker-scheduler/**
   pull_request:
     branches: [master]
