@@ -14,17 +14,17 @@ namespace Sentinel.Scheduler
     {
         public ObservableCollection<T> Items { get; set; }
         public List<SchedulerTaskWrapper<T>> ScheduledTasks { get; }
-        private readonly ILogger<SchedulerRepository<T>> logger;
+        private readonly ILogger<SchedulerRepository<T>> _logger;
         private readonly string genericTypeName;
 
         public SchedulerRepository(ILogger<SchedulerRepository<T>> logger)
         {
             genericTypeName = typeof(T).Name;
-            this.logger = logger;
+            _logger = logger;
             Items = new ObservableCollection<T>();
             ScheduledTasks = new List<SchedulerTaskWrapper<T>>();
 
-            this.logger = logger;
+
             Items.ForEach(p => addItem(p));
 
             Items.CollectionChanged += new NotifyCollectionChangedEventHandler(collectionChanged);
@@ -57,7 +57,7 @@ namespace Sentinel.Scheduler
             };
 
             ScheduledTasks.Add(scheduledTask);
-            logger.LogCritical("SchedulerRepository Added" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
+            _logger.LogCritical("SchedulerRepository Added" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
         public void UpdateItem(T item)
@@ -87,7 +87,7 @@ namespace Sentinel.Scheduler
             {
                 ScheduledTasks[scheduledIndex] = scheduledTask;
             }
-
+            _logger.LogCritical("SchedulerRepository Updated" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
         private void deleteItem(T item)
@@ -97,6 +97,7 @@ namespace Sentinel.Scheduler
             {
                 ScheduledTasks.Remove(itemtodelete);
             }
+            _logger.LogCritical("SchedulerRepository Deleted" + genericTypeName + " Key : " + item.Key);
         }
 
     }
