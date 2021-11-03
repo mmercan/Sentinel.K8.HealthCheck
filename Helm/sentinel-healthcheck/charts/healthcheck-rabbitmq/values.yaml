@@ -75,7 +75,7 @@ tolerations: []
 
 affinity: {}
 
-environment: dev
+environment: health
 hostdomain: myrcan.com
 password: Pa$$w0rd
 env:
