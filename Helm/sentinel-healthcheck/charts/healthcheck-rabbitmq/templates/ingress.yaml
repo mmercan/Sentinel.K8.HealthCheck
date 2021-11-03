@@ -26,6 +26,6 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ include "Turquoise.Service.Rabbitmq.fullname" . }}-http
+          serviceName: {{ include "healthcheck-rabbitmq.fullname" . }}-http
           servicePort: 80
 {{- end }}

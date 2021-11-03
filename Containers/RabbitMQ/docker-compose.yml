@@ -1,11 +1,11 @@
 version: "3.4"
 
 services:
-  turquoise-service-rabbitmq:
-    image: mmercan/turquoise-service-rabbitmq:${TAGVersion}-prod-linux
+  healthcheck-rabbitmq:
+    image: mmercan/healthcheck-rabbitmq:${TAGVersion}-prod-linux
     build:
       context: ./
-      dockerfile: dockerfile-linux
+      dockerfile: Dockerfile
     labels:
       NAME: "rabbitmq1"
     environment:

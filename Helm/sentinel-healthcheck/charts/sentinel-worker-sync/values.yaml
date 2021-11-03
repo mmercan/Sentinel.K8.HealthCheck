@@ -68,14 +68,11 @@ pipelines:
   org: "org"
 
 secrets:
-  Mongodb__ConnectionString: "mongodb://root:hbMnztmZ4w9JJTGZ@turquoise-db-mongodb-dev:27017/admin?readPreference=primary"
-  RabbitMQConnection: "host=turquoise-rabbitmq-dev-tcp;username=rabbitmq;password=rabbitmq; timeout=10"
   ELASTICSEARCH_URL: "http://sentinel-db-elasticsearch.sentinel-helm:9200"
   RedisConnection: "healthcheck-redis-dev:6379,defaultDatabase=2,password=pn3FHuee2kxFzQmm"
 
 configmap:
   ASPNETCORE_ENVIRONMENT: "Production"
-  Mongodb__DatabaseName: "turquoise-dev"
   queue__servicev1: "healthcheck.service"
   DOTNET_RUNNING_IN_CONTAINER: "true"
   RunOnCluster: "true"
