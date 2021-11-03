@@ -3,9 +3,10 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-
+branch: unknown
 image:
-  repository: nginx
+  repository: mmercan/healthcheck-rabbitmq
+  tag: latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -21,10 +22,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext: {}
+podSecurityContext:
+  {}
   # fsGroup: 2000
 
-securityContext: {}
+securityContext:
+  {}
   # capabilities:
   #   drop:
   #   - ALL
@@ -37,8 +40,9 @@ service:
   port: 80
 
 ingress:
-  enabled: false
-  annotations: {}
+  enabled: true
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -49,7 +53,11 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
+istio:
+  enabled: true
+
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -66,3 +74,24 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+environment: dev
+hostdomain: myrcan.com
+password: Pa$$w0rd
+env:
+  values:
+
+secrets:
+  SentinelConnection: "con"
+
+configmap:
+  RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+
+azurepipelines:
+  run: "run"
+  pipeline: "pipeline"
+  pipelineId: "pipelineId"
+  jobName: "jobName"
+  runuri: "runuri"
+  project: "project"
+  org: "org"

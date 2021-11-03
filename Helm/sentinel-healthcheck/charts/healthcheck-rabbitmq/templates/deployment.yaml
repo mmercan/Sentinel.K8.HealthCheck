@@ -1,9 +1,14 @@
+{{- $name := include "healthcheck-rabbitmq.fullname" . -}}
+{{- $cfgname := printf "%s-%s" $name "config" -}}
+{{- $secretname := printf "%s-%s" $name "secret" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "healthcheck-rabbitmq.fullname" . }}
   labels:
     {{- include "healthcheck-rabbitmq.labels" . | nindent 4 }}
+  annotations:
+    {{- include "healthcheck-rabbitmq.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -13,43 +18,36 @@ spec:
     metadata:
       labels:
         {{- include "healthcheck-rabbitmq.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- include "Turquoise.Service.Rabbitmq.annotations" . | nindent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
       serviceAccountName: {{ include "healthcheck-rabbitmq.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+            - containerPort: 5672
+            - containerPort: 15672
+          volumeMounts:
+          - mountPath: /etc/rabbitmq
+            name: config
+          envFrom:
+            - configMapRef:
+                name: {{ $cfgname }}
+            - secretRef:
+                name: {{ $secretname }}
+          env:
+          {{- if .Values.env.values -}}
+          {{- range .Values.env.values }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+          {{- end -}}
+          {{- end -}}
+      volumes:
+        - name: config
+          configMap:
+            name: {{$cfgname}}
+            items:
+            - key: rabbitmq-config
+              path: rabbitmq.conf

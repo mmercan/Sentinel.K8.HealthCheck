@@ -47,8 +47,21 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "healthcheck-rabbitmq.selectorLabels" -}}
+app: {{ include "healthcheck-rabbitmq.name" . }}
+version: {{ .Chart.AppVersion  | quote }}
 app.kubernetes.io/name: {{ include "healthcheck-rabbitmq.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+branch:  {{ .Values.branch }}
+{{- end -}}
+
+{{- define "healthcheck-rabbitmq.annotations" -}}
+azure-pipelines/run: {{ .Values.azurepipelines.run }}
+azure-pipelines/pipeline: {{ .Values.azurepipelines.pipeline }}
+azure-pipelines/pipelineId: {{ .Values.azurepipelines.pipelineId }}
+azure-pipelines/jobName: {{ .Values.azurepipelines.jobName }}
+azure-pipelines/runuri: {{ .Values.azurepipelines.runuri | replace " " "%20" | replace "(" "%28" | replace ")" "%29" | replace "*" "%2A"}}
+azure-pipelines/project: {{ .Values.azurepipelines.project | replace " " "%20" | replace "(" "%28" | replace ")" "%29" | replace "*" "%2A"}}
+azure-pipelines/org: {{ .Values.azurepipelines.org }}
 {{- end -}}
 
 {{/*

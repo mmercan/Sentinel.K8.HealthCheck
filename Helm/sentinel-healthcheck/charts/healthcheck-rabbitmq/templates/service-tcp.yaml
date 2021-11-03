@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "healthcheck-rabbitmq.fullname" . }}-tcp
+  labels:                    
+    {{- include "healthcheck-rabbitmq.labels" . | nindent 4 }}
+spec:
+  type: LoadBalancer
+  ports:        
+  - name: transport          
+    port: 5672               
+    targetPort: 5672
+    protocol: TCP
+  selector:
+    {{- include "healthcheck-rabbitmq.selectorLabels" . | nindent 4 }}
+

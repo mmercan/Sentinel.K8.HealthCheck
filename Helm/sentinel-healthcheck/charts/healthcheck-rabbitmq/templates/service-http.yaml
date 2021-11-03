@@ -1,15 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "healthcheck-rabbitmq.fullname" . }}
+  name: {{ include "healthcheck-rabbitmq.fullname" . }}-http
   labels:
     {{- include "healthcheck-rabbitmq.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+  - name: http               
+    port: 80               
+    targetPort: 15672
+    protocol: TCP    
   selector:
     {{- include "healthcheck-rabbitmq.selectorLabels" . | nindent 4 }}
+

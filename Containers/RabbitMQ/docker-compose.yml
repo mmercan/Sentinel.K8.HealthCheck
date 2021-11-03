@@ -1,0 +1,19 @@
+version: "3.4"
+
+services:
+  turquoise-service-rabbitmq:
+    image: mmercan/turquoise-service-rabbitmq:${TAGVersion}-prod-linux
+    build:
+      context: ./
+      dockerfile: dockerfile-linux
+    labels:
+      NAME: "rabbitmq1"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+    # volumes:
+    # - ./config/:/etc/rabbitmq/
+    # - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro"
+    # - "./autocluster-0.4.1.ez:/usr/lib/rabbitmq/lib/rabbitmq_server-3.5.5/plugins/autocluster-0.4.1.ez"
+    ports:
+      - "15672:15672"
+      - "5672:5672"

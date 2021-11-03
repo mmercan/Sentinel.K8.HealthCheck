@@ -49,6 +49,8 @@ namespace Sentinel.Scheduler
             foreach (var item in ItemsInRepoButNotinRedis)
             {
                 _schedulerRepository.Items.Remove(item);
+
+                _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {item.Key} Removed ");
             }
 
             foreach (var pair in redisDictionary)
@@ -56,6 +58,9 @@ namespace Sentinel.Scheduler
                 if (pair.Value.Schedule != _schedulerRepository.Items.FirstOrDefault(x => x.Key == pair.Key)?.Schedule)
                 {
                     _schedulerRepository.UpdateItem(pair.Value);
+
+                    _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {pair.Key} updated  new Schedule {pair.Value.Schedule}");
+
                 }
             }
             _logger.LogDebug("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");
