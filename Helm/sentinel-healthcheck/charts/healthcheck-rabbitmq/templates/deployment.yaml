@@ -19,7 +19,7 @@ spec:
       labels:
         {{- include "healthcheck-rabbitmq.selectorLabels" . | nindent 8 }}
       annotations:
-        {{- include "Thealthcheck-rabbitmq.annotations" . | nindent 8 }}
+        {{- include "healthcheck-rabbitmq.annotations" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "healthcheck-rabbitmq.serviceAccountName" . }}
       containers:
