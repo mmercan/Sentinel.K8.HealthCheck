@@ -51,11 +51,11 @@ namespace Sentinel.Scheduler
                 _schedulerRepository.Items.Remove(item);
             }
 
-            foreach (var item in _schedulerRepository.Items)
+            foreach (var pair in redisDictionary)
             {
-                if (item.Schedule != redisDictionary[item.Key].Schedule)
+                if (pair.Value.Schedule != _schedulerRepository.Items.FirstOrDefault(x => x.Key == pair.Key)?.Schedule)
                 {
-                    _schedulerRepository.UpdateItem(redisDictionary[item.Key]);
+                    _schedulerRepository.UpdateItem(pair.Value);
                 }
             }
             _logger.LogDebug("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");
