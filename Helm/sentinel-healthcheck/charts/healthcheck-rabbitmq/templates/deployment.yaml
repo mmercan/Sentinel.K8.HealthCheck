@@ -38,4 +38,4 @@ spec:
             name: {{$cfgname}}
             items:
             - key: rabbitmq-config
-              path: rabbitmq.conf
+              path: rabbitmq1.conf
