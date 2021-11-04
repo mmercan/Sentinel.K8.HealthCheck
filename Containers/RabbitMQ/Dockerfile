@@ -5,9 +5,6 @@ FROM rabbitmq:3.9-management
 # ENV RABBITMQ_DEFAULT_PASS = rabbitmq
 # ENV RABBITMQ_DEFAULT_VHOST = /
 
-ENV RABBITMQ_USER healthcheckmq
-ENV RABBITMQ_PASSWORD Pa$$w0rd
-
 COPY ./config/rabbit_ac2b7e114d77_2019-1-7.json /etc/rabbitmq/definitions.json
 COPY ./config/enabled_plugins /etc/rabbitmq/enabled_plugins
 COPY ./config/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
