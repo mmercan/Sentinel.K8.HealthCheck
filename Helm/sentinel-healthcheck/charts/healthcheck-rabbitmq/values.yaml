@@ -77,7 +77,10 @@ affinity: {}
 
 environment: health
 hostdomain: myrcan.com
-password: Pa$$w0rd
+
+rabbitmq:
+  username: healthcheckmq
+  password: "v9Q4GNkuVB4d3EgvRpT4Nv56"
 env:
   values:
 

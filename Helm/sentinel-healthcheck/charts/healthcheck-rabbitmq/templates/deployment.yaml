@@ -27,9 +27,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           env:
           - name: RABBITMQ_DEFAULT_USER
-            value: "healthcheckmq2"
+            value: {{ .Values.rabbitmq.username }}
           - name: RABBITMQ_DEFAULT_PASS
-            value: "v9Q4GNkuVB4d3EgvRpT4Nv56"
+            value: {{ .Values.rabbitmq.password }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 5672
