@@ -30,8 +30,8 @@ spec:
             - containerPort: 5672
             - containerPort: 15672
           volumeMounts:
-          - mountPath: /etc/rabbitmq/rabbitmq.conf
-            subPath: "rabbitmq.conf"
+          - mountPath: /etc/rabbitmq/rabbitmq.tempconf
+            subPath: "rabbitmq.tempconf"
             name: config
       volumes:
         - name: config
@@ -39,4 +39,4 @@ spec:
             name: {{$cfgname}}
             items:
             - key: rabbitmq-config
-              path: rabbitmq.conf
+              path: rabbitmq.tempconf
