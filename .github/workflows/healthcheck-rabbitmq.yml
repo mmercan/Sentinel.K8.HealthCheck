@@ -81,13 +81,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install xmllint
+      - name: Install jq
         run: sudo apt-get install -y jq
 
       - name: extract password
         run: |
-          IP=$(curl -s -X GET https://api.happi.dev/v1/generate-password?apikey=${{ secrets.HAPPI_APIKEY }}&limit=1&length=24&num=1&upper=1&symbols=0)
-          echo $IP
+          IP=$(curl "https://api.happi.dev/v1/generate-password?apikey=${{ secrets.HAPPI_APIKEY }}&limit=1&length=24&num=1&upper=1&symbols=0")
+          password=$(jq -n "$IP" | jq .passwords[0])
+          echo "GITHUB_SHA_SHORT=$(echo $password)" >> $GITHUB_ENV
+
+      - name: Test
+        run: echo $GITHUB_SHA_SHORT
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
