@@ -1,8 +1,8 @@
 FROM rabbitmq:3.9-management
 
 # ENV ABBITMQ_ERLANG_COOKIE = SWQOKODSQALRPCLNMEQG
-ENV RABBITMQ_DEFAULT_USER = rabbitmq
-ENV RABBITMQ_DEFAULT_PASS = Pa$$w0rd
+ENV RABBITMQ_USER rabbitmq
+ENV RABBITMQ_PASSWORD Pa$$w0rd
 # ENV RABBITMQ_DEFAULT_VHOST = /
 
 COPY ./config/rabbit_ac2b7e114d77_2019-1-7.json /etc/rabbitmq/definitions.json
