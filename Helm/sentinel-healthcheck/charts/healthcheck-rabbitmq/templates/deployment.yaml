@@ -25,6 +25,11 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          env:
+          - name: RABBITMQ_DEFAULT_USER
+            value: "healthcheckmq2"
+          - name: RABBITMQ_DEFAULT_PASS
+            value: "v9Q4GNkuVB4d3EgvRpT4Nv56"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 5672
