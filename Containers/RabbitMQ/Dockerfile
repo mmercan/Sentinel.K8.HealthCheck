@@ -1,9 +1,9 @@
 FROM rabbitmq:3.9-management
 
-# ENV ABBITMQ_ERLANG_COOKIE = SWQOKODSQALRPCLNMEQG
-# ENV RABBITMQ_DEFAULT_USER=healthcheckmq
-# ENV RABBITMQ_DEFAULT_PASS="G7zLVWKPz2wXeMmkDyUCmfnd"
-# ENV RABBITMQ_DEFAULT_VHOST = /
+ENV ABBITMQ_ERLANG_COOKIE = SWQOKODSQALRPCLNMEQG
+ENV RABBITMQ_DEFAULT_USER=healthcheckmq
+ENV RABBITMQ_DEFAULT_PASS="G7zLVWKPz2wXeMmkDyUCmfnd"
+ENV RABBITMQ_DEFAULT_VHOST = /
 
 # COPY ./config/rabbit_ac2b7e114d77_2019-1-7.json /etc/rabbitmq/definitions.json
 COPY ./config/enabled_plugins /etc/rabbitmq/enabled_plugins
