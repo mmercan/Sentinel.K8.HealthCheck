@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: "{{ include "healthcheck-rabbitmq.fullname" . }}-config"
 data:
- rabbitmq-config: "loopback_users.guest = false\nlisteners.tcp.default = 5672\ndefault_user = healthcheckmq\ndefault_pass =  {{.Values.password}}\ndefault_vhost = /\nhipe_compile = false\nmanagement.load_definitions = /etc/rabbitmq/definitions.json\n"
+ rabbitmq-config: "loopback_users.guest = false\nlisteners.tcp.default = 5672\ndefault_user = healthcheckmq\ndefault_pass =  {{.Values.password}}\ndefault_vhost = /\nhipe_compile = false\n\n"
  servicename: {{ include "healthcheck-rabbitmq.fullname" . }}
  {{- if .Values.configmap -}}
 {{- range $key, $value := .Values.configmap }}
