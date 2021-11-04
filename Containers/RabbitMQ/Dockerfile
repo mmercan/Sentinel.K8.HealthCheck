@@ -7,7 +7,7 @@ ENV RABBITMQ_DEFAULT_VHOST = /
 
 # COPY ./config/rabbit_ac2b7e114d77_2019-1-7.json /etc/rabbitmq/definitions.json
 COPY ./config/enabled_plugins /etc/rabbitmq/enabled_plugins
-# COPY ./config/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
+COPY ./config/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
 
 
 #RUN rabbitmqctl wait /var/run/rabbitmq/pid
