@@ -3,8 +3,6 @@
     "users": [
         {
             "name": "healthcheckmq",
-            "password_hash": "tzUtenuYPbd+4hXq0ZJaFaVv1s4ldBCTZWMSdFJRZ3q1cCA9",
-            "hashing_algorithm": "rabbit_password_hashing_sha256",
             "tags": "administrator"
         }
     ],
