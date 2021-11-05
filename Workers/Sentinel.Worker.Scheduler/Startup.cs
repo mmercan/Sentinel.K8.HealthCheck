@@ -25,6 +25,9 @@ using Sentinel.Common.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Turquoise.HealthChecks.Common;
 using Sentinel.Worker.Scheduler.Schedules;
+using Turquoise.HealthChecks.Common.Checks;
+using Turquoise.HealthChecks.Redis;
+using Turquoise.HealthChecks.RabbitMQ;
 
 namespace Sentinel.Worker.Scheduler
 {
@@ -56,7 +59,10 @@ namespace Sentinel.Worker.Scheduler
             .AddFeatureFilter<PercentageFilter>()
             .AddFeatureFilter<HeadersFeatureFilter>();
 
-            services.AddHealthChecks();
+            services.AddHealthChecks()
+                .AddSystemInfoCheck()
+                .AddRedisHealthCheck(Configuration["RedisConnection"])
+                .AddRabbitMQHealthCheckWithDiIBus();
 
             services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
             services.Configure<QuartzOptions>(options =>

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EasyNetQ;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -16,18 +17,21 @@ namespace Sentinel.Worker.Scheduler.Schedules
     public class BusScheduler : BackgroundServiceWithHealthCheck
     {
 
-        private readonly IBus _bus;
+        private readonly EasyNetQ.IBus _bus;
         private readonly SchedulerRepository<HealthCheckResourceV1> _healthCheckRepository;
+        private readonly IConfiguration _configuration;
 
         public BusScheduler(
             ILogger<BusScheduler> logger,
             IBus bus,
             IOptions<HealthCheckServiceOptions> hcoptions,
-            SchedulerRepository<HealthCheckResourceV1> healthCheckRepository
+            SchedulerRepository<HealthCheckResourceV1> healthCheckRepository,
+            IConfiguration configuration
             ) : base(logger, hcoptions)
         {
             _bus = bus;
             _healthCheckRepository = healthCheckRepository;
+            _configuration = configuration;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -49,26 +53,31 @@ namespace Sentinel.Worker.Scheduler.Schedules
 
             _logger.LogInformation("BusScheduler : Local time zone: " + tzi.DisplayName + " and Local Time is " + localtime.ToString());
 
-
             var tasksThatShouldRun = _healthCheckRepository.ScheduledTasks.Where(t => t.ShouldRun(referenceTime, tzi)).ToList();
 
             _logger.LogTrace("BusScheduler : Checking for HealthCheckRepository ScheduledTasks " + _healthCheckRepository.ScheduledTasks.Count.ToString() + " Counted " +
             tasksThatShouldRun.Count.ToString() + " will be triggered");
 
-            try
-            {
-                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogTrace("BusScheduler : ScheduledTasks " + t.Task.Key + " is scheduled to run at " + t.NextRunTime.ToString()));
-                _healthCheckRepository.ScheduledTasks.ForEach(t => _logger.LogTrace("BusScheduler : ScheduledTasks " + t.Task.Key + " is scheduled local to run at " + TimeZoneInfo.ConvertTime(t.NextRunTime, tzi).ToString()));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("BusScheduler : Error on logging nexttimes : " + ex.Message);
-            }
-
             foreach (var taskThatShouldRun in tasksThatShouldRun)
             {
                 taskThatShouldRun.Increment();
                 _logger.LogInformation("BusScheduler : Task Adding to RabbitMQ " + taskThatShouldRun.Task.Key);
+
+                _bus.PubSub.PublishAsync(taskThatShouldRun.Item, _configuration["queue:healthcheck"]).ContinueWith(task =>
+                {
+                    if (task.IsCompleted)
+                    {
+
+                        _logger.LogInformation("Task Added to RabbitMQ " + _configuration["queue:healthcheck"] + " " + taskThatShouldRun.Task.Key);
+                    }
+                    if (task.IsFaulted)
+                    {
+                        _logger.LogCritical("\n\n");
+                        _logger.LogCritical(task.Exception.Message);
+                        _logger.LogCritical("\n\n");
+                    }
+                });
+
             }
 
             return Task.CompletedTask;
