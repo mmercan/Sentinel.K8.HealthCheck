@@ -82,12 +82,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install jq
-        run: sudo apt-get install -y jq
+        run: |
+          sudo apt-get install -y jq
+          sudo apt-get install -y tr
 
       - name: extract password
         run: |
           IP=$(curl "https://api.happi.dev/v1/generate-password?apikey=${{ secrets.HAPPI_APIKEY }}&limit=1&length=24&num=1&upper=1&symbols=0")
-          password=$(jq -n "$IP" | jq .passwords[0])
+          password=$(jq -n "$IP" | jq .passwords[0] | tr -d '"')
           echo "RABBITMQ_PASSWORD=$(echo $password)" >> $GITHUB_ENV
 
       - name: Test
