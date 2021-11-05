@@ -46,9 +46,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
-          {{- if or .Values.configmap .Values.secrets }}
           envFrom:
-          {{- end }}
           {{- if .Values.configmap }}
             - configMapRef:
                 name: {{ $cfgname }}
@@ -57,6 +55,8 @@ spec:
             - secretRef:
                 name: {{ $secretname }}
            {{- end }}
+            - secretRef:
+                name: "healthcheck-redis-secret"
           env:
             - name: buildnumber
               value: {{ .Values.buildnumber | quote }}

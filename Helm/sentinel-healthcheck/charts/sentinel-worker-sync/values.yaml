@@ -67,9 +67,8 @@ pipelines:
   project: "project * (kk)-"
   org: "org"
 
-secrets:
-  ELASTICSEARCH_URL: "http://sentinel-db-elasticsearch.sentinel-helm:9200"
-  RedisConnection: "healthcheck-redis-dev:6379,defaultDatabase=2,password=pn3FHuee2kxFzQmm"
+# secrets:
+#   sercets_comes_from: "redis and rabbitmq secrets"
 
 configmap:
   ASPNETCORE_ENVIRONMENT: "Production"
