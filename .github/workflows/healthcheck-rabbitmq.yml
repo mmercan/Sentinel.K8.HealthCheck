@@ -84,9 +84,6 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq
 
-      - name: Install tr
-        run: sudo apt-get install -y tr
-
       - name: extract password
         run: |
           IP=$(curl "https://api.happi.dev/v1/generate-password?apikey=${{ secrets.HAPPI_APIKEY }}&limit=1&length=24&num=1&upper=1&symbols=0")
