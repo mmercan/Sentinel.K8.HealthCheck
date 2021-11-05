@@ -2,9 +2,6 @@
 {{- $cfgname := printf "%s-%s" $name "config" -}}
 {{- $secretname := printf "%s-%s" $name "secret" -}}
 
-{{- $redis_secret_name := printf "healthcheck-redis-secret" -}}
-{{- $rabbitmq_secret_name := printf "healthcheck-rabbitmq-secret" -}}
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -48,9 +45,9 @@ spec:
  
           envFrom:
             - secretRef:
-              name: {{$redis_secret_name}}
+              name: "healthcheck-redis-secret"
             - secretRef:
-              name: {{$rabbitmq_secret_name}}
+              name: "healthcheck-rabbitmq-secret"
           {{- if .Values.configmap }}
             - configMapRef:
                 name: {{ $cfgname }}

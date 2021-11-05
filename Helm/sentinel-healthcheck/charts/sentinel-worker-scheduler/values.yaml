@@ -67,7 +67,8 @@ pipelines:
   project: "project * (kk)-"
   org: "org"
 
-# secrets:
+secrets:
+  secret: "runrunrun"
 #   RabbitMQConnection: "host=healthcheck-rabbitmq-dev-tcp;username=rabbitmq;password=rabbitmq; timeout=10"
 #   RedisConnection: "healthcheck-redis-dev:6379,defaultDatabase=2,password=pn3FHuee2kxFzQmm"
 
