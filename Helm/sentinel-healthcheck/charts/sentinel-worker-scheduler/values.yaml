@@ -68,8 +68,7 @@ pipelines:
   org: "org"
 
 # secrets:
-#   RabbitMQConnection: "host=healthcheck-rabbitmq-dev-tcp;username=rabbitmq;password=rabbitmq; timeout=10"
-#   RedisConnection: "healthcheck-redis-dev:6379,defaultDatabase=2,password=pn3FHuee2kxFzQmm"
+#   sercets_comes_from: "redis and rabbitmq secrets"
 
 configmap:
   ASPNETCORE_ENVIRONMENT: "Production"
