@@ -67,14 +67,11 @@ namespace Sentinel.Worker.Scheduler.Schedules
                 {
                     if (task.IsCompleted)
                     {
-
                         _logger.LogInformation("Task Added to RabbitMQ " + _configuration["queue:healthcheck"] + " " + taskThatShouldRun.Task.Key);
                     }
                     if (task.IsFaulted)
                     {
-                        _logger.LogCritical("\n\n");
-                        _logger.LogCritical(task.Exception.Message);
-                        _logger.LogCritical("\n\n");
+                        _logger.LogError(task.Exception.Message);
                     }
                 });
 
