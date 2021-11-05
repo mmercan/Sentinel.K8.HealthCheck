@@ -1,6 +1,10 @@
 {{- $name := include "sentinel-worker-scheduler.fullname" . -}}
 {{- $cfgname := printf "%s-%s" $name "config" -}}
 {{- $secretname := printf "%s-%s" $name "secret" -}}
+
+{{- $redis_secret_name := printf "healthcheck-redis-secret" -}}
+{{- $rabbitmq_secret_name := printf "healthcheck-rabbitmq-secret" -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,10 +45,12 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-
-          {{- if or .Values.configmap .Values.secrets }}
+ 
           envFrom:
-          {{- end }}
+            - secretRef:
+              name: {{$redis_secret_name}}
+            - secretRef:
+              name: {{$rabbitmq_secret_name}}
           {{- if .Values.configmap }}
             - configMapRef:
                 name: {{ $cfgname }}
