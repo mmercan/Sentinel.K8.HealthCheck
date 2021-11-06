@@ -72,7 +72,10 @@ namespace Sentinel.Worker.Scheduler.Schedules
                     if (task.IsFaulted)
                     {
                         _logger.LogError(task.Exception.Message);
-                        _logger.LogDebug(_configuration["RabbitMQConnection"]);
+                        // _bus.
+                        var constring = _configuration["RabbitMQConnection"];
+                        _logger.LogDebug(constring);
+
                     }
                 });
 
