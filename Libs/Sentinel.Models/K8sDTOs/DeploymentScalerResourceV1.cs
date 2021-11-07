@@ -22,7 +22,7 @@ namespace Sentinel.Models.K8sDTOs
 
         public DateTime LatestSyncDateUTC { get; set; }
 
-        public DeploymentScalerResourceSpecV1 Specs { get; set; }
+        public DeploymentScalerResourceSpecV1 Spec { get; set; }
 
         public DeploymentScalerResourceStatusV1 Status { get; set; }
     }
