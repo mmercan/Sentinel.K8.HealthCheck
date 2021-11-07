@@ -65,7 +65,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
 
                 _bus.PubSub.PublishAsync(taskThatShouldRun.Item, _configuration["queue:healthcheck"]).ContinueWith(task =>
                 {
-                    if (task.IsCompleted)
+                    if (task.IsCompleted && !task.IsFaulted)
                     {
                         _logger.LogInformation("Task Added to RabbitMQ " + _configuration["queue:healthcheck"] + " " + taskThatShouldRun.Task.Key);
                     }
