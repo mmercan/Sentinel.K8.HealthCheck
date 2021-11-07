@@ -20,7 +20,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
         private readonly EasyNetQ.IBus _bus;
         private readonly SchedulerRepository<HealthCheckResourceV1> _healthCheckRepository;
         private readonly IConfiguration _configuration;
-
+        private readonly string timezone;
         public BusScheduler(
             ILogger<BusScheduler> logger,
             IBus bus,
@@ -32,6 +32,15 @@ namespace Sentinel.Worker.Scheduler.Schedules
             _bus = bus;
             _healthCheckRepository = healthCheckRepository;
             _configuration = configuration;
+
+            if (!string.IsNullOrWhiteSpace(_configuration["timezone"]))
+            {
+                timezone = _configuration["timezone"];
+            }
+            else
+            {
+                timezone = "Australia/Melbourne";
+            }
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -47,16 +56,11 @@ namespace Sentinel.Worker.Scheduler.Schedules
         private Task ExecuteOnceAsync(CancellationToken stoppingToken)
         {
             var referenceTime = DateTime.UtcNow;
-
-            TimeZoneInfo tzi = TZConvert.GetTimeZoneInfo("Australia/Melbourne");
-            var localtime = TimeZoneInfo.ConvertTime(referenceTime, tzi);
-
-            _logger.LogInformation("BusScheduler : Local time zone: " + tzi.DisplayName + " and Local Time is " + localtime.ToString());
+            TimeZoneInfo tzi = TZConvert.GetTimeZoneInfo(timezone);
 
             var tasksThatShouldRun = _healthCheckRepository.ScheduledTasks.Where(t => t.ShouldRun(referenceTime, tzi)).ToList();
 
-            _logger.LogTrace("BusScheduler : Checking for HealthCheckRepository ScheduledTasks " + _healthCheckRepository.ScheduledTasks.Count.ToString() + " Counted " +
-            tasksThatShouldRun.Count.ToString() + " will be triggered");
+            _logger.LogTrace("BusScheduler : Checking for HealthCheckRepository ScheduledTasks " + _healthCheckRepository.ScheduledTasks.Count.ToString() + " Counted " + tasksThatShouldRun.Count.ToString() + " will be triggered");
 
             foreach (var taskThatShouldRun in tasksThatShouldRun)
             {

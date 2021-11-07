@@ -108,6 +108,11 @@ namespace Sentinel.Worker.Sync
                 q.AddSchedulerJob<HealthCheckSchedulerJob>(
                     Configuration.GetSection("Schedules:HealthCheckScheduler"), 20);
 
+                q.AddSchedulerJob<DeploymentScalersShedulerJob>(
+                    Configuration.GetSection("Schedules:DeploymentScalerScheduler"), 25);
+
+
+
             });
 
             services.AddQuartzServer(options =>

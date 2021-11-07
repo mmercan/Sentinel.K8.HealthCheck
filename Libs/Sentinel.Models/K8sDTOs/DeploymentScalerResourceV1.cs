@@ -6,7 +6,7 @@ using Sentinel.Models.Scheduler;
 
 namespace Sentinel.Models.K8sDTOs
 {
-    public class HealthCheckResourceV1 : IScheduledTask
+    public class DeploymentScalerResourceV1 : IScheduledTask
     {
 
         [Key]
@@ -22,17 +22,17 @@ namespace Sentinel.Models.K8sDTOs
 
         public DateTime LatestSyncDateUTC { get; set; }
 
-        public HealthCheckResourceSpecV1 Specs { get; set; }
+        public DeploymentScalerResourceSpecV1 Specs { get; set; }
 
-        public HealthCheckResourceStatusV1 Status { get; set; }
+        public DeploymentScalerResourceStatusV1 Status { get; set; }
     }
 
-    public class HealthCheckResourceSpecV1 : HealthCheckResource.HealthCheckResourceSpec
+    public class DeploymentScalerResourceSpecV1 : DeploymentScalerResource.DeploymentScalerResourceSpec
     {
 
     }
 
-    public class HealthCheckResourceStatusV1 : HealthCheckResource.HealthCheckResourceStatus
+    public class DeploymentScalerResourceStatusV1 : DeploymentScalerResource.DeploymentScalerResourceStatus
     {
 
     }
