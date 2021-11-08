@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using AutoMapper;
 using Moq;
@@ -12,20 +13,20 @@ using Xunit.Abstractions;
 
 namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 {
-    public class DeploymentSchedulerJobTests
+    public class DeploymentScalerSchedulerJobTests
     {
         private ITestOutputHelper output;
-        public DeploymentSchedulerJobTests(ITestOutputHelper output)
+        public DeploymentScalerSchedulerJobTests(ITestOutputHelper output)
         {
             this.output = output;
         }
 
         [Fact]
-        public void DeploymentSchedulerJobShouldRun()
+        public void DeploymentScalerSchedulerJobShouldRun()
         {
 
             var client = KubernetesClientTestHelper.GetKubernetesClient();
-            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<DeploymentSchedulerJob>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<DeploymentScalersShedulerJob>();
 
             var config = new MapperConfiguration(cfg =>
               {
@@ -35,7 +36,9 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
             IConnectionMultiplexer rediscon = RedisExtensions.GetRedisMultiplexer();
 
-            DeploymentSchedulerJob job = new DeploymentSchedulerJob(
+
+
+            DeploymentScalersShedulerJob job = new DeploymentScalersShedulerJob(
                 logger: logger,
                 k8sclient: client,
                 mapper: mapper,
@@ -48,17 +51,12 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             var contextMoc = new Mock<IJobExecutionContext>();
             contextMoc.Setup(m => m.CancellationToken).Returns(source.Token);
 
+
             var jobtask = job.Execute(contextMoc.Object);
-            try
-            {
-                jobtask.Wait(source.Token);
-            }
-            catch
-            {
+            try { jobtask.Wait(source.Token); }
+            catch { }
 
-            }
-            //Assert.Throws<System.OperationCanceledException>(() => jobtask.Wait(source.Token));
+            // Assert.Throws<OperationCanceledException>(() => jobtask.Wait(source.Token));
         }
-
     }
 }

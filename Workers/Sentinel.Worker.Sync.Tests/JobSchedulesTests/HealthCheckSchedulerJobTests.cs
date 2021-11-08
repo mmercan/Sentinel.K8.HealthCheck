@@ -4,6 +4,7 @@ using AutoMapper;
 using Moq;
 using Quartz;
 using Sentinel.K8s;
+using Sentinel.Tests.Helpers;
 using Sentinel.Worker.Sync.JobSchedules;
 using Sentinel.Worker.Sync.TestsHelpers;
 using StackExchange.Redis;
@@ -33,7 +34,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
               });
             var mapper = config.CreateMapper();
 
-            IConnectionMultiplexer rediscon = ConnectionMultiplexer.Connect("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc");
+            IConnectionMultiplexer rediscon = RedisExtensions.GetRedisMultiplexer();
 
 
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using k8s.Models;
@@ -216,6 +217,26 @@ namespace Sentinel.K8s.Tests
             var mapped = mapper.Map<HealthCheckResourceStatusV1>(port);
             Assert.NotNull(mapped);
         }
+
+
+
+        [Fact]
+        public void Map_DeploymentScalerResourceV1()
+        {
+            DeploymentScalerResource port = new DeploymentScalerResource();
+            port.Spec = new DeploymentScalerResource.DeploymentScalerResourceSpec();
+            port.Status = new DeploymentScalerResource.DeploymentScalerResourceStatus();
+            port.Metadata = new V1ObjectMeta();
+            port.Metadata.Labels = new Dictionary<string, string>()
+            {
+                {"123","567"},
+                {"456","789"}
+            };
+            var res = port.ToString();
+            var mapped = mapper.Map<DeploymentScalerResourceV1>(port);
+            Assert.NotNull(mapped);
+        }
+
 
     }
 }
