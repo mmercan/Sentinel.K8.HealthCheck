@@ -32,7 +32,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             ServiceSchedulerJob job = new ServiceSchedulerJob(logger, client, mapper, rediscon);
 
             CancellationTokenSource source = new CancellationTokenSource();
-            source.CancelAfter(3 * 1000);
+            source.CancelAfter(20 * 1000);
 
             var contextMoc = new Mock<IJobExecutionContext>();
             contextMoc.Setup(m => m.CancellationToken).Returns(source.Token);

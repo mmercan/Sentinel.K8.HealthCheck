@@ -32,14 +32,21 @@ namespace Sentinel.Worker.Sync.JobSchedules
             redisDicVirtualServices = new RedisDictionary<ServiceV1>(redisMultiplexer, _logger, "VirtualServices");
         }
 
-        public async Task Execute(IJobExecutionContext context)
+        public Task Execute(IJobExecutionContext context)
         {
-            var services = await _k8sclient.ApiClient.ListServiceForAllNamespacesWithHttpMessagesAsync();
-            var ingressesTask = await _k8sclient.ApiClient.ListIngressForAllNamespacesWithHttpMessagesAsync();
-            var ingresses = ingressesTask.Body.Items;
-            var result = await _k8sclient.ListClusterCustomObjectAsync("networking.istio.io", "v1alpha3", "virtualservices");
             List<VirtualServiceV1> virtualservices = new List<VirtualServiceV1>();
-            foreach (var item in result)
+
+            var servicesTask = _k8sclient.ApiClient.ListServiceForAllNamespacesWithHttpMessagesAsync();
+            var ingressesTask = _k8sclient.ApiClient.ListIngressForAllNamespacesWithHttpMessagesAsync();
+            var virtualservicesTask = _k8sclient.ListClusterCustomObjectAsync("networking.istio.io", "v1alpha3", "virtualservices");
+
+            Task.WaitAll(servicesTask, ingressesTask, virtualservicesTask);
+
+            var ingresses = ingressesTask.Result.Body.Items;
+            var virtualservicesJson = virtualservicesTask.Result;
+            var services = servicesTask.Result;
+
+            foreach (var item in virtualservicesJson)
             {
                 var virtualService = VirtualServiceV1.ConvertFromJTokenToVirtualServiceV1(item);
                 virtualservices.Add(virtualService);
@@ -75,6 +82,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             redisDicServices.UpSert(dtoitems);
             _logger.LogInformation(dtoitems.Count.ToString() + " Services have been synced");
 
+            return Task.CompletedTask;
 
 
         }
