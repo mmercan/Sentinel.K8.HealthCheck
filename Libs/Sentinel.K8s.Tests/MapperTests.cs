@@ -224,6 +224,7 @@ namespace Sentinel.K8s.Tests
         public void Map_DeploymentScalerResourceV1()
         {
             DeploymentScalerResource port = new DeploymentScalerResource();
+            // port.
             port.Spec = new DeploymentScalerResource.DeploymentScalerResourceSpec();
             port.Status = new DeploymentScalerResource.DeploymentScalerResourceStatus();
             port.Metadata = new V1ObjectMeta();
