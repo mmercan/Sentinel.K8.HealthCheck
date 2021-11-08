@@ -57,8 +57,6 @@ spec:
                   type: string
                 cert:
                   type: string
-                replicas:
-                  type: integer
               required:
                 - service
                 - crontab
@@ -77,8 +75,6 @@ spec:
                 phase:
                   type: string
                   default: "Pending"
-                replicas:
-                  type: integer
                 labelSelector:
                   type: string
       served: true

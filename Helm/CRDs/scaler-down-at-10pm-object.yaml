@@ -1,8 +1,8 @@
 apiVersion: "sentinel.mercan.io/v1"
 kind: DeploymentScaler
 metadata:
-  name: my-new-scaler-object
+  name: scale-down-at-10pm-everynight-object
 spec:
   deployment: "my-existed-deployment"
-  crontab: "*/2 * * * *"
-  replicas: 2
+  crontab: "0 22 * * *"
+  replicas: 3

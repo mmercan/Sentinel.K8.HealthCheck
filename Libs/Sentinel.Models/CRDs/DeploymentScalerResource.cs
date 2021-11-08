@@ -49,8 +49,8 @@ namespace Sentinel.Models.CRDs
             [JsonProperty(PropertyName = "crontab")]
             public string Crontab { get; set; }
 
-            [JsonProperty(PropertyName = "scaleto")]
-            public int ScaleTo { get; set; }
+            [JsonProperty(PropertyName = "replicas")]
+            public int Replicas { get; set; }
 
         }
 

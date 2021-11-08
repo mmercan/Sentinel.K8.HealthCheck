@@ -329,7 +329,7 @@ namespace Sentinel.K8s
                source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()
             ))
            .ForMember(dto => dto.CreationTime, map => map.MapFrom(source =>
-               source.Metadata.CreationTimestamp.Value
+               source.Metadata.CreationTimestamp == null ? default : source.Metadata.CreationTimestamp.Value
             ))
            .ForMember(dto => dto.Annotations, map => map.MapFrom(source =>
               source.Annotations().Select(p => new Label(p.Key, p.Value)).ToList()

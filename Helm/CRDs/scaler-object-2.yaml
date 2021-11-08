@@ -1,0 +1,8 @@
+apiVersion: "sentinel.mercan.io/v1"
+kind: DeploymentScaler
+metadata:
+  name: my-new-scaler-object-2
+spec:
+  deployment: "my-existed-deployment-2"
+  crontab: "*/1 * * * *"
+  replicas: 2

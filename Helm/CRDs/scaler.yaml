@@ -49,12 +49,12 @@ spec:
                   type: string
                 crontab:
                   type: string
-                scaleto:
+                replicas:
                   type: integer
               required:
                 - deployment
                 - crontab
-                - scaleto
+                - replicas
             status:
               description: Status of the Certificate. This is set and managed automatically.
               type: object
