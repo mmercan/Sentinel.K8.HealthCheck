@@ -154,6 +154,13 @@ namespace Sentinel.K8s
             return resources.Items;
         }
 
+        public async Task<List<JToken>> ListClusterCustomObjectAsync(string Group, string Version, string Plural)
+        {
+            var result = await ApiClient.ListClusterCustomObjectAsync(Group, Version, Plural) as JObject;
+            var res = result.SelectToken("items").ToList();
+            return res;
+        }
+
         /// <inheritdoc />
         public Task<IList<TResource>> List<TResource>(string? @namespace = null, params ILabelSelector[] labelSelectors)
             where TResource : IKubernetesObject<V1ObjectMeta> =>

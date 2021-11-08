@@ -174,7 +174,7 @@ namespace Sentinel.K8s.Tests
             // V1Service port = new V1Service();
             var mapped = mapper.Map<ServiceV1>(service);
 
-            mapped.IngressUrl = "";
+            mapped.Ingresses = new List<string>();
             mapped.VirtualServiceUrl = "";
             mapped.LatestSyncDateUTC = System.DateTime.UtcNow;
 

@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using k8s;
 using k8s.Models;
+using Newtonsoft.Json.Linq;
 using Sentinel.Models.K8s.LabelSelectors;
 
 namespace Sentinel.K8s
@@ -97,6 +98,9 @@ namespace Sentinel.K8s
         /// <param name="resource">The resource in question.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>The saved instance of the resource.</returns>
+
+
+        Task<List<JToken>> ListClusterCustomObjectAsync(string Group, string Version, string Plural);
         Task<TResource> Save<TResource>(TResource resource)
             where TResource : class, IKubernetesObject<V1ObjectMeta>;
 

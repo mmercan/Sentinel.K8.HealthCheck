@@ -6,6 +6,11 @@ namespace Sentinel.Models.K8sDTOs
 {
     public class ServiceV1
     {
+        public ServiceV1()
+        {
+            Ingresses = new List<string>();
+        }
+
         [Key]
         public string NameandNamespace { get { return Name + "." + Namespace; } }
         public string Uid { get; set; }
@@ -26,7 +31,7 @@ namespace Sentinel.Models.K8sDTOs
         public List<string> InternalEndpoints { get; set; }
         public List<string> ExternalEndpoints { get; set; }
 
-        public string IngressUrl { get; set; }
+        public IList<string> Ingresses { get; set; }
 
         public string VirtualServiceUrl { get; set; }
 
