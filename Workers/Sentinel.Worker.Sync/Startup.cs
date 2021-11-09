@@ -31,6 +31,7 @@ using Turquoise.HealthChecks.Common;
 using Sentinel.Worker.Sync.Watchers;
 using Sentinel.Scheduler.Extensions;
 using Sentinel.Common.Middlewares;
+using Sentinel.Common;
 
 namespace Sentinel.Worker.Sync
 {
@@ -149,15 +150,10 @@ namespace Sentinel.Worker.Sync
                 app.UseDeveloperExceptionPage();
             }
 
-            var logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
-                .Enrich.FromLogContext()
-                .Enrich.WithProperty("Enviroment", env.EnvironmentName)
-                .Enrich.WithProperty("ApplicationName", "Sentinel.Worker.Sync")
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .WriteTo.Console()
-                .WriteTo.File("Logs/logs.txt");
-            logger.WriteTo.Console();
+
+            var logger = LoggerHelper.ConfigureLogger("Sentinel.Worker.Sync",
+                env.EnvironmentName, Configuration, LogEventLevel.Debug);
+
             loggerFactory.AddSerilog();
             Log.Logger = logger.CreateLogger();
             app.UseExceptionLogger();

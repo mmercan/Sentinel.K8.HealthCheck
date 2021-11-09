@@ -72,7 +72,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
                     }
                 }
 
-
                 var vs = virtualservices.FirstOrDefault(p => p.Namespace == item.Namespace && p.Service == item.Name);
                 if (vs != null)
                 {
@@ -80,11 +79,8 @@ namespace Sentinel.Worker.Sync.JobSchedules
                 }
             }
             redisDicServices.UpSert(dtoitems);
-            _logger.LogInformation(dtoitems.Count.ToString() + " Services have been synced (" + ingresses.Count.ToString() + " ingresses) (" + virtualservices.Count.ToString() + " virtualservices) merged");
-
+            _logger.LogInformation(dtoitems.Count.ToString() + " Services have been synced (" + ingresses.Count.ToString() + " ingresses) (" + virtualservices.Count.ToString() + " virtualservices) merged ");
             return Task.CompletedTask;
-
-
         }
     }
 }

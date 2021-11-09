@@ -157,7 +157,7 @@ namespace Sentinel.K8s
         public async Task<List<JToken>> ListClusterCustomObjectAsync(string Group, string Version, string Plural)
         {
             var result = await ApiClient.ListClusterCustomObjectAsync(Group, Version, Plural) as JObject;
-            var res = result.SelectToken("items").ToList();
+            var res = result?.SelectToken("items")?.ToList();
             return res;
         }
 
