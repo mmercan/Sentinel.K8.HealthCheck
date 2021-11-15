@@ -7,7 +7,6 @@ dotnet watch test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
 
 ```
 
-
 ## Solution
 ```
 dotnet watch -p .\Sentinel.K8.HealthCheck.sln test --logger:"console;verbosity=detailed" /p:CollectCoverage=true
@@ -62,3 +61,10 @@ dotnet watch -p .\Sentinel.K8.HealthCheck.sln test --logger:"console;verbosity=d
 -  Error
 -  Critical
 -  None
+
+
+
+# Compose Run
+```
+docker-compose -f dockercompose-sonar.yml up --build sentinel-healthcheck-test
+```

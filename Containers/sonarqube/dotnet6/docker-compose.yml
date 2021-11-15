@@ -1,0 +1,8 @@
+version: "3.4"
+
+services:
+  dockerfile-sonarqube-dotnet60-sdk:
+    image: mmercan/sonarqube-dotnet60-sdk:latest
+    build:
+      context: ./
+      dockerfile: dockerfile-sonarqube-dotnet60-sdk
