@@ -2,7 +2,7 @@ name: Sentinel Test
 
 on:
   push:
-    branches: [master]
+    branches: ["*"]
     paths:
       - Workers/**
       - Libs/**
