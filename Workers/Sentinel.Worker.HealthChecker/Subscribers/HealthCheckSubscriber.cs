@@ -7,14 +7,18 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sentinel.Common;
+using Sentinel.Models.K8sDTOs;
 
 namespace Sentinel.Worker.HealthChecker.Subscribers
 {
     public class HealthCheckSubscriber : BackgroundServiceWithHealthCheck
     {
+        private Task executingTask;
         private readonly EasyNetQ.IBus _bus;
         private readonly IConfiguration _configuration;
         private readonly string timezone;
+        private ManualResetEventSlim _ResetEvent = new ManualResetEventSlim(false);
+
         public HealthCheckSubscriber(
             ILogger<HealthCheckSubscriber> logger,
             IBus bus,
@@ -36,32 +40,36 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         }
 
 
-        protected async override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                await ExecuteOnceAsync(stoppingToken);
 
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+            executingTask = Task.Factory.StartNew(new Action(SubscribeQueue), TaskCreationOptions.LongRunning);
+            if (executingTask.IsCompleted)
+            {
+                return executingTask;
+            }
+            return Task.CompletedTask;
+        }
+
+        private void SubscribeQueue()
+        {
+            try
+            {
+                _logger.LogCritical("Connected to bus");
+                //  _bus.SubscribeAsync<ServiceV1>(_configuration["queue:servicev1"], Handler); //, x => x.WithTopic("product.*"));
+                _logger.LogCritical("Listening on topic " + _configuration["queue:servicev1"]);
+                // HealthcheckQueueSubscriberStats.SetIsqueueSubscriberStarted(true);
+                _ResetEvent.Wait();
+            }
+            catch (Exception ex)
+            {
+                // HealthcheckQueueSubscriberStats.SetIsqueueSubscriberStarted(false);
+                _logger.LogError("Exception: " + ex.Message);
             }
         }
 
-        private Task ExecuteOnceAsync(CancellationToken stoppingToken)
+        private Task Handler(ServiceV1 service)
         {
-            // await _bus.SubscribeAsync<HealthCheckRequest>("HealthChecker", async (request, message) =>
-            // {
-            //     var healthCheckService = new HealthCheckService(_configuration);
-            //     var healthCheckResult = await healthCheckService.CheckHealthAsync(stoppingToken);
-
-            //     var response = new HealthCheckResponse
-            //     {
-            //         HealthCheckResult = healthCheckResult,
-            //         Timezone = timezone
-            //     };
-
-            //     await _bus.PublishAsync(response);
-            // });
-
             return Task.CompletedTask;
         }
     }

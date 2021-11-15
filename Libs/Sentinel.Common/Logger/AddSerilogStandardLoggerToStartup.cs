@@ -26,7 +26,7 @@ namespace Sentinel.Common
                 .Enrich.WithProperty("ApplicationName", applicationName)
                 .MinimumLevel.Override("Microsoft", minimumLogLevel)
                 .WriteTo.Console()
-                .WriteTo.File("Logs/logs.txt");
+                .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day);
             logger.WriteTo.Console();
 
             return logger;
