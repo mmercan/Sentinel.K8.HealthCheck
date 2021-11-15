@@ -94,11 +94,10 @@ namespace Sentinel.Worker.Sync.Watchers
 
         private void OnClosed()
         {
-            _logger.LogInformation("OnClosed TODO: deployWatchStarter retry the connection");
             var utc = DateTime.UtcNow.ToString();
             var howlongran = (DateTime.UtcNow - lastrestart);
 
-            this._logger.LogError("===on watch Connection  Closed after " + howlongran.TotalMinutes.ToString() + ":" + howlongran.Seconds.ToString() + " min:sec : re-running delay 30 seconds " + utc);
+            this._logger.LogError("===on watch DeploymentWatcherJob Connection  Closed after " + howlongran.TotalMinutes.ToString() + ":" + howlongran.Seconds.ToString() + " min:sec : re-running delay 30 seconds " + utc);
 
             Task.Delay(TimeSpan.FromSeconds(30)).Wait();
             lastrestart = DateTime.UtcNow;

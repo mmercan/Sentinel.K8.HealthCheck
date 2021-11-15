@@ -93,17 +93,16 @@ namespace Sentinel.Worker.Sync.Watchers
 
         private void OnError(Exception ex)
         {
-            this._logger.LogError("===on watch Exception : " + ex.Message);
+            this._logger.LogError("===on watch NamespaceWatcherJob Exception : " + ex.Message);
             this.ReportUnhealthy("Error " + ex.Message);
         }
 
         private void OnClosed()
         {
-            _logger.LogInformation("OnClosed TODO: retry the connection");
             var utc = DateTime.UtcNow.ToString();
             var howlongran = (DateTime.UtcNow - lastrestart);
 
-            this._logger.LogError("===on watch Connection  Closed after " + howlongran.TotalMinutes.ToString() + ":" + howlongran.Seconds.ToString() + " min:sec : re-running delay 30 seconds " + utc);
+            this._logger.LogError("===on watch NamespaceWatcherJob Connection  Closed after " + howlongran.TotalMinutes.ToString() + ":" + howlongran.Seconds.ToString() + " min:sec : re-running delay 30 seconds " + utc);
 
             Task.Delay(TimeSpan.FromSeconds(30)).Wait();
             lastrestart = DateTime.UtcNow;
