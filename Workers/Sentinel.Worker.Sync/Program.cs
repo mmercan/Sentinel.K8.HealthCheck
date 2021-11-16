@@ -25,7 +25,7 @@ using Turquoise.HealthChecks.Common;
 using Turquoise.HealthChecks.Common.CheckCaller;
 using Turquoise.HealthChecks.Common.Checks;
 
-namespace Sentinel.Worker.Scaler;
+namespace Sentinel.Worker.Sync;
 public class Program
 {
     public static void Main(string[] args)
