@@ -16,7 +16,10 @@ namespace Sentinel.Worker.Sync.Tests
             Task.Run(cancellationToken: source.Token, action: () =>
              {
                  var args = new string[1] { "" };
-                 Program.Main(args);
+                 // Program.Main(args);
+
+                 var pr = new Program();
+
              });
         }
     }

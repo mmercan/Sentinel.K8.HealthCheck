@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Sentinel.Worker.Sync.Tests.Helpers
 {
-    public class CustomWebApplicationFactory : WebApplicationFactory<Startup>
+    public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
