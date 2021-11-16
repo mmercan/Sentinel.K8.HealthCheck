@@ -43,7 +43,7 @@ namespace Sentinel.Worker.Sync.Tests.IntegrationTests
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 // Act
                 var responseTask = client.GetAsync(url);
-                responseTask.Wait();
+                responseTask.Wait(10000);
                 var response = responseTask.Result;
                 // Assert
                 // response.EnsureSuccessStatusCode();

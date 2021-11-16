@@ -15,15 +15,17 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 {
     public class HealthCheckSchedulerJobTests
     {
-        private ITestOutputHelper output;
+        private ITestOutputHelper _output;
         public HealthCheckSchedulerJobTests(ITestOutputHelper output)
         {
-            this.output = output;
+            _output = output;
         }
 
         [Fact]
         public void HealthCheckSchedulerJobShouldRun()
         {
+
+            _output.WriteLine("HealthCheckSchedulerJobShouldRun started");
 
             var client = KubernetesClientTestHelper.GetKubernetesClient();
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<HealthCheckSchedulerJob>();
