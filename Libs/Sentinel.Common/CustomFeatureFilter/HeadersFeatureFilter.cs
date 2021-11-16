@@ -30,17 +30,20 @@ namespace Sentinel.Common.CustomFeatureFilter
                 var settings = context.Parameters.Get<HeadersFilterSettings>();
 
                 // Retrieve the current user (ClaimsPrincipal)
-                var user = _httpContextAccessor.HttpContext.User;
+                var user = _httpContextAccessor?.HttpContext?.User;
 
-                var headerKeys = _httpContextAccessor.HttpContext.Request.Headers.Keys.ToList();
+                var headerKeys = _httpContextAccessor?.HttpContext?.Request.Headers.Keys.ToList();
 
                 // Only enable the feature if the user has ALL the required claims
-                var isEnabled = settings.RequiredHeaders
-                    .All(header => headerKeys.Contains(header));
-
-                var hasclaim = user.HasClaim(claim => claim.Type == claimType);
+                var isEnabled = false;
+                if (headerKeys != null)
+                {
+                    isEnabled = settings.RequiredHeaders
+                       .All(header => headerKeys.Contains(header));
+                }
+                var hasclaim = user?.HasClaim(claim => claim.Type == claimType);
                 _logger.LogDebug("hasclaim :" + hasclaim.ToString());
-                _logger.LogDebug(user?.Identity?.Name + " isEnabled : " + isEnabled.ToString() + " " + headerKeys.FirstOrDefault());
+                _logger.LogDebug(user?.Identity?.Name + " isEnabled : " + isEnabled.ToString() + " " + headerKeys?.FirstOrDefault());
 
                 return isEnabled;
             });

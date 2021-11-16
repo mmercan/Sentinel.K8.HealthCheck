@@ -9,7 +9,7 @@ namespace Sentinel.Common.HttpClientHelpers
 {
     public static class HttpClientHelpers
     {
-        public static X509Certificate2 GetCert()
+        public static X509Certificate2? GetCert()
         {
             // //          "-----BEGIN CERTIFICATE-----"
             // var cert64 = "MIICYzCCAcygAwIBAgIBADANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMREwDwYDVQQLEwhMb2NhbCBDQTAeFw05OTEyMjIwNTAwMDBaFw0wMDEyMjMwNDU5NTlaMC4xCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xETAPBgNVBAsTCExvY2FsIENBMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD2bZEo7xGaX2/0GHkrNFZvlxBou9v1Jmt/PDiTMPve8r9FeJAQ0QdvFST/0JPQYD20rH0bimdDLgNdNynmyRoS2S/IInfpmf69iyc2G0TPyRvmHIiOZbdCd+YBHQi1adkj17NDcWj6S14tVurFX73zx0sNoMS79q3tuXKrDsxeuwIDAQABo4GQMIGNMEsGCVUdDwGG+EIBDQQ+EzxHZW5lcmF0ZWQgYnkgdGhlIFNlY3VyZVdheSBTZWN1cml0eSBTZXJ2ZXIgZm9yIE9TLzM5MCAoUkFDRikwDgYDVR0PAQH/BAQDAgAGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFJ3+ocRyCTJw067dLSwr/nalx6YMMA0GCSqGSIb3DQEBBQUAA4GBAMaQzt+zaj1GU77yzlr8iiMBXgdQrwsZZWJo5exnAucJAEYQZmOfyLiMD6oYq+ZnfvM0n8G/Y79q8nhwvuxpYOnRSAXFp6xSkrIOeZtJMY1h00LKp/JX3Ng1svZ2agE126JHsQ0bhzN5TKsYfbwfTwfjdWAGy6Vf1nYi/rO+ryMO";
@@ -27,7 +27,7 @@ namespace Sentinel.Common.HttpClientHelpers
             return clientCert;
         }
 
-        public static X509Certificate2 FindCert(X509Store store, string thumbprint)
+        public static X509Certificate2? FindCert(X509Store store, string thumbprint)
         {
 
             return store.Certificates.OfType<X509Certificate2>().FirstOrDefault(x =>
@@ -59,7 +59,11 @@ namespace Sentinel.Common.HttpClientHelpers
         public CertMessageHandler()
         {
             ClientCertificateOptions = ClientCertificateOption.Manual;
-            ClientCertificates.Add(HttpClientHelpers.GetCert());
+            var cert = HttpClientHelpers.GetCert();
+            if (cert != null)
+            {
+                ClientCertificates.Add(cert);
+            }
         }
     }
 }
