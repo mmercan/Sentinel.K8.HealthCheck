@@ -15,7 +15,7 @@ namespace Sentinel.Models.CRDs
     {
 
         [JsonProperty(PropertyName = "items")]
-        public IList<HealthCheckResource> Items { get; set; }
+        public IList<HealthCheckResource> Items { get; set; } = default!;
 
     }
 
@@ -36,7 +36,7 @@ namespace Sentinel.Models.CRDs
                 }
             }
             var labels = labelsbld.ToString().TrimEnd(',', ' ') + "}";
-            return $"{Metadata.Name} (Labels: {labels}), Spec: {Spec.Service}";
+            return $"{Metadata?.Name} (Labels: {labels}), Spec: {Spec.Service}";
         }
 
         public DateTime SyncDate { get; set; }
@@ -44,40 +44,40 @@ namespace Sentinel.Models.CRDs
         public class HealthCheckResourceSpec
         {
             [JsonProperty(PropertyName = "service")]
-            public string Service { get; set; }
+            public string Service { get; set; } = default!;
 
             [JsonProperty(PropertyName = "crontab")]
-            public string Crontab { get; set; }
+            public string Crontab { get; set; } = default!;
 
             [JsonProperty(PropertyName = "isaliveUrl", NullValueHandling = NullValueHandling.Ignore)]
-            public string IsaliveUrl { get; set; }
+            public string IsaliveUrl { get; set; } = default!;
 
             [JsonProperty(PropertyName = "isaliveandwellUrl", NullValueHandling = NullValueHandling.Ignore)]
-            public string IsaliveandwellUrl { get; set; }
+            public string IsaliveandwellUrl { get; set; } = default!;
 
             [JsonProperty(PropertyName = "clientid", NullValueHandling = NullValueHandling.Ignore)]
-            public string ClientId { get; set; }
+            public string ClientId { get; set; } = default!;
 
             [JsonProperty(PropertyName = "cert", NullValueHandling = NullValueHandling.Ignore)]
-            public string Cert { get; set; }
+            public string Cert { get; set; } = default!;
         }
 
         public class HealthCheckResourceStatus : V1Status
         {
             [JsonProperty(PropertyName = "phase")]
-            public string Phase { get; set; }
+            public string Phase { get; set; } = default!;
 
             [JsonProperty(PropertyName = "lastFailureTime")]
-            public string LastFailureTime { get; set; }
+            public string LastFailureTime { get; set; } = default!;
 
             [JsonProperty(PropertyName = "lastCheckTime")]
-            public string LastCheckTime { get; set; }
+            public string LastCheckTime { get; set; } = default!;
 
             [JsonProperty(PropertyName = "replicas")]
-            public string Replicas { get; set; }
+            public string Replicas { get; set; } = default!;
 
             [JsonProperty(PropertyName = "labelSelector")]
-            public string LabelSelector { get; set; }
+            public string LabelSelector { get; set; } = default!;
 
         }
     }

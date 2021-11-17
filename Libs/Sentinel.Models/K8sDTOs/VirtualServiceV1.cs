@@ -8,12 +8,12 @@ namespace Sentinel.Models.K8sDTOs
 
         [Key]
         public string NameandNamespace { get { return Name + "." + Namespace; } }
-        public string Host { get; set; }
-        public string Service { get; set; }
-        public string Port { get; set; }
+        public string Host { get; set; } = default!;
+        public string Service { get; set; } = default!;
+        public string Port { get; set; } = default!;
 
-        public string Name { get; set; }
-        public string Namespace { get; set; }
+        public string Name { get; set; } = default!;
+        public string Namespace { get; set; } = default!;
 
 
         public static VirtualServiceV1 ConvertFromJTokenToVirtualServiceV1(JToken jitem)

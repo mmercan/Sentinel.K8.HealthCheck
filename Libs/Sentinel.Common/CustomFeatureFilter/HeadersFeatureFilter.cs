@@ -36,10 +36,14 @@ namespace Sentinel.Common.CustomFeatureFilter
 
                 // Only enable the feature if the user has ALL the required claims
                 var isEnabled = false;
-                if (headerKeys != null)
+                if (headerKeys != null && settings != null && settings.RequiredHeaders != null)
                 {
                     isEnabled = settings.RequiredHeaders
                        .All(header => headerKeys.Contains(header));
+                }
+                else
+                {
+                    _logger.LogDebug("HeadersFeatureFilter Null parameter");
                 }
                 var hasclaim = user?.HasClaim(claim => claim.Type == claimType);
                 _logger.LogDebug("hasclaim :" + hasclaim.ToString());

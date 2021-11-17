@@ -181,4 +181,3 @@ namespace Sentinel.Worker.Sync
         }
     }
 }
-//public partial class Program { } // so you can reference it from tests

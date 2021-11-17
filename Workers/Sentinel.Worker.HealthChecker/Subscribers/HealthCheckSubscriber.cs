@@ -37,6 +37,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             {
                 timezone = "Australia/Melbourne";
             }
+            executingTask = Task.CompletedTask;
         }
 
 

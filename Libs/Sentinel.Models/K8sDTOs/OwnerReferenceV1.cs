@@ -4,8 +4,8 @@ namespace Sentinel.Models.K8sDTOs
     {
         public bool BlockOwnerDeletion { get; set; }
         public bool Controller { get; set; }
-        public string Kind { get; set; }
-        public string Name { get; set; }
-        public string Uid { get; set; }
+        public string Kind { get; set; } = default!;
+        public string Name { get; set; } = default!;
+        public string Uid { get; set; } = default!;
     }
 }
