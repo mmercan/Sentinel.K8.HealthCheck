@@ -51,7 +51,7 @@ namespace Sentinel.Common.Middlewares
     }
     public class ExceptionLoggerOptions
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
     }
 
     // Extension method used to add the middleware to the HTTP request pipeline.

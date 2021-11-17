@@ -21,9 +21,9 @@ namespace Sentinel.Common
         private DateTime LastProcessUtc;
         private HealthStatus status;
         private int count = 0;
-        private string message;
+        private string message = default!;
 
-        public void ReportHealthy(string message = null)
+        public void ReportHealthy(string message = "")
         {
             LastProcessUtc = DateTime.UtcNow;
             status = HealthStatus.Healthy;
@@ -31,7 +31,7 @@ namespace Sentinel.Common
             count++;
         }
 
-        public void ReportUnhealthy(string message = null)
+        public void ReportUnhealthy(string message = "")
         {
             LastProcessUtc = DateTime.UtcNow;
             status = HealthStatus.Unhealthy;
@@ -39,7 +39,7 @@ namespace Sentinel.Common
             count++;
         }
 
-        public void ReportDegraded(string message = null)
+        public void ReportDegraded(string message = "")
         {
             LastProcessUtc = DateTime.UtcNow;
             status = HealthStatus.Degraded;

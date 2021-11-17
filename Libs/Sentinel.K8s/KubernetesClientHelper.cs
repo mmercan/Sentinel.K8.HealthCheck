@@ -2,15 +2,21 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using k8s;
 
 namespace Sentinel.K8s
 {
     public static class KubernetesClientHelper
     {
-        public static void SetTcpKeepAlives(k8s.Kubernetes client)
+        public static void SetTcpKeepAlives(IKubernetes iclient)
         {
+            if (iclient == null || !(iclient is Kubernetes))
+            {
+                throw new ArgumentException("iclient is null or not Kubernetes object");
+            }
+            var client = iclient as k8s.Kubernetes;
 
-            var realHandler = client.HttpMessageHandlers.FirstOrDefault(h => !(h is DelegatingHandler));
+            var realHandler = client?.HttpMessageHandlers.FirstOrDefault(h => !(h is DelegatingHandler));
             if (!(realHandler is HttpClientHandler))
             {
                 throw new ArgumentException("Expected HttpClientHandler");

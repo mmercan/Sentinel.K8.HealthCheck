@@ -11,7 +11,7 @@ namespace Sentinel.Common
     {
         protected DateTime lastrestart = DateTime.UtcNow;
         protected readonly ILogger<BackgroundServiceWithHealthCheck> _logger;
-        private readonly BackgroundServiceHealthCheck bgHealthCheck;
+        private readonly BackgroundServiceHealthCheck bgHealthCheck = default!;
         protected BackgroundServiceWithHealthCheck(ILogger<BackgroundServiceWithHealthCheck> logger, IOptions<HealthCheckServiceOptions> hcoptions)
         {
             _logger = logger;
@@ -26,9 +26,9 @@ namespace Sentinel.Common
 
         }
 
-        public void ReportHealthy(string message = null) => bgHealthCheck.ReportHealthy(message);
-        public void ReportUnhealthy(string message = null) => bgHealthCheck.ReportUnhealthy(message);
-        public void ReportDegraded(string message = null) => bgHealthCheck.ReportDegraded(message);
+        public void ReportHealthy(string message = "") => bgHealthCheck.ReportHealthy(message);
+        public void ReportUnhealthy(string message = "") => bgHealthCheck.ReportUnhealthy(message);
+        public void ReportDegraded(string message = "") => bgHealthCheck.ReportDegraded(message);
 
     }
 

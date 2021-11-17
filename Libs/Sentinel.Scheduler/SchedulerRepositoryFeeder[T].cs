@@ -14,7 +14,7 @@ namespace Sentinel.Scheduler
         protected readonly ILogger<SchedulerRepositoryFeeder<T>> _logger;
         protected readonly SchedulerRepository<T> _schedulerRepository;
         private readonly IConnectionMultiplexer _multiplexer;
-        private RedisDictionary<T> redisDictionary;
+        private RedisDictionary<T> redisDictionary = default!;
         private readonly string genericTypeName = typeof(T).Name;
 
         public SchedulerRepositoryFeeder(

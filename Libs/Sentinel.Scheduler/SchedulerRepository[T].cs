@@ -68,32 +68,47 @@ namespace Sentinel.Scheduler
             {
                 throw new ArgumentNullException("item");
             }
-            else
-            {
-                var referenceTime = DateTime.UtcNow;
-                var scheduledTask = new SchedulerTaskWrapper<T>(_logger)
-                {
-                    Uid = item.Uid,
-                    Schedule = CrontabSchedule.Parse(item.Schedule),
-                    Task = item,
-                    Item = item,
-                    NextRunTime = referenceTime,
-                };
 
-                var itemIndex = Items.IndexOf(Items.FirstOrDefault(e => e.Uid == item.Uid));
+            var referenceTime = DateTime.UtcNow;
+            var scheduledTask = new SchedulerTaskWrapper<T>(_logger)
+            {
+                Uid = item.Uid,
+                Schedule = CrontabSchedule.Parse(item.Schedule),
+                Task = item,
+                Item = item,
+                NextRunTime = referenceTime,
+            };
+
+            var selecteditem = Items.FirstOrDefault(e => e.Uid == item.Uid);
+            if (selecteditem != null)
+            {
+                var itemIndex = Items.IndexOf(selecteditem);
                 if (itemIndex > -1)
                 {
                     Items[itemIndex] = item;
                 }
+            }
+            else
+            {
+                _logger.LogCritical("SchedulerRepository <" + genericTypeName + " >  Item  not Found in items UID : " + item.Uid);
+            }
 
-
-                var scheduledIndex = ScheduledTasks.IndexOf(ScheduledTasks.FirstOrDefault(e => e.Uid == item?.Uid));
+            var scheduledSelectedTask = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
+            if (scheduledSelectedTask != null)
+            {
+                var scheduledIndex = ScheduledTasks.IndexOf(scheduledSelectedTask);
                 if (scheduledIndex > -1)
                 {
                     ScheduledTasks[scheduledIndex] = scheduledTask;
                 }
                 _logger.LogInformation("SchedulerRepository Updated" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
             }
+            else
+            {
+                _logger.LogCritical("SchedulerRepository <" + genericTypeName + " >  Item  not Found in ScheduledTasks UID : " + item.Uid);
+            }
+
+
         }
 
         private void deleteItem(T item)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
 using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Linq
 {
@@ -22,9 +23,15 @@ namespace System.Linq
             var result = JsonConvert.SerializeObject(item);
             return result;
         }
-        public static T FromJSON<T>(this string json)
+
+
+        public static T? FromJSON<T>(this string json)
         {
-            T item = JsonConvert.DeserializeObject<T>(json);
+            if (json == null)
+            {
+                throw new ArgumentNullException("json");
+            }
+            T? item = JsonConvert.DeserializeObject<T>(json);
             return item;
         }
     }

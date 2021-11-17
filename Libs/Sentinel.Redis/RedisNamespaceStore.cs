@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -30,7 +31,9 @@ namespace Sentinel.Redis
             return _multiplexer.GetStatus();
         }
 
-        public async Task<T> GetAsync(string key)
+
+
+        public async Task<T?> GetAsync(string key)
         {
             var value = await database.StringGetAsync(key);
             if (!value.HasValue)
@@ -43,8 +46,8 @@ namespace Sentinel.Redis
             }
         }
 
-        public IAsyncEnumerable<T> GetAsyncEnumerable() => GetAsyncEnumerable(this.prefix);
-        public async IAsyncEnumerable<T> GetAsyncEnumerable(string pattern)
+        public IAsyncEnumerable<T?> GetAsyncEnumerable() => GetAsyncEnumerable(this.prefix);
+        public async IAsyncEnumerable<T?> GetAsyncEnumerable(string pattern)
         {
             var keys = server.Keys(pattern: pattern).ToArray();
             var values = await database.StringGetAsync(keys);
@@ -72,14 +75,17 @@ namespace Sentinel.Redis
 
             if (!values.Any())
             {
-                return default;
+                return items;
             }
             else
             {
                 foreach (var itemStr in values)
                 {
                     var item = JsonConvert.DeserializeObject<T>(itemStr);
-                    items.Add(item);
+                    if (item != null)
+                    {
+                        items.Add(item);
+                    }
                 }
                 return items;
             }

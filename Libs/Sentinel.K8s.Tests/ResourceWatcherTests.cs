@@ -149,13 +149,13 @@ namespace Sentinel.K8s.Tests
             await watcher.Start();
 
             var underlyingHandlerMethod = watcher.GetType().GetMethod("OnClose", BindingFlags.NonPublic | BindingFlags.Instance);
-            underlyingHandlerMethod.Invoke(watcher, null);
+            underlyingHandlerMethod?.Invoke(watcher, null);
 
 
             var underlyingExceptionMethod = watcher.GetType().GetMethod("OnException", BindingFlags.NonPublic | BindingFlags.Instance);
 
             var expparams = new object[1] { new Exception() };
-            underlyingExceptionMethod.Invoke(watcher, expparams);
+            underlyingExceptionMethod?.Invoke(watcher, expparams);
 
 
             await Task.Delay(TimeSpan.FromSeconds(2));

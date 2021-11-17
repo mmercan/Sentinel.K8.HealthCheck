@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using k8s;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ namespace Sentinel.K8s.Tests.Helpers
         }
 
 
+
         public static ILogger<T> GetLogger<T>()
         {
 
@@ -26,6 +28,10 @@ namespace Sentinel.K8s.Tests.Helpers
            .BuildServiceProvider();
 
             var factory = serviceProvider.GetService<ILoggerFactory>();
+            if (factory == null)
+            {
+                factory = new LoggerFactory();
+            }
 
             var logger = factory.CreateLogger<T>();
             return logger;
