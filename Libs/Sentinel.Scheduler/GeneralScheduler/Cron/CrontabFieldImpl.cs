@@ -9,10 +9,11 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
     [Serializable]
     public sealed class CrontabFieldImpl : IObjectReference
     {
+#pragma warning disable CS8625
         public static readonly CrontabFieldImpl Minute = new CrontabFieldImpl(CrontabFieldKind.Minute, 0, 59, null);
         public static readonly CrontabFieldImpl Hour = new CrontabFieldImpl(CrontabFieldKind.Hour, 0, 23, null);
         public static readonly CrontabFieldImpl Day = new CrontabFieldImpl(CrontabFieldKind.Day, 1, 31, null);
-
+#pragma warning restore CS8625 
         public static readonly CrontabFieldImpl Month = new CrontabFieldImpl(CrontabFieldKind.Month, 1, 12,
             new[]
             {
@@ -36,6 +37,9 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
         private readonly int _minValue;
         private readonly string[] _names;
 
+
+#pragma warning disable CS8618 
+#pragma warning disable CS8601
         private CrontabFieldImpl(CrontabFieldKind kind, int minValue, int maxValue, string[] names)
         {
             Debug.Assert(Enum.IsDefined(typeof(CrontabFieldKind), kind));
@@ -48,6 +52,8 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
             _maxValue = maxValue;
             _names = names;
         }
+#pragma warning restore CS8618
+#pragma warning restore CS8601
 
         public CrontabFieldKind Kind
         {

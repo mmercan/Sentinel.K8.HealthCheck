@@ -246,10 +246,13 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
                 _maxValueSet = i;
         }
 
+#pragma warning disable CS8625 
         public override string ToString()
         {
+
             return ToString(null);
         }
+#pragma warning restore CS8625 
 
         public string ToString(string format)
         {
