@@ -11,6 +11,11 @@ using StackExchange.Redis;
 namespace Sentinel.Redis
 {
 
+
+#pragma warning disable CS8604
+#pragma warning disable CS8603
+#pragma warning disable CS8601
+#pragma warning disable CS8620
     //Key value has to be string Type
     public class RedisDictionary<TValue> : IRedisDictionary<TValue>
     {
