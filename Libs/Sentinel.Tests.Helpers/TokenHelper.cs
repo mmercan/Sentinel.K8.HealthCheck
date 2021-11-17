@@ -21,6 +21,16 @@ namespace Sentinel.Tests.Helpers
             var clientSecret = Environment.GetEnvironmentVariable("APPSECRET");
             var adId = Environment.GetEnvironmentVariable("ADID");
 
+            if (appId == null)
+            {
+                throw new ArgumentException("appId in EnvironmentVariable is Null");
+            }
+
+            if (clientSecret == null)
+            {
+                throw new ArgumentException("clientSecret in EnvironmentVariable is Null");
+            }
+
             var url = "https://login.microsoftonline.com/" + adId + "/oauth2/token?resource=" + appId;
 
             output.WriteLine("APPID is " + appId);
@@ -42,7 +52,19 @@ namespace Sentinel.Tests.Helpers
             //return ContentTask.Result;
             output.WriteLine("content  " + ContentTask.Result);
             JObject s = JObject.Parse(ContentTask.Result);
-            return "Bearer " + (string)s["access_token"];
+
+
+            JToken? bearerToken = s["access_token"];
+            if (bearerToken != null)
+            {
+                var bearer = bearerToken.ToObject<string>();
+                if (!string.IsNullOrWhiteSpace(bearer))
+                {
+                    return "Bearer " + bearer;
+                }
+            }
+
+            return ""; //"Bearer " + (string)s["access_token"];
         }
     }
 }

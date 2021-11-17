@@ -37,7 +37,7 @@ namespace Sentinel.K8s.Watchers
             return events.Body.Items;
         }
 
-        public async Task<Corev1Event> FindEventAsync<TResource>(string @namespace, TResource resource, string message) where TResource : IKubernetesObject<V1ObjectMeta>
+        public async Task<Corev1Event?> FindEventAsync<TResource>(string @namespace, TResource resource, string message) where TResource : IKubernetesObject<V1ObjectMeta>
         {
             var events = await _client.ApiClient.ListNamespacedEventWithHttpMessagesAsync(@namespace);
 
@@ -46,7 +46,7 @@ namespace Sentinel.K8s.Watchers
         }
 
 
-        public async Task<Corev1Event> FindEventAsync(string @namespace, string resourceUid, string message)
+        public async Task<Corev1Event?> FindEventAsync(string @namespace, string resourceUid, string message)
         {
             var events = await _client.List<Corev1Event>(@namespace);
             var res = events.FirstOrDefault(p => p.InvolvedObject.Uid == resourceUid && p.Message == message);
@@ -58,7 +58,7 @@ namespace Sentinel.K8s.Watchers
             string reason = "Unhealthy",
             string type = "Warning") where TResource : IKubernetesObject<V1ObjectMeta>
         {
-            Corev1Event v1event = null;
+            Corev1Event? v1event = null;
             v1event = await FindEventAsync(@namespace, resource, message);
             if (v1event != null)
             {
@@ -105,7 +105,7 @@ namespace Sentinel.K8s.Watchers
             string type = "Warning"
             )
         {
-            Corev1Event v1event = null;
+            Corev1Event? v1event = null;
             v1event = await FindEventAsync(@namespace, resourceUid, message);
             if (v1event != null)
             {
@@ -147,7 +147,7 @@ namespace Sentinel.K8s.Watchers
             string message,
             string reason,
             string type,
-            string source = null
+            string source = ""
             )
         {
 
@@ -172,7 +172,7 @@ namespace Sentinel.K8s.Watchers
             newEvent.Metadata.NamespaceProperty = @namespace;
 
             newEvent.Metadata.Name = resourceName + Guid.NewGuid().ToString();
-            if (source != null)
+            if (string.IsNullOrWhiteSpace(source))
             {
                 newEvent.Source = new V1EventSource(source);
             }

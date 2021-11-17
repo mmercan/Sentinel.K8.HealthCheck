@@ -23,7 +23,7 @@ namespace Sentinel.K8s.Tests
             OperatorSettings set = new OperatorSettings();
             // set.Name
             var k8client = GetKubernetesClient();
-            var loggger = GetLogger<ResourceWatcher<V1Pod>>();
+            var loggger = Sentinel.Tests.Helpers.Helpers.GetLogger<ResourceWatcher<V1Pod>>();
             var metrics = new ResourceWatcherMetrics<V1Pod>(set);
             var watcher = new Watchers.ResourceWatcher<V1Pod>(k8client, loggger, metrics, set);
 
@@ -39,7 +39,7 @@ namespace Sentinel.K8s.Tests
             set.Namespace = "default";
             // set.Name
             var k8client = GetKubernetesClient();
-            var loggger = GetLogger<ResourceWatcher<V1ConfigMap>>();
+            var loggger = Sentinel.Tests.Helpers.Helpers.GetLogger<ResourceWatcher<V1ConfigMap>>();
             var metrics = new ResourceWatcherMetrics<V1ConfigMap>(set);
             var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, set);
 
@@ -80,7 +80,7 @@ namespace Sentinel.K8s.Tests
             set.WatcherHttpTimeout = 3;
             // set.Name
             var k8client = GetKubernetesClient();
-            var loggger = GetLogger<ResourceWatcher<V1ConfigMap>>();
+            var loggger = Sentinel.Tests.Helpers.Helpers.GetLogger<ResourceWatcher<V1ConfigMap>>();
             var metrics = new ResourceWatcherMetrics<V1ConfigMap>(set);
             var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, set);
 
@@ -127,7 +127,7 @@ namespace Sentinel.K8s.Tests
             set.WatcherHttpTimeout = 3;
             // set.Name
             var k8client = GetKubernetesClient();
-            var loggger = GetLogger<ResourceWatcher<V1ConfigMap>>();
+            var loggger = Sentinel.Tests.Helpers.Helpers.GetLogger<ResourceWatcher<V1ConfigMap>>();
             var metrics = new ResourceWatcherMetrics<V1ConfigMap>(set);
             var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, set);
 

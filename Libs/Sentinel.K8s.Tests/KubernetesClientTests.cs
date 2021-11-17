@@ -33,7 +33,7 @@ namespace Sentinel.K8s.Tests
         public void Should_KubernetesClient_Creates_Instance_With_clientConfig()
         {
             KubernetesClientConfiguration config = k8s.KubernetesClientConfiguration.BuildConfigFromConfigFile();
-            var logger = KubernetesClientTestHelper.GetLogger<KubernetesClient>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<KubernetesClient>();
             KubernetesClient client = new KubernetesClient(config, logger);
             Assert.NotNull(client.ApiClient);
         }
@@ -45,7 +45,7 @@ namespace Sentinel.K8s.Tests
 
             KubernetesClientConfiguration config = k8s.KubernetesClientConfiguration.BuildConfigFromConfigFile();
             Kubernetes apiClient = new Kubernetes(config);
-            var logger = KubernetesClientTestHelper.GetLogger<KubernetesClient>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<KubernetesClient>();
             KubernetesClient client = new KubernetesClient(apiClient, config, logger);
             Assert.NotNull(client.ApiClient);
         }

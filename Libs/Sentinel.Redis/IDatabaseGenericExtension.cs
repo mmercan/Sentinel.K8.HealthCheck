@@ -73,10 +73,18 @@ namespace Sentinel.Redis
             {
                 if (item != null)
                 {
-                    var key = keyProp?.GetValue(item).ToString();
+                    var key = keyProp.GetValue(item);
                     if (key != null)
                     {
-                        await database.SetAsync(key, item);
+                        var keystr = key.ToString();
+                        if (!string.IsNullOrWhiteSpace(keystr))
+                        {
+                            await database.SetAsync(keystr, item);
+                        }
+                        else
+                        {
+
+                        }
                     }
                 }
             }

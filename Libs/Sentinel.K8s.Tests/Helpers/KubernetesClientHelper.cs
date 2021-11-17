@@ -11,7 +11,7 @@ namespace Sentinel.K8s.Tests.Helpers
         public static KubernetesClient GetKubernetesClient()
         {
             KubernetesClientConfiguration config = k8s.KubernetesClientConfiguration.BuildConfigFromConfigFile();
-            var logger = GetLogger<KubernetesClient>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<KubernetesClient>();
 
 
             KubernetesClient client = new KubernetesClient(config, logger);
@@ -20,26 +20,10 @@ namespace Sentinel.K8s.Tests.Helpers
 
 
 
-        public static ILogger<T> GetLogger<T>()
-        {
-
-            var serviceProvider = new ServiceCollection()
-           .AddLogging()
-           .BuildServiceProvider();
-
-            var factory = serviceProvider.GetService<ILoggerFactory>();
-            if (factory == null)
-            {
-                factory = new LoggerFactory();
-            }
-
-            var logger = factory.CreateLogger<T>();
-            return logger;
-        }
         public static K8SEventOps GetK8SEventOps()
         {
             var client = GetKubernetesClient();
-            var logger = GetLogger<K8SEventOps>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<K8SEventOps>();
             K8SEventOps ops = new K8SEventOps(client, logger);
             return ops;
         }
