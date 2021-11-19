@@ -36,8 +36,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
 
             var syncTime = DateTime.UtcNow;
             dtoitems.ForEach(p => p.LatestSyncDateUTC = syncTime);
-
-
             redisDic.UpSert(dtoitems);
 
             _logger.LogInformation(dtoitems.Count.ToString() + " Namespaces have been synced");
