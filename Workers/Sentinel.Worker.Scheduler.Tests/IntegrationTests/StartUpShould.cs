@@ -1,5 +1,7 @@
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Sentinel.Tests.Helpers;
 using Sentinel.Worker.Scheduler.Tests.Helpers;
 using Xunit;
@@ -14,13 +16,13 @@ namespace Sentinel.Worker.Scheduler.Tests.IntegrationTests
 
         private WebApplicationFactory<Startup> factory;
         AuthTokenFixture authTokenFixture;
-        private ITestOutputHelper output;
+        private ITestOutputHelper _output;
 
         public StartUpShould(CustomWebApplicationFactory factory, AuthTokenFixture authTokenFixture, ITestOutputHelper output)
         {
             this.factory = factory;
 
-            this.output = output;
+            _output = output;
             this.authTokenFixture = authTokenFixture;
         }
 
@@ -41,6 +43,23 @@ namespace Sentinel.Worker.Scheduler.Tests.IntegrationTests
             var response = responseTask.Result;
             // Assert
             response.EnsureSuccessStatusCode();
+        }
+
+
+        [Fact]
+        public void GetConfig()
+        {
+
+            _output.WriteLine("log all AddEnvironmentVariables");
+            var config = new ConfigurationBuilder()
+            .AddEnvironmentVariables()
+            .Build();
+            foreach (var item in config.AsEnumerable())
+            {
+                _output.WriteLine(item.Key + " : " + item.Value);
+            }
+
+
         }
 
     }
