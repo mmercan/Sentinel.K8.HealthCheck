@@ -18,8 +18,8 @@ ENV SONARKEY=$buildtime_SONARKEY
 ENV APPID=$buildtime_APPID
 ENV APPSECRET=$buildtime_APPSECRET
 ENV ADID=$buildtime_ADID
-ENV RabbitMQConnection = $buildtime_RabbitMQConnection
-ENV RedisConnection = $buildtime_RedisConnection
+ENV RabbitMQConnection=$buildtime_RabbitMQConnection
+ENV RedisConnection=$buildtime_RedisConnection
 ENV SONAR_HOST=https://sonarcloud.io
 
 
