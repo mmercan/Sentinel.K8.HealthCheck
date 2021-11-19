@@ -205,6 +205,7 @@ namespace Sentinel.K8s.Tests
                  _output.WriteLine("Watch Closed ");
              }, cancellationToken: source.Token);
 
+            Assert.NotNull(k8Client);
         }
 
 

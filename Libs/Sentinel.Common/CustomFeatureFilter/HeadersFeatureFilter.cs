@@ -46,8 +46,7 @@ namespace Sentinel.Common.CustomFeatureFilter
                     _logger.LogDebug("HeadersFeatureFilter Null parameter");
                 }
                 var hasclaim = user?.HasClaim(claim => claim.Type == claimType);
-                _logger.LogDebug("hasclaim :" + hasclaim.ToString());
-                _logger.LogDebug(user?.Identity?.Name + " isEnabled : " + isEnabled.ToString() + " " + headerKeys?.FirstOrDefault());
+                _logger.LogDebug("hasclaim :" + hasclaim.ToString() + " " + user?.Identity?.Name + " isEnabled : " + isEnabled.ToString() + " " + headerKeys?.FirstOrDefault());
 
                 return isEnabled;
             });

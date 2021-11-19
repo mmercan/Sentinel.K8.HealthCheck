@@ -29,7 +29,7 @@ namespace System.Linq
         {
             if (json == null)
             {
-                throw new ArgumentNullException("json");
+                throw new ArgumentNullException(nameof(json));
             }
             T? item = JsonConvert.DeserializeObject<T>(json);
             return item;

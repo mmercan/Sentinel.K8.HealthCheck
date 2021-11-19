@@ -11,7 +11,7 @@ namespace Sentinel.Common.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly ExceptionLoggerOptions _options;
-        private readonly ILogger _logger;
+        private readonly ILogger<ExceptionLoggerMiddleware> _logger;
 
         public ExceptionLoggerMiddleware(
             RequestDelegate next,

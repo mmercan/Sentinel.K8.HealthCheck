@@ -4,7 +4,7 @@ namespace Sentinel.Common.CustomFeatureFilter
     {
         public HeadersFilterSettings()
         {
-            //RequiredHeaders = new string[1];
+
         }
         public string[]? RequiredHeaders { get; set; }
     }
