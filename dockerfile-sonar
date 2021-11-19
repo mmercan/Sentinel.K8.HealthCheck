@@ -3,6 +3,8 @@ ARG buildtime_APPID
 ARG buildtime_APPSECRET
 ARG buildtime_ADID
 ARG buildtime_SONARKEY
+ARG buildtime_RedisConnection
+ARG buildtime_RabbitMQConnection
 # ENV DOTNET_USE_POLLING_FILE_WATCHER=1
 # ENV ASPNETCORE_ENVIRONMENT=Development
 # ENV SONAR_HOST http://sonar.myrcan.com
@@ -17,7 +19,8 @@ ENV APPID=$buildtime_APPID
 ENV APPSECRET=$buildtime_APPSECRET
 ENV ADID=$buildtime_ADID
 ENV SONAR_HOST=https://sonarcloud.io
-
+ENV RedisConnection = $buildtime_RedisConnection
+ENV RabbitMQConnection = $buildtime_RabbitMQConnection
 
 WORKDIR /src
 COPY . .
