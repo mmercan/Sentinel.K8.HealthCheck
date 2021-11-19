@@ -56,7 +56,7 @@ jobs:
           --build-arg buildtime_APPSECRET=${{ secrets.buildtime_APPSECRET }} \
           --build-arg buildtime_ADID=${{ secrets.buildtime_ADID }}$() \
           --build-arg buildtime_SONARKEY=${{ secrets.buildtime_SONARKEY }} \
-          --build-arg buildtime_RedisConnection=${{ secrets.RedisConnection }}$() \
+          --build-arg buildtime_RedisConnection=${{ secrets.RedisConnection }} \
           --build-arg buildtime_RabbitMQConnection=${{ secrets.RabbitMQConnection }} \
 
       - name: Run the Test image
