@@ -23,7 +23,6 @@ jobs:
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
-      RabbitMQConnection: "host=52.167.64.208;username=rabbitmq;password=rabbitmq"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -57,7 +56,7 @@ jobs:
           --build-arg buildtime_APPSECRET=${{ secrets.buildtime_APPSECRET }} \
           --build-arg buildtime_ADID=${{ secrets.buildtime_ADID }} \
           --build-arg buildtime_SONARKEY=${{ secrets.buildtime_SONARKEY }} \
-          --build-arg buildtime_RabbitMQConnection=$RabbitMQConnection \
+          --build-arg buildtime_RabbitMQConnection=${{ secrets.RabbitMQConnection }} \
           --build-arg buildtime_RedisConnection=${{ secrets.RedisConnection }} \
 
       - name: Run the Test image
