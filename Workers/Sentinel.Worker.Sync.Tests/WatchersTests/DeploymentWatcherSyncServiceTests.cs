@@ -35,7 +35,7 @@ namespace Sentinel.Worker.Sync.Tests.WatchersTests
             var mapper = config.CreateMapper();
 
             var maper = GetIMapperExtension.GetIMapper(cfg => cfg.AddProfile(new K8SMapper()));
-            IConnectionMultiplexer rediscon = ConnectionMultiplexer.Connect("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc");
+            IConnectionMultiplexer rediscon = RedisExtensions.GetRedisMultiplexer();
 
             CancellationTokenSource source = new CancellationTokenSource();
             source.CancelAfter(3 * 1000);
