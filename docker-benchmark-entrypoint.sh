@@ -6,5 +6,3 @@ dotnet build ./Libs/Sentinel.Scheduler.Benchmark -c Release --output ./output/Se
 echo "Console output"
 
 dotnet ./output/Sentinel.Scheduler.Benchmark/Sentinel.Scheduler.Benchmark.dll
-
- 
