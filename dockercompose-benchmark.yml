@@ -1,0 +1,12 @@
+version: "3.4"
+
+services:
+  sentinel-benchmark:
+    image: sentinel-benchmark
+    build:
+      target: test
+      context: .
+      dockerfile: dockerfile-benchmark
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1

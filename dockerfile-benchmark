@@ -27,5 +27,5 @@ ENV SONAR_HOST=https://sonarcloud.io
 WORKDIR /src
 COPY . .
 
-RUN ["chmod", "+x", "./docker-sonar-tests-entrypoint.sh"]
-ENTRYPOINT ["./docker-sonar-tests-entrypoint.sh"]
+RUN ["chmod", "+x", "./docker-benchmark-entrypoint.sh"]
+ENTRYPOINT ["./docker-benchmark-entrypoint.sh"]
