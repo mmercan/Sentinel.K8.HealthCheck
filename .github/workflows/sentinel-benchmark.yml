@@ -63,7 +63,7 @@ jobs:
         run: |
           docker run -i \
           -v /home/runner/work/_temp:/root/.kube \
-          -v ${{env.ARTIFACT_PATH}}/Benchmarks:/Benchmarks sentinel-benchmark \
+          -v ${{env.ARTIFACT_PATH}}/Benchmarks:/src sentinel-benchmark \
 
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v2
