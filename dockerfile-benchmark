@@ -2,20 +2,16 @@ FROM mmercan/sonarqube-dotnet60-sdk:latest AS test
 ARG buildtime_APPID
 ARG buildtime_APPSECRET
 ARG buildtime_ADID
-ARG buildtime_SONARKEY
 ARG buildtime_RabbitMQConnection
 ARG buildtime_RedisConnection
 
 ENV ASPNETCORE_URLS=http://+:80
-ENV PROJECT=Sentinel.Health.k8
-ENV VERSION=1.0
-ENV SONARKEY=$buildtime_SONARKEY
 ENV APPID=$buildtime_APPID
 ENV APPSECRET=$buildtime_APPSECRET
 ENV ADID=$buildtime_ADID
 ENV RabbitMQConnection=$buildtime_RabbitMQConnection
 ENV RedisConnection=$buildtime_RedisConnection
-ENV SONAR_HOST=https://sonarcloud.io
+
 
 
 
