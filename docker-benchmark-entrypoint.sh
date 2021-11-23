@@ -6,3 +6,7 @@ dotnet build ./Libs/Sentinel.Scheduler.Benchmark -c Release --output /output/Sen
 echo "Console output"
 
 dotnet /output/Sentinel.Scheduler.Benchmark/Sentinel.Scheduler.Benchmark.dll --artifacts /Benchmarks/Sentinel.Scheduler --filter *
+
+
+
+cp -r ./BenchmarkDotNet.Artifacts/results /Benchmarks/Sentinel.Scheduler
