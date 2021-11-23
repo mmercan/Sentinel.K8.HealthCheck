@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
 
 namespace Sentinel.Tests.Helpers
@@ -6,7 +7,12 @@ namespace Sentinel.Tests.Helpers
     {
         public static IConnectionMultiplexer GetRedisMultiplexer()
         {
-            IConnectionMultiplexer rediscon = ConnectionMultiplexer.Connect("52.247.72.240:6379,defaultDatabase=2,password=2jWa8sSM8ZuhS3Qc");
+            var config = new ConfigurationBuilder()
+            .AddEnvironmentVariables()
+            .Build();
+
+            var redisconstring = config["RedisConnection"];
+            IConnectionMultiplexer rediscon = ConnectionMultiplexer.Connect(redisconstring);
             return rediscon;
         }
     }

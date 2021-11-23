@@ -35,7 +35,7 @@ namespace Sentinel.Worker.Sync.Tests
             var items = store.GetAsyncEnumerable();
             await foreach (var item in items)
             {
-                output.WriteLine(item.Name);
+                output.WriteLine(item?.Name);
             }
         }
 
@@ -98,9 +98,9 @@ namespace Sentinel.Worker.Sync.Tests
             Name = name;
             Id = id;
         }
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         [Key]
-        public string Id { get; set; }
+        public string Id { get; set; } = default!;
     }
 }

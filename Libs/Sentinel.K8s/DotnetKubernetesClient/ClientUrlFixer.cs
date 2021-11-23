@@ -12,7 +12,7 @@ namespace Sentinel.K8s.DotnetKubernetesClient
             HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            if (request.RequestUri.Segments.Count(s => s == "/") > 1)
+            if (request?.RequestUri?.Segments.Count(s => s == "/") > 1)
             {
                 // This request uri contains "empty" segments. (i.e. https://.../apis//v1/...)
                 // This means, this is a default api group (/api/v1)
@@ -20,8 +20,15 @@ namespace Sentinel.K8s.DotnetKubernetesClient
                 builder.Path = builder.Path.Replace("//", "/").Replace("apis", "api");
                 request.RequestUri = builder.Uri;
             }
+            if (request != null)
+            {
+                return await base.SendAsync(request, cancellationToken);
+            }
+            else
+            {
+                throw new ArgumentNullException("request");
+            }
 
-            return await base.SendAsync(request, cancellationToken);
         }
 
     }

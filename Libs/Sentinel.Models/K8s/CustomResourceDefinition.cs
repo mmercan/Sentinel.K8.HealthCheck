@@ -10,15 +10,15 @@ namespace Sentinel.Models.K8s
 {
     public class CustomResourceDefinition
     {
-        public string Version { get; set; }
+        public string Version { get; set; } = default!;
 
-        public string Group { get; set; }
+        public string Group { get; set; } = default!;
 
-        public string PluralName { get; set; }
+        public string PluralName { get; set; } = default!;
 
-        public string Kind { get; set; }
+        public string Kind { get; set; } = default!;
 
-        public string Namespace { get; set; }
+        public string Namespace { get; set; } = default!;
     }
 
 
@@ -27,30 +27,30 @@ namespace Sentinel.Models.K8s
     {
 
         [JsonProperty(PropertyName = "apiVersion")]
-        public string ApiVersion { get; set; }
+        public string ApiVersion { get; set; } = default!;
 
 
         [JsonProperty(PropertyName = "kind")]
-        public string Kind { get; set; }
+        public string Kind { get; set; } = default!;
 
         [JsonProperty(PropertyName = "metadata")]
-        public V1ObjectMeta Metadata { get; set; }
+        public V1ObjectMeta Metadata { get; set; } = default!;
     }
 
     public abstract class CustomResource<TSpec, TStatus> : CustomResource
     {
 
         [JsonProperty(PropertyName = "spec")]
-        public TSpec Spec { get; set; }
+        public TSpec Spec { get; set; } = default!;
 
         [JsonProperty(PropertyName = "status")]
-        public TStatus Status { get; set; }
+        public TStatus Status { get; set; } = default!;
     }
 
     public class CustomResourceList<T> : KubernetesObject
     where T : CustomResource
     {
-        public V1ListMeta Metadata { get; set; }
-        public List<T> Items { get; set; }
+        public V1ListMeta Metadata { get; set; } = default!;
+        public List<T> Items { get; set; } = default!;
     }
 }

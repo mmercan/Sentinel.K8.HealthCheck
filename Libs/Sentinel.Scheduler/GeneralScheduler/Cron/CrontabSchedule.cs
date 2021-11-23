@@ -45,7 +45,7 @@ namespace Sentinel.Scheduler.GeneralScheduler.Cron
             get { return CultureInfo.InvariantCulture.Calendar; }
         }
 
-        public static CrontabSchedule Parse(string expression)
+        public static CrontabSchedule Parse(string? expression)
         {
             if (expression == null)
             {

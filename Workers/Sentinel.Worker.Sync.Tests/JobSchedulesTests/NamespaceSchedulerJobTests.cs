@@ -15,15 +15,17 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 {
     public class NamespaceSchedulerJobTests
     {
-        private ITestOutputHelper output;
+        private ITestOutputHelper _output;
         public NamespaceSchedulerJobTests(ITestOutputHelper output)
         {
-            this.output = output;
+            _output = output;
         }
 
         [Fact]
         public void NamespaceSchedulerJobShouldRun()
         {
+
+            _output.WriteLine("NamespaceSchedulerJobShouldRun started");
 
             var client = KubernetesClientTestHelper.GetKubernetesClient();
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<NamespaceSchedulerJob>();

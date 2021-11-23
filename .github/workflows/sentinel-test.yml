@@ -2,7 +2,7 @@ name: Sentinel Test
 
 on:
   push:
-    branches: [master]
+    branches: ["*"]
     paths:
       - Workers/**
       - Libs/**
@@ -19,6 +19,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: Dev
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
@@ -53,11 +54,19 @@ jobs:
           docker-compose --file dockercompose-sonar.yml --log-level DEBUG build \
           --build-arg buildtime_APPID=${{ secrets.buildtime_APPID }} \
           --build-arg buildtime_APPSECRET=${{ secrets.buildtime_APPSECRET }} \
-          --build-arg buildtime_ADID=${{ secrets.buildtime_ADID }}$() \
+          --build-arg buildtime_ADID=${{ secrets.buildtime_ADID }} \
           --build-arg buildtime_SONARKEY=${{ secrets.buildtime_SONARKEY }} \
+          --build-arg buildtime_RabbitMQConnection=${{ secrets.RabbitMQConnection }} \
+          --build-arg buildtime_RedisConnection=${{ secrets.RedisConnection }} \
 
       - name: Run the Test image
         run: |
           docker run -i \
           -v /home/runner/work/_temp:/root/.kube \
           -v ${{env.ARTIFACT_PATH}}/TestResults:/TestResults sentinel-healthcheck-test \
+
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: TestResults

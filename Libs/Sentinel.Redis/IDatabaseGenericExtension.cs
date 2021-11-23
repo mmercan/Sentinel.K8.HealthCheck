@@ -11,7 +11,8 @@ namespace Sentinel.Redis
 {
     public static class IDatabaseGenericExtension
     {
-        public static T Get<T>(this IDatabase database, string key)
+
+        public static T? Get<T>(this IDatabase database, string key)
         {
             var value = database.StringGet(key);
             if (!value.HasValue)
@@ -24,7 +25,7 @@ namespace Sentinel.Redis
             }
         }
 
-        public static async Task<T> GetAsync<T>(this IDatabase database, string key)
+        public static async Task<T?> GetAsync<T>(this IDatabase database, string key)
         {
             var value = await database.StringGetAsync(key);
             if (!value.HasValue)
@@ -64,10 +65,28 @@ namespace Sentinel.Redis
         public async static Task<List<T>> SetListAsync<T>(this IDatabase database, List<T> items)
         {
             var keyProp = PropertyInfoHelpers.GetKeyProperty<T>();
+            if (keyProp == null)
+            {
+                throw new NullReferenceException("keyProp");
+            }
             foreach (var item in items)
             {
-                var key = keyProp.GetValue(item).ToString();
-                await database.SetAsync(key, item);
+                if (item != null)
+                {
+                    var key = keyProp.GetValue(item);
+                    if (key != null)
+                    {
+                        var keystr = key.ToString();
+                        if (!string.IsNullOrWhiteSpace(keystr))
+                        {
+                            await database.SetAsync(keystr, item);
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
             }
             return items;
         }

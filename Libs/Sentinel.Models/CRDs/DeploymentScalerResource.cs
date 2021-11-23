@@ -15,7 +15,7 @@ namespace Sentinel.Models.CRDs
     {
 
         [JsonProperty(PropertyName = "items")]
-        public IList<DeploymentScalerResource> Items { get; set; }
+        public IList<DeploymentScalerResource> Items { get; set; } = default!;
 
     }
 
@@ -36,40 +36,40 @@ namespace Sentinel.Models.CRDs
                 }
             }
             var labels = labelsbld.ToString().TrimEnd(',', ' ') + "}";
-            return $"{Metadata.Name} (Labels: {labels}), Spec: {Spec.Deployment}";
+            return $"{Metadata?.Name} (Labels: {labels}), Spec: {Spec.Deployment}";
         }
 
-        public DateTime SyncDate { get; set; }
+        public DateTime SyncDate { get; set; } = default!;
 
         public class DeploymentScalerResourceSpec
         {
             [JsonProperty(PropertyName = "deployment")]
-            public string Deployment { get; set; }
+            public string Deployment { get; set; } = default!;
 
             [JsonProperty(PropertyName = "crontab")]
-            public string Crontab { get; set; }
+            public string Crontab { get; set; } = default!;
 
             [JsonProperty(PropertyName = "replicas")]
-            public int Replicas { get; set; }
+            public int Replicas { get; set; } = default!;
 
         }
 
         public class DeploymentScalerResourceStatus : V1Status
         {
             [JsonProperty(PropertyName = "phase")]
-            public string Phase { get; set; }
+            public string Phase { get; set; } = default!;
 
             [JsonProperty(PropertyName = "lastFailureTime")]
-            public string LastFailureTime { get; set; }
+            public string LastFailureTime { get; set; } = default!;
 
             [JsonProperty(PropertyName = "lastCheckTime")]
-            public string LastCheckTime { get; set; }
+            public string LastCheckTime { get; set; } = default!;
 
             [JsonProperty(PropertyName = "replicas")]
-            public string Replicas { get; set; }
+            public string Replicas { get; set; } = default!;
 
             [JsonProperty(PropertyName = "labelSelector")]
-            public string LabelSelector { get; set; }
+            public string LabelSelector { get; set; } = default!;
 
         }
     }

@@ -11,20 +11,20 @@ namespace Sentinel.Models.K8sDTOs
 
         [Key]
         public string Key { get { return Name + "." + Namespace; } }
-        public List<Label> Annotations { get; set; }
-        public List<Label> Labels { get; set; }
+        public List<Label> Annotations { get; set; } = default!;
+        public List<Label> Labels { get; set; } = default!;
         public DateTime CreationTime { get; set; }
-        public string Uid { get; set; }
-        public string Name { get; set; }
-        public string Namespace { get; set; }
+        public string Uid { get; set; } = default!;
+        public string Name { get; set; } = default!;
+        public string Namespace { get; set; } = default!;
 
-        public string Schedule { get; set; }
+        public string Schedule { get; set; } = default!;
 
         public DateTime LatestSyncDateUTC { get; set; }
 
-        public HealthCheckResourceSpecV1 Specs { get; set; }
+        public HealthCheckResourceSpecV1 Specs { get; set; } = default!;
 
-        public HealthCheckResourceStatusV1 Status { get; set; }
+        public HealthCheckResourceStatusV1 Status { get; set; } = default!;
     }
 
     public class HealthCheckResourceSpecV1 : HealthCheckResource.HealthCheckResourceSpec

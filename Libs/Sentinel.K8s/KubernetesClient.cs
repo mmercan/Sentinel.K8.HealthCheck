@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -74,12 +75,12 @@ namespace Sentinel.K8s
                     DateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.ffffffK",
                 },
             };
-            KubernetesClientHelper.SetTcpKeepAlives(ApiClient as Kubernetes);
+            KubernetesClientHelper.SetTcpKeepAlives(ApiClient);
 
         }
 
         /// <inheritdoc />
-        public KubernetesClient(IKubernetes apiClient, KubernetesClientConfiguration clientConfig, ILogger<KubernetesClient> logger)
+        public KubernetesClient([NotNull] IKubernetes apiClient, KubernetesClientConfiguration clientConfig, ILogger<KubernetesClient> logger)
         {
             _clientConfig = clientConfig;
 
@@ -88,7 +89,7 @@ namespace Sentinel.K8s
             ApiClient = apiClient;
             if (apiClient is Kubernetes)
             {
-                KubernetesClientHelper.SetTcpKeepAlives(ApiClient as Kubernetes);
+                KubernetesClientHelper.SetTcpKeepAlives(ApiClient);
             }
         }
 
@@ -158,6 +159,10 @@ namespace Sentinel.K8s
         {
             var result = await ApiClient.ListClusterCustomObjectAsync(Group, Version, Plural) as JObject;
             var res = result?.SelectToken("items")?.ToList();
+            if (res == null)
+            {
+                res = new List<JToken>();
+            }
             return res;
         }
 

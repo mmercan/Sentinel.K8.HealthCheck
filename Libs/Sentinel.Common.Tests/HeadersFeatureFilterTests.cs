@@ -54,6 +54,7 @@ namespace Sentinel.Common.Tests
             resTask.Wait();
             output.WriteLine("filter : " + resTask.Result.ToString());
             //filter.EvaluateAsync(contextMoq.Object);
+            Assert.NotNull(resTask.Result);
         }
     }
 }

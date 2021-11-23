@@ -11,6 +11,11 @@ using StackExchange.Redis;
 namespace Sentinel.Redis
 {
 
+
+#pragma warning disable CS8604
+#pragma warning disable CS8603
+#pragma warning disable CS8601
+#pragma warning disable CS8620
     //Key value has to be string Type
     public class RedisDictionary<TValue> : IRedisDictionary<TValue>
     {
@@ -31,7 +36,7 @@ namespace Sentinel.Redis
         {
             return JsonConvert.SerializeObject(obj);
         }
-        private static T Deserialize<T>(string serialized)
+        private static T? Deserialize<T>(string serialized)
         {
             return JsonConvert.DeserializeObject<T>(serialized);
         }
@@ -189,7 +194,7 @@ namespace Sentinel.Redis
             var keys = Keys;
             foreach (var item in items)
             {
-                string itemKey = PropertyInfoHelpers.GetKeyValue<string, TValue>(item);
+                string? itemKey = PropertyInfoHelpers.GetKeyValue<string, TValue>(item);
                 if (!keys.Any(p => p == itemKey))
                 {
                     Add(item);

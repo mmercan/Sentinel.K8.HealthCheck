@@ -59,7 +59,7 @@ tolerations: []
 affinity: {}
 password: pn3FHuee2kxFzQmm
 configmap:
-  databases: "16"
+  databases: "4"
 
 pipelines:
   run: "run"

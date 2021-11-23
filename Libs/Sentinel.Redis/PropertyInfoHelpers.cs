@@ -19,12 +19,12 @@ namespace Sentinel.Redis
             return keyProp;
         }
 
-        public static TKey GetKeyValue<TKey, TValue>(TValue item)
+        public static TKey? GetKeyValue<TKey, TValue>(TValue item)
         {
             var keyProp = GetKeyProperty<TValue>();
 
             var key = keyProp.GetValue(item);
-            return (TKey)key;
+            return (TKey?)key;
         }
 
         internal static PropertyInfo[] GetProperties<T>()

@@ -14,14 +14,14 @@ namespace Sentinel.Scheduler.GeneralScheduler
             _logger = logger;
         }
 
-        public string Uid { get; set; }
-        public CrontabSchedule Schedule { get; set; }
-        public IScheduledTask Task { get; set; }
+        public string Uid { get; set; } = default!;
+        public CrontabSchedule Schedule { get; set; } = default!;
+        public IScheduledTask Task { get; set; } = default!;
 
         public DateTime LastRunTime { get; set; }
         public DateTime NextRunTime { get; set; }
 
-        public T Item { get; set; }
+        public T Item { get; set; } = default!;
 
         public void Increment()
         {

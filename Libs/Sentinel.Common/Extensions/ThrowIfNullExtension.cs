@@ -4,7 +4,7 @@ namespace Sentinel.Common.Extensions
 {
     public static class ThrowIfNullExtension
     {
-        public static void ThrowIfNull<T>(this T item, string name = null) where T : class
+        public static void ThrowIfNull<T>(this T item, string? name = null) where T : class
         {
 
             if (item == null)

@@ -1,0 +1,72 @@
+name: Sentinel Benchmark
+
+on:
+  push:
+    branches: ["*"]
+    paths:
+      - Workers/**
+      - Libs/**
+  pull_request:
+    branches: [master]
+
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: Dev
+    env:
+      ARTIFACT_PATH: ${{ github.workspace }}
+      IMAGE_NAME: ${{ github.repository }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Kubernetes set context
+        uses: Azure/k8s-set-context@v1.1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          context: matt-test-aks2
+
+      - name: add KUBECONFIG To env file
+        run: |
+          cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
+          ls /home/runner/work/_temp
+
+      - name: View Docker Compose config
+        run: |
+          docker-compose --file ./dockercompose-benchmark.yml --log-level DEBUG config
+
+      - name: Build Benchmark Docker Compose file
+        run: |
+          docker-compose --file dockercompose-benchmark.yml --log-level DEBUG build \
+          --build-arg buildtime_APPID=${{ secrets.buildtime_APPID }} \
+          --build-arg buildtime_APPSECRET=${{ secrets.buildtime_APPSECRET }} \
+          --build-arg buildtime_ADID=${{ secrets.buildtime_ADID }} \
+          --build-arg buildtime_SONARKEY=${{ secrets.buildtime_SONARKEY }} \
+          --build-arg buildtime_RabbitMQConnection=${{ secrets.RabbitMQConnection }} \
+          --build-arg buildtime_RedisConnection=${{ secrets.RedisConnection }} \
+
+      - name: Run the Benchmark image
+        run: |
+          docker run -i \
+          -v /home/runner/work/_temp:/root/.kube \
+          -v ${{env.ARTIFACT_PATH}}/TestResults:/TestResults sentinel-benchmark \
+
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: benchmark-results
+          path: TestResults

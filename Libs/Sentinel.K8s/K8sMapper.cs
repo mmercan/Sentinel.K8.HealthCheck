@@ -49,7 +49,7 @@ namespace Sentinel.K8s
                     source.Metadata.Uid
                 ))
                 .ForMember(dto => dto.CreationTime, map => map.MapFrom(source =>
-                    source.Metadata.CreationTimestamp.Value
+                    source.Metadata.CreationTimestamp == null ? default : source.Metadata.CreationTimestamp.Value
                 ))
                 .ForMember(dto => dto.Status, map => map.MapFrom(source =>
                     source.Status.Phase
@@ -77,7 +77,7 @@ namespace Sentinel.K8s
                 source.Metadata.Uid
             ))
             .ForMember(dto => dto.CreationTime, map => map.MapFrom(source =>
-                source.Metadata.CreationTimestamp.Value
+                source.Metadata.CreationTimestamp == null ? default : source.Metadata.CreationTimestamp.Value
             ))
             .ForMember(dto => dto.Type, map => map.MapFrom(source =>
                 source.Spec.Type
@@ -89,7 +89,7 @@ namespace Sentinel.K8s
                 source.Spec.Ports.Select(p => source.Metadata.Name + "." + source.Metadata.Namespace() + ":" + p.Port.ToString()).ToList()
             ))
             .ForMember(dto => dto.ExternalEndpoints, map => map.MapFrom(source =>
-                source.Spec.Ports.Select(p => source.Status.LoadBalancer.Ingress.FirstOrDefault() == null ? "" : source.Status.LoadBalancer.Ingress.FirstOrDefault().Ip.ToString() + ":" + p.Port.ToString()).ToList()
+                source.Spec.Ports.Select(p => source.Status.LoadBalancer.Ingress.FirstOrDefault() == null ? "" : source.Status.LoadBalancer.Ingress.FirstOrDefault()!.Ip.ToString() + ":" + p.Port.ToString()).ToList()
             ))
             .ForMember(dto => dto.SessionAffinity, map => map.MapFrom(source =>
                 source.Spec.SessionAffinity
@@ -154,7 +154,7 @@ namespace Sentinel.K8s
                 source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()
            ))
             .ForMember(dto => dto.CreationTime, map => map.MapFrom(source =>
-                source.Metadata.CreationTimestamp.Value
+                source.Metadata.CreationTimestamp == null ? default : source.Metadata.CreationTimestamp.Value
            ))
             .ForMember(dto => dto.LabelSelector, map => map.MapFrom(source =>
                  source.Metadata.Labels.Select(p => new Label(p.Key, p.Value)).ToList()

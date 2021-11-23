@@ -17,6 +17,9 @@ namespace Sentinel.Worker.Sync.Tests
              {
                  var args = new string[1] { "" };
                  Program.Main(args);
+
+                 //var pr = new Program();
+
              });
         }
     }

@@ -13,6 +13,10 @@ namespace Sentinel.Tests.Helpers
            .BuildServiceProvider();
 
             var factory = serviceProvider.GetService<ILoggerFactory>();
+            if (factory == null)
+            {
+                factory = new LoggerFactory();
+            }
 
             var logger = factory.CreateLogger<T>();
             return logger;

@@ -33,7 +33,7 @@ namespace Sentinel.K8s.Tests
         public void Should_KubernetesClient_Creates_Instance_With_clientConfig()
         {
             KubernetesClientConfiguration config = k8s.KubernetesClientConfiguration.BuildConfigFromConfigFile();
-            var logger = KubernetesClientTestHelper.GetLogger<KubernetesClient>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<KubernetesClient>();
             KubernetesClient client = new KubernetesClient(config, logger);
             Assert.NotNull(client.ApiClient);
         }
@@ -45,7 +45,7 @@ namespace Sentinel.K8s.Tests
 
             KubernetesClientConfiguration config = k8s.KubernetesClientConfiguration.BuildConfigFromConfigFile();
             Kubernetes apiClient = new Kubernetes(config);
-            var logger = KubernetesClientTestHelper.GetLogger<KubernetesClient>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<KubernetesClient>();
             KubernetesClient client = new KubernetesClient(apiClient, config, logger);
             Assert.NotNull(client.ApiClient);
         }
@@ -82,8 +82,8 @@ namespace Sentinel.K8s.Tests
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
             var nssTask = k8Client.Get<k8s.Models.V1Service>(name: serviceName, @namespace: @namespace);
             nssTask.Wait();
-            _output.WriteLine("Get a Single Resource : " + nssTask.Result.Metadata.Name);
-            Assert.NotNull(nssTask.Result);
+            _output.WriteLine("Get a Single Resource : " + nssTask?.Result?.Metadata.Name);
+            Assert.NotNull(nssTask?.Result);
         }
 
 
@@ -166,10 +166,17 @@ namespace Sentinel.K8s.Tests
 
             var nssTask = k8Client.Get<k8s.Models.V1ConfigMap>(name: "testconfigmap", @namespace: "default");
             nssTask.Wait();
-            _output.WriteLine("Get a Single Resource : " + nssTask.Result.Metadata.Name);
+            _output.WriteLine("Get a Single Resource : " + nssTask.Result?.Metadata.Name);
+            if (nssTask.Result != null)
+            {
+                var deletetask = k8Client.Delete(nssTask.Result);
+                deletetask.Wait();
+            }
+            else
+            {
+                _output.WriteLine("KubernetesClientTests Should_KubernetesClient_Delete_ExistedResource V1ConfigMap Null");
+            }
 
-            var deletetask = k8Client.Delete(nssTask.Result);
-            deletetask.Wait();
 
         }
 
@@ -198,6 +205,7 @@ namespace Sentinel.K8s.Tests
                  _output.WriteLine("Watch Closed ");
              }, cancellationToken: source.Token);
 
+            Assert.NotNull(k8Client);
         }
 
 
@@ -211,23 +219,31 @@ namespace Sentinel.K8s.Tests
 
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
             var statusresobj = await k8Client.Get<HealthCheckResource>(name: name, @namespace: @namespace);
-            if (statusresobj.Status == null)
+            if (statusresobj != null)
             {
-                statusresobj.Status = new HealthCheckResource.HealthCheckResourceStatus();
-                _output.WriteLine("No Status Found ");
+
+
+                if (statusresobj.Status == null)
+                {
+                    statusresobj.Status = new HealthCheckResource.HealthCheckResourceStatus();
+                    _output.WriteLine("No Status Found ");
+                }
+                else
+                {
+                    _output.WriteLine("Status Found " + statusresobj.Status.Phase);
+                }
+
+                statusresobj.Status.Phase = "Starting";
+                statusresobj.Status.LastCheckTime = DateTime.Now.ToString();
+                statusresobj.Status.Message = "Message added";
+
+                _output.WriteLine("Status will be saved " + statusresobj.ToString() + " " + statusresobj.Status.Phase);
+                await k8Client.UpdateStatus<HealthCheckResource>(statusresobj);
             }
             else
             {
-                _output.WriteLine("Status Found " + statusresobj.Status.Phase);
+                _output.WriteLine("Should_KubernetesClient_UpdateStatus statusresobj is NULL");
             }
-
-            statusresobj.Status.Phase = "Starting";
-            statusresobj.Status.LastCheckTime = DateTime.Now.ToString();
-            statusresobj.Status.Message = "Message added";
-
-            _output.WriteLine("Status will be saved " + statusresobj.ToString() + " " + statusresobj.Status.Phase);
-            await k8Client.UpdateStatus<HealthCheckResource>(statusresobj);
-
         }
 
         [Fact]

@@ -25,7 +25,7 @@ namespace Sentinel.Worker.Sync.Tests
             db.Set<TestClass>("test:id", tt);
 
             var ttdb = db.Get<TestClass>("test:id");
-            Assert.Equal(tt.Name, ttdb.Name);
+            Assert.Equal(tt.Name, ttdb?.Name);
 
         }
 
@@ -38,7 +38,7 @@ namespace Sentinel.Worker.Sync.Tests
             await db.SetAsync<TestClass>("test:id", tt);
 
             var ttdb = await db.GetAsync<TestClass>("test:id");
-            Assert.Equal(tt.Name, ttdb.Name);
+            Assert.Equal(tt.Name, ttdb?.Name);
 
         }
 

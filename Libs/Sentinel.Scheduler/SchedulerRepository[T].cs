@@ -30,7 +30,7 @@ namespace Sentinel.Scheduler
             Items.CollectionChanged += new NotifyCollectionChangedEventHandler(collectionChanged);
         }
 
-        private void collectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void collectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
             {
@@ -64,6 +64,10 @@ namespace Sentinel.Scheduler
         {
             // var itemToUpdateScheduled = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
             // var itemToUpdate = Items.FirstOrDefault(e => e.Uid == item.Uid);
+            if (item == null)
+            {
+                throw new ArgumentNullException("item");
+            }
 
             var referenceTime = DateTime.UtcNow;
             var scheduledTask = new SchedulerTaskWrapper<T>(_logger)
@@ -75,19 +79,36 @@ namespace Sentinel.Scheduler
                 NextRunTime = referenceTime,
             };
 
-            var itemIndex = Items.IndexOf(Items.FirstOrDefault(e => e.Uid == item.Uid));
-            if (itemIndex > -1)
+            var selecteditem = Items.FirstOrDefault(e => e.Uid == item.Uid);
+            if (selecteditem != null)
             {
-                Items[itemIndex] = item;
+                var itemIndex = Items.IndexOf(selecteditem);
+                if (itemIndex > -1)
+                {
+                    Items[itemIndex] = item;
+                }
+            }
+            else
+            {
+                _logger.LogCritical("SchedulerRepository <" + genericTypeName + " >  Item  not Found in items UID : " + item.Uid);
+            }
+
+            var scheduledSelectedTask = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
+            if (scheduledSelectedTask != null)
+            {
+                var scheduledIndex = ScheduledTasks.IndexOf(scheduledSelectedTask);
+                if (scheduledIndex > -1)
+                {
+                    ScheduledTasks[scheduledIndex] = scheduledTask;
+                }
+                _logger.LogInformation("SchedulerRepository Updated" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
+            }
+            else
+            {
+                _logger.LogCritical("SchedulerRepository <" + genericTypeName + " >  Item  not Found in ScheduledTasks UID : " + item.Uid);
             }
 
 
-            var scheduledIndex = ScheduledTasks.IndexOf(ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid));
-            if (scheduledIndex > -1)
-            {
-                ScheduledTasks[scheduledIndex] = scheduledTask;
-            }
-            _logger.LogInformation("SchedulerRepository Updated" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
         private void deleteItem(T item)

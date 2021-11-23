@@ -30,9 +30,6 @@ namespace Sentinel.Common
             logger.WriteTo.Console();
 
             return logger;
-            // loggerFactory.AddSerilog();
-            // Log.Logger = logger.CreateLogger();
-
         }
 
     }

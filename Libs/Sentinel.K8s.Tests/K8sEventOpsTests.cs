@@ -25,19 +25,22 @@ namespace Sentinel.K8s.Tests
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
             var healthobj = await k8Client.Get<HealthCheckResource>(name: name, @namespace: @namespace);
 
-            var hel = healthobj.ToString();
+            if (healthobj != null)
+            {
+                K8SEventOps ops = KubernetesClientTestHelper.GetK8SEventOps();
 
-            K8SEventOps ops = KubernetesClientTestHelper.GetK8SEventOps();
+                //Create new Event
+                var eve = await ops.CountUpOrCreateEvent<HealthCheckResource>(@namespace, healthobj, message_1);
 
-
-            //Create new Event
-            var eve = await ops.CountUpOrCreateEvent<HealthCheckResource>(@namespace, healthobj, message_1);
-
-
-            //Count up 
-            var eve_2 = await ops.CountUpOrCreateEvent<HealthCheckResource>(@namespace, healthobj, message_1);
-            _output.WriteLine("event message : " + eve_2.Message);
-            Assert.NotNull(eve_2.Metadata.Name);
+                //Count up 
+                var eve_2 = await ops.CountUpOrCreateEvent<HealthCheckResource>(@namespace, healthobj, message_1);
+                _output.WriteLine("event message : " + eve_2.Message);
+                Assert.NotNull(eve_2.Metadata.Name);
+            }
+            else
+            {
+                _output.WriteLine("healthobj is Null");
+            }
 
         }
 

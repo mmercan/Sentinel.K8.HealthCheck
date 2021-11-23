@@ -11,7 +11,7 @@ namespace Sentinel.Common.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly ExceptionLoggerOptions _options;
-        private readonly ILogger _logger;
+        private readonly ILogger<ExceptionLoggerMiddleware> _logger;
 
         public ExceptionLoggerMiddleware(
             RequestDelegate next,
@@ -51,7 +51,7 @@ namespace Sentinel.Common.Middlewares
     }
     public class ExceptionLoggerOptions
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
     }
 
     // Extension method used to add the middleware to the HTTP request pipeline.

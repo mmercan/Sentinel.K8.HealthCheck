@@ -6,7 +6,7 @@ namespace Sentinel.Models.K8sDTOs
     {
         public int? AvailableReplicas { get; set; }
         public int? CollisionCount { get; set; }
-        public IList<DeploymentConditionV1> Conditions { get; set; }
+        public IList<DeploymentConditionV1> Conditions { get; set; } = default!;
         public long? ObservedGeneration { get; set; }
         public int? ReadyReplicas { get; set; }
         public int? Replicas { get; set; }

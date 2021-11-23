@@ -6,13 +6,13 @@ namespace Sentinel.Models.K8sDTOs
 {
     public class NamespaceV1
     {
-        public string Uid { get; set; }
+        public string Uid { get; set; } = default!;
 
         [Key]
-        public string Name { get; set; }
-        public List<Label> Labels { get; set; }
+        public string Name { get; set; } = default!;
+        public List<Label> Labels { get; set; } = default!;
         public DateTime CreationTime { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = default!;
 
         public DateTime LatestSyncDateUTC { get; set; }
 
