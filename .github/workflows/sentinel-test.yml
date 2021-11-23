@@ -64,3 +64,9 @@ jobs:
           docker run -i \
           -v /home/runner/work/_temp:/root/.kube \
           -v ${{env.ARTIFACT_PATH}}/TestResults:/TestResults sentinel-healthcheck-test \
+
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: TestResults
