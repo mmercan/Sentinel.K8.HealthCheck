@@ -10,3 +10,4 @@ dotnet /output/Sentinel.Scheduler.Benchmark/Sentinel.Scheduler.Benchmark.dll --a
 
 mkdir -p /Benchmarks/Sentinel.Scheduler
 cp -r ./BenchmarkDotNet.Artifacts/results /Benchmarks/Sentinel.Scheduler
+ls /Benchmarks -R
