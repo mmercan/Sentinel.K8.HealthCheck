@@ -1,0 +1,9 @@
+version: "3.4"
+
+services:
+  healthmonitor-ui:
+    image: mmercan/sentinel-dashboard:${TAGVersion}-prod-linux
+    build:
+      target: prod
+      context: ../
+      dockerfile: sentinel-dashboard/Dockerfile

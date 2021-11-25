@@ -58,9 +58,14 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         {
             try
             {
-                _logger.LogCritical("Connected to bus");
-                //  _bus.SubscribeAsync<ServiceV1>(_configuration["queue:servicev1"], Handler); //, x => x.WithTopic("product.*"));
-                _logger.LogCritical("Listening on topic " + _configuration["queue:servicev1"]);
+
+                _logger.LogInformation("Connected to bus");
+                //_bus.SubscribeAsync<ServiceV1>(_configuration["queue:servicev1"], Handler); //, x => x.WithTopic("product.*"));
+                _bus.PubSub.SubscribeAsync<HealthCheckResourceV1>(_configuration["queue:healthcheck"], Handler);
+
+
+
+                _logger.LogInformation("Listening on topic " + _configuration["queue:servicev1"]);
                 // HealthcheckQueueSubscriberStats.SetIsqueueSubscriberStarted(true);
                 _ResetEvent.Wait();
             }
@@ -71,8 +76,9 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             }
         }
 
-        private Task Handler(ServiceV1 service)
+        private Task Handler(HealthCheckResourceV1 healthcheck)
         {
+            _logger.LogInformation(" Handler Received an item : " + healthcheck.Key);
             return Task.CompletedTask;
         }
     }

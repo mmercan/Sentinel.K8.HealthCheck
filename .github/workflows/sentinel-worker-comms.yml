@@ -1,0 +1,125 @@
+name: Sentinel Worker Comms
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - Workers/Sentinel.Worker.Comms/**
+      - Helm/sentinel-healthcheck/charts/sentinel-worker-comms/**
+  pull_request:
+    branches: [master]
+
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_PATH: ${{ github.workspace }}
+      IMAGE_NAME: ${{ github.repository }}
+      dockercomposeLoc: Workers/Sentinel.Worker.Comms/docker-compose.yml
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: View Docker Compose config
+        run: |
+          export TAGVersion=01
+          docker-compose --file $dockercomposeLoc --log-level DEBUG config
+
+      - name: Build Redis Docker Image
+        run: |
+          export TAGVersion=01
+          docker-compose --file $dockercomposeLoc --log-level DEBUG build
+
+      - name: tag Images
+        run: |
+          images=$(cat $dockercomposeLoc | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
+          for image in $images 
+          do 
+            docker tag "${image}":"01-prod-linux" "${image}":"$GITHUB_RUN_ID"
+            docker tag "${image}":"01-prod-linux" "${image}":"latest"
+          done
+
+      - name: list Images
+        run: |
+          docker images
+
+      - name: Push Images
+        run: |
+          images=$(cat $dockercomposeLoc | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
+          for image in $images 
+          do 
+            docker image push --all-tags ${image}
+          done
+  deploy-dev:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_PATH: ${{ github.workspace }}
+      IMAGE_NAME: ${{ github.repository }}
+      chartName: "sentinel-worker-comms"
+      namespace: "sentinel-healthcheck"
+      releaseName: "sentinel-worker-comms-dev"
+      pipelines_pipeline: '"${{ github.WORKFLOW }}"'
+      pipelines_run: ${{ github.RUN_ID }}
+      pipelines_org: '"${{ github.SERVER_URL }}"'
+      pipelines_repo: ${{ github.repository }}
+      pipelines_gitsha: ${{ github.sha }}
+      pipelines_branch: ${{ github.ref }}
+      pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Kubernetes set context
+        uses: Azure/k8s-set-context@v1.1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          context: matt-test-aks2
+
+      - name: add KUBECONFIG To env file
+        run: |
+          cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
+          ls /home/runner/work/_temp
+
+      - name: Check Helm Version
+        run: |
+          helm version
+
+      - name: Helm Package
+        run: |
+          helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartName
+
+      - name: Validate Helm Package
+        run: |
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
+
+      - name: Helm upgrade
+        run: |
+          helm upgrade --namespace $namespace --install \
+          --history-max 1 \
+          --values ./Helm/values/$chartName/dev-values.yaml \
+          --set image.tag=$GITHUB_RUN_ID \
+          --set branch=master \
+          --wait $releaseName \
+          /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "sentinel-worker-comms.fullname" . }}-test-connection"
+  labels:
+    {{- include "sentinel-worker-comms.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "sentinel-worker-comms.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
