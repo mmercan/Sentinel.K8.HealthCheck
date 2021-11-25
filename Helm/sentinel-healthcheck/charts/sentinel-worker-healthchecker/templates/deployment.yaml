@@ -1,3 +1,7 @@
+{{- $name := include "sentinel-worker-sync.fullname" . -}}
+{{- $cfgname := printf "%s-%s" $name "config" -}}
+{{- $secretname := printf "%s-%s" $name "secret" -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,6 +10,7 @@ metadata:
     {{- include "sentinel-worker-healthchecker.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       {{- include "sentinel-worker-healthchecker.selectorLabels" . | nindent 6 }}
@@ -41,6 +46,33 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
+          envFrom:
+          {{- if .Values.configmap }}
+            - configMapRef:
+                name: {{ $cfgname }}
+          {{- end }}
+          {{- if .Values.secrets }}   
+            - secretRef:
+                name: {{ $secretname }}
+           {{- end }}
+            - secretRef:
+                name: "healthcheck-redis-secret"
+            - secretRef:
+                name: "healthcheck-rabbitmq-secret"
+          env:
+            - name: buildnumber
+              value: {{ .Values.buildnumber | quote }}
+            - name: branch
+              value: {{  .Values.branch | quote }}
+          {{- if .Values.envVariables -}}
+          {{- range $key, $value := .Values.envVariables }}
+            - name: {{ $key }}
+              value: {{  $value | quote }}
+          {{- end -}}
+          {{- end -}}
+
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
