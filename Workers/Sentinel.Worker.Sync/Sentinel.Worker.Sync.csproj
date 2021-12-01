@@ -21,7 +21,7 @@
     <PackageReference Include="Quartz.AspNetCore" Version="3.3.3" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.50" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <PackageReference Include="Turquoise.HealthChecks.Common" Version="2.2.1-ci-20200811.1" />
+    <PackageReference Include="Turquoise.HealthChecks.Common" Version="2.2.1-ci-20211110.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -75,7 +75,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
                     }
                     if (task.IsFaulted)
                     {
-                        _logger.LogError(task.Exception.Message);
+                        _logger.LogError("BusScheduler Failed : " + task.Exception.Message);
                         // _bus.
                         var constring = _configuration["RabbitMQConnection"];
                         _logger.LogDebug(constring);

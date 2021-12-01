@@ -48,8 +48,8 @@ namespace Sentinel.Worker.Sync
 
             builder.Services.AddHttpClient<HealthCheckReportDownloaderService>("HealthCheckReportDownloader", options =>
             {
-            // options.BaseAddress = new Uri(Configuration["CrmConnection:ServiceUrl"] + "api/data/v8.2/");
-            options.Timeout = new TimeSpan(0, 2, 0);
+                // options.BaseAddress = new Uri(Configuration["CrmConnection:ServiceUrl"] + "api/data/v8.2/");
+                options.Timeout = new TimeSpan(0, 2, 0);
                 options.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
                 options.DefaultRequestHeaders.Add("OData-Version", "4.0");
                 options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -65,9 +65,10 @@ namespace Sentinel.Worker.Sync
             .AddFeatureFilter<HeadersFeatureFilter>();
 
             builder.Services.AddHealthChecks()
-                .AddSystemInfoCheck();
+                .AddSystemInfoCheck()
+            //    .AddConfigurationChecker(builder.Configuration);
             // .AddRedisHealthCheck(builder.Configuration["RedisConnection"])
-            // .AddConfigurationChecker(builder.Configuration);
+             .AddConfigurationChecker(builder.Configuration);
             // .AddRabbitMQHealthCheckWithDiIBus();
 
 
@@ -77,8 +78,8 @@ namespace Sentinel.Worker.Sync
             builder.Services.Configure<QuartzOptions>(options =>
             {
                 options.Scheduling.IgnoreDuplicates = true; // default: false
-            options.Scheduling.OverWriteExistingData = true; // default: true
-        });
+                options.Scheduling.OverWriteExistingData = true; // default: true
+            });
 
 
             builder.Services.AddQuartz(q =>

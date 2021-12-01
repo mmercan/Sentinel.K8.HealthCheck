@@ -62,7 +62,8 @@ namespace Sentinel.Worker.Scheduler
             services.AddHealthChecks()
                 .AddSystemInfoCheck()
                 .AddRedisHealthCheck(Configuration["RedisConnection"])
-                .AddRabbitMQHealthCheckWithDiIBus();
+                .AddRabbitMQHealthCheckWithDiIBus()
+                .AddConfigurationChecker(Configuration);
 
             services.Configure<QuartzOptions>(Configuration.GetSection("Quartz"));
             services.Configure<QuartzOptions>(options =>
