@@ -5,7 +5,6 @@ using Sentinel.Scheduler.GeneralScheduler.Cron;
 using TimeZoneConverter;
 using Xunit;
 using Xunit.Abstractions;
-using Sentinel.Tests.Helpers;
 
 namespace Sentinel.Scheduler.Tests
 {
@@ -24,7 +23,7 @@ namespace Sentinel.Scheduler.Tests
         {
             TimeZoneInfo tzi = TZConvert.GetTimeZoneInfo("Australia/Melbourne");
 
-            var logger = Helpers.GetLogger<GeneralScheduler.SchedulerTaskWrapper<HealthCheckResourceV1>>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<GeneralScheduler.SchedulerTaskWrapper<HealthCheckResourceV1>>();
 
             SchedulerTaskWrapper<HealthCheckResourceV1> wrapper = new GeneralScheduler.SchedulerTaskWrapper<HealthCheckResourceV1>(logger);
             wrapper.Schedule = CrontabSchedule.Parse("*/3 * * * *");

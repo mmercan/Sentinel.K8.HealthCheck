@@ -22,9 +22,11 @@ namespace Sentinel.Models.K8sDTOs
 
         public DateTime LatestSyncDateUTC { get; set; }
 
-        public HealthCheckResourceSpecV1 Specs { get; set; } = default!;
+        public HealthCheckResourceSpecV1 Spec { get; set; } = default!;
 
         public HealthCheckResourceStatusV1 Status { get; set; } = default!;
+
+        public ServiceV1 RelatedService { get; set; } = default!;
     }
 
     public class HealthCheckResourceSpecV1 : HealthCheckResource.HealthCheckResourceSpec

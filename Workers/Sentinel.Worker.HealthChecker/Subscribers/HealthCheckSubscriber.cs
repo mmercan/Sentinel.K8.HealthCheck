@@ -63,21 +63,20 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
                 //_bus.SubscribeAsync<ServiceV1>(_configuration["queue:servicev1"], Handler); //, x => x.WithTopic("product.*"));
                 _bus.PubSub.SubscribeAsync<HealthCheckResourceV1>(_configuration["queue:healthcheck"], Handler);
 
-
-
                 _logger.LogInformation("Listening on topic " + _configuration["queue:servicev1"]);
                 // HealthcheckQueueSubscriberStats.SetIsqueueSubscriberStarted(true);
                 _ResetEvent.Wait();
             }
             catch (Exception ex)
             {
-                // HealthcheckQueueSubscriberStats.SetIsqueueSubscriberStarted(false);
+                this.ReportUnhealthy(ex.Message);
                 _logger.LogError("Exception: " + ex.Message);
             }
         }
 
         private Task Handler(HealthCheckResourceV1 healthcheck)
         {
+            this.ReportHealthy();
             _logger.LogInformation(" Handler Received an item : " + healthcheck.Key);
             return Task.CompletedTask;
         }

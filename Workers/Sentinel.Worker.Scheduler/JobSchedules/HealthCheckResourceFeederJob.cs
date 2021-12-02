@@ -9,10 +9,12 @@ namespace Sentinel.Worker.Scheduler.JobSchedules
     {
         private readonly SchedulerRepositoryFeeder<HealthCheckResourceV1> _healthCheckResourceFeeder;
 
-        public HealthCheckResourceFeederJob(SchedulerRepositoryFeeder<HealthCheckResourceV1> healthCheckResourceFeeder)
+        public HealthCheckResourceFeederJob(
+            SchedulerRepositoryFeeder<HealthCheckResourceV1> healthCheckResourceFeeder,
+            IConfiguration configuration)
         {
             _healthCheckResourceFeeder = healthCheckResourceFeeder;
-            _healthCheckResourceFeeder.Initiate("HealthChecks");
+            _healthCheckResourceFeeder.Initiate(configuration["Rediskey:HealthChecks"]);
         }
 
         public Task Execute(IJobExecutionContext context)

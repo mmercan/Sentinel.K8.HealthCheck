@@ -9,8 +9,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sentinel.Common;
 using Sentinel.Models.K8sDTOs;
+using Sentinel.Redis;
 using Sentinel.Scheduler;
+using StackExchange.Redis;
 using TimeZoneConverter;
+using Sentinel.Scheduler.Helpers;
 
 namespace Sentinel.Worker.Scheduler.Schedules
 {
@@ -20,19 +23,21 @@ namespace Sentinel.Worker.Scheduler.Schedules
         private readonly EasyNetQ.IBus _bus;
         private readonly SchedulerRepository<HealthCheckResourceV1> _healthCheckRepository;
         private readonly IConfiguration _configuration;
+        private readonly RedisDictionary<ServiceV1> redisServiceDictionary;
         private readonly string timezone;
         public BusScheduler(
             ILogger<BusScheduler> logger,
             IBus bus,
             IOptions<HealthCheckServiceOptions> hcoptions,
             SchedulerRepository<HealthCheckResourceV1> healthCheckRepository,
+            IConnectionMultiplexer _multiplexer,
             IConfiguration configuration
             ) : base(logger, hcoptions)
         {
             _bus = bus;
             _healthCheckRepository = healthCheckRepository;
             _configuration = configuration;
-
+            redisServiceDictionary = new RedisDictionary<ServiceV1>(_multiplexer, _logger, configuration["Rediskey:HealthChecks"]);
             if (!string.IsNullOrWhiteSpace(_configuration["timezone"]))
             {
                 timezone = _configuration["timezone"];
@@ -67,6 +72,15 @@ namespace Sentinel.Worker.Scheduler.Schedules
                 taskThatShouldRun.Increment();
                 _logger.LogInformation("BusScheduler : Task Adding to RabbitMQ " + taskThatShouldRun.Task.Key);
 
+                try
+                {
+                    var service = taskThatShouldRun.Item.FindServiceRelatedtoHealthCheckResourceV1(redisServiceDictionary);
+                    taskThatShouldRun.Item.RelatedService = service;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "BusScheduler : Error Finding Service Related to HealthCheckResourceV1");
+                }
                 _bus.PubSub.PublishAsync(taskThatShouldRun.Item, _configuration["queue:healthcheck"]).ContinueWith(task =>
                 {
                     if (task.IsCompleted && !task.IsFaulted)
