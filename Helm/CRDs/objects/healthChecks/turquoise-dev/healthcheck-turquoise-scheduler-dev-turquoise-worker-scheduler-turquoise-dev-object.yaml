@@ -1,0 +1,8 @@
+apiVersion: "sentinel.mercan.io/v1"
+kind: HealthCheck
+metadata:
+  name: turquoise-scheduler-dev-turquoise-worker-scheduler-healthcheck
+spec:
+  service: "turquoise-scheduler-dev-turquoise-worker-scheduler"
+  crontab: "*/2 * * * *"
+  cert: ""
