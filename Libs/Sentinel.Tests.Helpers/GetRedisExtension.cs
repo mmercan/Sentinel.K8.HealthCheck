@@ -13,6 +13,7 @@ namespace Sentinel.Tests.Helpers
 
             var redisconstring = config["RedisConnection"];
             IConnectionMultiplexer rediscon = ConnectionMultiplexer.Connect(redisconstring);
+
             return rediscon;
         }
     }

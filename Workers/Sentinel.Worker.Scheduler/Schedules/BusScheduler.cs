@@ -14,6 +14,7 @@ using Sentinel.Scheduler;
 using StackExchange.Redis;
 using TimeZoneConverter;
 using Sentinel.Scheduler.Helpers;
+using Polly;
 
 namespace Sentinel.Worker.Scheduler.Schedules
 {
@@ -37,7 +38,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
             _bus = bus;
             _healthCheckRepository = healthCheckRepository;
             _configuration = configuration;
-            redisServiceDictionary = new RedisDictionary<ServiceV1>(_multiplexer, _logger, configuration["Rediskey:HealthChecks"]);
+            redisServiceDictionary = new RedisDictionary<ServiceV1>(_multiplexer, _logger, configuration["Rediskey:Services"]);
             if (!string.IsNullOrWhiteSpace(_configuration["timezone"]))
             {
                 timezone = _configuration["timezone"];
@@ -74,8 +75,32 @@ namespace Sentinel.Worker.Scheduler.Schedules
 
                 try
                 {
-                    var service = taskThatShouldRun.Item.FindServiceRelatedtoHealthCheckResourceV1(redisServiceDictionary);
-                    taskThatShouldRun.Item.RelatedService = service;
+
+                    var policy = Policy
+                      .Handle<RedisTimeoutException>()
+                      .Or<RedisConnectionException>()
+                      .WaitAndRetry(new[]
+                      {
+                        TimeSpan.FromSeconds(1),
+                        TimeSpan.FromSeconds(2),
+                        TimeSpan.FromSeconds(3)
+                      }, (ex, timeSpan, retryCount, context) =>
+                      {
+
+                          _logger.LogError(ex, "BusScheduler : Polly retry " + retryCount.ToString() + "  Error Finding Service Related to HealthCheckResourceV1");
+                          if (retryCount == 2)
+                          {
+                              throw ex;
+                          }
+                          // Add logic to be executed before each retry, such as logging    
+                      });
+                    policy.Execute(() =>
+                    {
+                        var service = taskThatShouldRun.Item.FindServiceRelatedtoHealthCheckResourceV1(redisServiceDictionary);
+                        taskThatShouldRun.Item.RelatedService = service;
+                    });
+
+
                 }
                 catch (Exception ex)
                 {
@@ -89,11 +114,10 @@ namespace Sentinel.Worker.Scheduler.Schedules
                     }
                     if (task.IsFaulted)
                     {
-                        _logger.LogError("BusScheduler Failed : " + task.Exception.Message);
+                        _logger.LogError("BusScheduler Failed : " + task.Exception.MessageWithInnerException());
                         // _bus.
                         var constring = _configuration["RabbitMQConnection"];
                         _logger.LogDebug(constring);
-
                     }
                 });
 
