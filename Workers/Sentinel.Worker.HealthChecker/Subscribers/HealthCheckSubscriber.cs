@@ -77,7 +77,14 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         private Task Handler(HealthCheckResourceV1 healthcheck)
         {
             this.ReportHealthy();
-            _logger.LogInformation(" Handler Received an item : " + healthcheck.Key);
+            bool serviceFound = false;
+            string serviceName = "";
+            if (healthcheck.RelatedService != null)
+            {
+                serviceFound = true;
+                serviceName = healthcheck.RelatedService.NameandNamespace;
+            }
+            _logger.LogInformation(" Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + "service name: " + serviceName);
             return Task.CompletedTask;
         }
     }
