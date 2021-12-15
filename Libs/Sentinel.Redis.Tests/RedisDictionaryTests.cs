@@ -16,7 +16,7 @@ namespace Sentinel.Worker.Sync.Tests
         public RedisDictionaryTests(ITestOutputHelper output)
         {
             this.output = output;
-            var multi = RedisExtensions.GetRedisMultiplexer();
+            multi = RedisExtensions.GetRedisMultiplexer();
         }
 
         [Fact]
@@ -302,6 +302,7 @@ namespace Sentinel.Worker.Sync.Tests
             List<TestClass> list2 = new List<TestClass> { t2, t3 };
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<RedisDictionary<TestClass>>();
+
             var dic = new RedisDictionary<TestClass>(multi, logger, "tests-12");
 
             dic.AddMultiple(list1);

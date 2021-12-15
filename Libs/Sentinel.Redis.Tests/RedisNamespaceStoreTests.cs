@@ -13,15 +13,17 @@ namespace Sentinel.Worker.Sync.Tests
     public class RedisNamespaceStoreTests
     {
         private ITestOutputHelper output;
+        private IConnectionMultiplexer multi;
         public RedisNamespaceStoreTests(ITestOutputHelper output)
         {
             this.output = output;
+            multi = RedisExtensions.GetRedisMultiplexer();
         }
 
         [Fact]
         public void GetDatabase()
         {
-            var multi = RedisExtensions.GetRedisMultiplexer();
+
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
         }
@@ -30,7 +32,7 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task GetAsyncEnumerable()
         {
-            var multi = RedisExtensions.GetRedisMultiplexer();
+
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             var items = store.GetAsyncEnumerable();
             await foreach (var item in items)
@@ -42,7 +44,6 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task GetSet()
         {
-            var multi = RedisExtensions.GetRedisMultiplexer();
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
 
@@ -56,7 +57,6 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task GetSetAsync()
         {
-            var multi = RedisExtensions.GetRedisMultiplexer();
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
 
@@ -71,7 +71,6 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task GetListAsync()
         {
-            var multi = RedisExtensions.GetRedisMultiplexer();
             var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
 
