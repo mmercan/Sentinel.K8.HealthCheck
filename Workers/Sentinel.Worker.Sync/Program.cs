@@ -46,17 +46,7 @@ namespace Sentinel.Worker.Sync
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
-            builder.Services.AddHttpClient<HealthCheckReportDownloaderService>("HealthCheckReportDownloader", options =>
-            {
-                // options.BaseAddress = new Uri(Configuration["CrmConnection:ServiceUrl"] + "api/data/v8.2/");
-                options.Timeout = new TimeSpan(0, 2, 0);
-                options.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
-                options.DefaultRequestHeaders.Add("OData-Version", "4.0");
-                options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            })
-            .AddPolicyHandler(HttpClientHelpers.GetRetryPolicy())
-            .AddPolicyHandler(HttpClientHelpers.GetCircuitBreakerPolicy());
 
             builder.Services.AddHttpContextAccessor();
 

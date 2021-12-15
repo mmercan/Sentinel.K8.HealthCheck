@@ -84,7 +84,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
                 serviceFound = true;
                 serviceName = healthcheck.RelatedService.NameandNamespace;
             }
-            _logger.LogInformation(" Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + "service name: " + serviceName);
+            _logger.LogInformation(" Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
             return Task.CompletedTask;
         }
     }

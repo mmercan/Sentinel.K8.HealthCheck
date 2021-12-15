@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using EasyNetQ;
 using Microsoft.AspNetCore.Builder;
@@ -15,13 +16,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Microsoft.FeatureManagement.FeatureFilters;
 using Sentinel.Common;
+using Sentinel.Common.AuthServices;
 using Sentinel.Common.CustomFeatureFilter;
+using Sentinel.Common.HttpClientHelpers;
+using Sentinel.Common.HttpClientServices;
 using Sentinel.Common.Middlewares;
 using Sentinel.Worker.HealthChecker.Subscribers;
 using Serilog;
 using Serilog.Events;
 using StackExchange.Redis;
 using Turquoise.HealthChecks.Common;
+using Turquoise.HealthChecks.Common.CheckCaller;
 using Turquoise.HealthChecks.Common.Checks;
 using Turquoise.HealthChecks.RabbitMQ;
 using Turquoise.HealthChecks.Redis;
@@ -46,8 +51,26 @@ namespace Sentinel.Worker.HealthChecker
             services.AddSingleton<IServiceCollection>(services);
             services.AddSingleton<IConfiguration>(Configuration);
 
+            services.AddMemoryCache();
+            services.Configure<AZAuthServiceSettings>(Configuration.GetSection("AzureAd"));
+            services.AddSingleton<AZAuthService>();
+
+            services.AddSingleton<DownloadJsonService>();
 
             services.AddAutoMapper(typeof(Startup).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
+
+
+            services.AddHttpClient<HealthCheckReportDownloaderService>("HealthCheckReportDownloader", options =>
+            {
+                // options.BaseAddress = new Uri(Configuration["CrmConnection:ServiceUrl"] + "api/data/v8.2/");
+                options.Timeout = new TimeSpan(0, 2, 0);
+                options.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
+                options.DefaultRequestHeaders.Add("OData-Version", "4.0");
+                options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            })
+            .AddPolicyHandler(HttpClientHelpers.GetRetryPolicy())
+            .AddPolicyHandler(HttpClientHelpers.GetCircuitBreakerPolicy());
 
             services.AddHttpContextAccessor();
 
