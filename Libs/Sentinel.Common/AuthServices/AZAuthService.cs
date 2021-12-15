@@ -56,10 +56,10 @@ namespace Sentinel.Common.AuthServices
                 var totalmin = (DateTime.UtcNow - token.ExpiresOn).TotalMinutes;
                 _logger.LogInformation("used cached token expires in " + totalmin.ToString() + " Minutes  at UTC " + token.ExpiresOn.ToString());
             }
-            return token.Token;
+            return token?.Token;
         }
 
-        private async Task<CacheToken> downloadToken(AZAuthServiceSettings setting)
+        private async Task<CacheToken?> downloadToken(AZAuthServiceSettings setting)
         {
             var url = "https://login.microsoftonline.com/" + setting.TenantId + "/oauth2/token?resource=" + setting.ClientId;
 
@@ -83,14 +83,21 @@ namespace Sentinel.Common.AuthServices
 
             _logger.LogInformation(token);
 
+            var date = DateTime.UtcNow;
+            var expires_on = s?.ExpiresOn as string;
+            if (expires_on != null)
+            {
+                date = convertDatetime(expires_on);
+            }
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                _logger.LogInformation("Token expires on (UTC) " + date.ToString());
+                var ctoken = new CacheToken { ExpiresOn = date, Token = token };
+                cacheToken(ctoken);
+                return ctoken;
+            }
+            else { return default; }
 
-            var expires_on = s.ExpiresOn as string;
-            var date = convertDatetime(expires_on);
-
-            _logger.LogInformation("Token expires on (UTC) " + date.ToString());
-            var ctoken = new CacheToken { ExpiresOn = date, Token = token };
-            cacheToken(ctoken);
-            return ctoken;
         }
 
         private void cacheToken(CacheToken token)

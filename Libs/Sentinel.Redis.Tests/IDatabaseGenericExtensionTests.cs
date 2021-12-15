@@ -11,15 +11,17 @@ namespace Sentinel.Worker.Sync.Tests
     public class IDatabaseGenericExtensionTests
     {
         private ITestOutputHelper output;
+        private IConnectionMultiplexer multi;
         public IDatabaseGenericExtensionTests(ITestOutputHelper output)
         {
             this.output = output;
+            multi = RedisExtensions.GetRedisMultiplexer();
         }
 
         [Fact]
         public void GetSet()
         {
-            var multi = RedisExtensions.GetRedisMultiplexer();
+
             var tt = new TestClass("Name_test", "test:id");
             var db = multi.GetDatabase();
             db.Set<TestClass>("test:id", tt);
@@ -32,7 +34,7 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task GetSetAsync()
         {
-            var multi = RedisExtensions.GetRedisMultiplexer();
+
             var tt = new TestClass("Name_test", "test:id");
             var db = multi.GetDatabase();
             await db.SetAsync<TestClass>("test:id", tt);
@@ -46,7 +48,7 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task SetListAsyncFromKeyAttr()
         {
-            var multi = RedisExtensions.GetRedisMultiplexer();
+
             var tt = new TestClass("Name_test", "test:id");
             List<TestClass> lists = new List<TestClass>();
             lists.Add(tt);
@@ -58,7 +60,7 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task SetListAsyncFromFunc()
         {
-            var multi = RedisExtensions.GetRedisMultiplexer();
+
             var tt = new TestClass("Name_test", "test:id");
             List<TestClass> lists = new List<TestClass>();
             lists.Add(tt);

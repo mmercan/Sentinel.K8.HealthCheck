@@ -6,7 +6,7 @@ namespace Sentinel.Common.HttpClientHelpers
     {
 
         private X509FindType _findType;
-        private object _findValue;
+        private object _findValue = default!;
 
 
 
