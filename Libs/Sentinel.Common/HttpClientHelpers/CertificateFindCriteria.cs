@@ -97,7 +97,7 @@ namespace Sentinel.Common.HttpClientHelpers
                         case "allowinvalidclientcertificates":
                             bool validOnly;
                             bool.TryParse(keyValue[1], out validOnly);
-                            findCriteria.ValidOnly = validOnly;
+                            findCriteria.ValidOnly = !validOnly;
                             break;
                     }
                 }
