@@ -50,7 +50,7 @@ namespace Sentinel.Common
         public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
 
-            if (LastProcessUtc == DateTime.MinValue || LastProcessUtc > DateTime.UtcNow.AddHours(-1))
+            if (LastProcessUtc == DateTime.MinValue || DateTime.UtcNow.AddHours(-1) > LastProcessUtc)
             {
                 ReportDegraded("Just started or havent heard over an hour");
             }
