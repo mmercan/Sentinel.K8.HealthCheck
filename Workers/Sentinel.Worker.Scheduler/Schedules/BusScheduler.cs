@@ -15,6 +15,7 @@ using StackExchange.Redis;
 using TimeZoneConverter;
 using Sentinel.Scheduler.Helpers;
 using Polly;
+using Sentinel.Models.CRDs;
 
 namespace Sentinel.Worker.Scheduler.Schedules
 {
@@ -25,6 +26,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
         private readonly SchedulerRepository<HealthCheckResourceV1> _healthCheckRepository;
         private readonly IConfiguration _configuration;
         private readonly RedisDictionary<ServiceV1> redisServiceDictionary;
+        private readonly RedisDictionary<HealthCheckResourceV1> redisHealCheckServiceNotFoundDictionary;
         private readonly string timezone;
         public BusScheduler(
             ILogger<BusScheduler> logger,
@@ -38,7 +40,10 @@ namespace Sentinel.Worker.Scheduler.Schedules
             _bus = bus;
             _healthCheckRepository = healthCheckRepository;
             _configuration = configuration;
+
             redisServiceDictionary = new RedisDictionary<ServiceV1>(_multiplexer, _logger, configuration["Rediskey:Services"]);
+            redisHealCheckServiceNotFoundDictionary = new RedisDictionary<HealthCheckResourceV1>(_multiplexer, _logger, configuration["Rediskey:HealCheckServiceNotFound"]);
+
             if (!string.IsNullOrWhiteSpace(_configuration["timezone"]))
             {
                 timezone = _configuration["timezone"];
@@ -98,14 +103,19 @@ namespace Sentinel.Worker.Scheduler.Schedules
                     {
                         var service = taskThatShouldRun.Item.FindServiceRelatedtoHealthCheckResourceV1(redisServiceDictionary);
                         taskThatShouldRun.Item.RelatedService = service;
+                        if (service == null)
+                        {
+                            _logger.LogCritical("BusScheduler : Error Finding Service Related to HealthCheckResourceV1 Logged in RedisHealCheckServiceNotFoundDictionary");
+                            redisHealCheckServiceNotFoundDictionary.Add(taskThatShouldRun.Item);
+                        }
                     });
-
-
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "BusScheduler : Error Finding Service Related to HealthCheckResourceV1");
                 }
+
+                // TODO: Add a check to see if the service added to object before sending the message
                 _bus.PubSub.PublishAsync(taskThatShouldRun.Item, _configuration["queue:healthcheck"]).ContinueWith(task =>
                 {
                     if (task.IsCompleted && !task.IsFaulted)
@@ -115,7 +125,6 @@ namespace Sentinel.Worker.Scheduler.Schedules
                     if (task.IsFaulted)
                     {
                         _logger.LogError("BusScheduler Failed : " + task.Exception.MessageWithInnerException());
-                        // _bus.
                         var constring = _configuration["RabbitMQConnection"];
                         _logger.LogDebug(constring);
                     }
@@ -125,5 +134,6 @@ namespace Sentinel.Worker.Scheduler.Schedules
 
             return Task.CompletedTask;
         }
+
     }
 }

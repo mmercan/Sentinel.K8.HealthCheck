@@ -7,6 +7,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sentinel.Common;
+using Sentinel.Common.HttpClientServices;
 using Sentinel.Models.K8sDTOs;
 
 namespace Sentinel.Worker.HealthChecker.Subscribers
@@ -16,6 +17,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         private Task executingTask;
         private readonly EasyNetQ.IBus _bus;
         private readonly IConfiguration _configuration;
+        private readonly IsAliveAndWellHealthCheckDownloader _isAliveAndWelldownloader;
         private readonly string timezone;
         private ManualResetEventSlim _ResetEvent = new ManualResetEventSlim(false);
 
@@ -23,12 +25,13 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             ILogger<HealthCheckSubscriber> logger,
             IBus bus,
             IOptions<HealthCheckServiceOptions> hcoptions,
-            IConfiguration configuration
+            IConfiguration configuration,
+            IsAliveAndWellHealthCheckDownloader isAliveAndWelldownloader
             ) : base(logger, hcoptions)
         {
             _bus = bus;
             _configuration = configuration;
-
+            _isAliveAndWelldownloader = isAliveAndWelldownloader;
             if (!string.IsNullOrWhiteSpace(_configuration["timezone"]))
             {
                 timezone = _configuration["timezone"];
@@ -72,7 +75,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             }
         }
 
-        private Task Handler(HealthCheckResourceV1 healthcheck)
+        private async Task Handler(HealthCheckResourceV1 healthcheck)
         {
             this.ReportHealthy();
             bool serviceFound = false;
@@ -81,9 +84,30 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             {
                 serviceFound = true;
                 serviceName = healthcheck.RelatedService.NameandNamespace;
+                var results = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService);
             }
             _logger.LogInformation(" Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
-            return Task.CompletedTask;
+            // _ResetEvent.Set();
+        }
+
+
+        private void OnClosed()
+        {
+            var utc = DateTime.UtcNow.ToString();
+            var howlongran = (DateTime.UtcNow - lastrestart);
+
+            this._logger.LogError("===on watch HealthCheckSubscriber Connection  Closed after " + howlongran.TotalMinutes.ToString() + ":" + howlongran.Seconds.ToString() + " min:sec : re-running delay 30 seconds " + utc);
+
+            Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+            lastrestart = DateTime.UtcNow;
+            this._logger.LogError("=== on watch Restarting HealthCheckSubscriber Now.... ===" + lastrestart.ToString());
+            executingTask = Task.Factory.StartNew(new Action(SubscribeQueue), TaskCreationOptions.LongRunning);
+        }
+
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("HealthCheckSubscriber Hosted Service is stopping.");
+            await base.StopAsync(cancellationToken);
         }
     }
 }

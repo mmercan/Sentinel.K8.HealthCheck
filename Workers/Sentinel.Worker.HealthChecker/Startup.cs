@@ -56,6 +56,7 @@ namespace Sentinel.Worker.HealthChecker
             services.AddSingleton<AZAuthService>();
 
             services.AddSingleton<DownloadJsonService>();
+            services.AddSingleton<IsAliveAndWellHealthCheckDownloader>();
 
             services.AddAutoMapper(typeof(Startup).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
