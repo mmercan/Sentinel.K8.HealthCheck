@@ -22,8 +22,6 @@ namespace Sentinel.Redis
             database = _multiplexer.GetDatabase();
             server = _multiplexer.GetServer(multiplexer.GetEndPoints().First());
             this.prefix = prefix;
-
-            // JsonConvert.DeserializeObject()
         }
 
         public string Status()

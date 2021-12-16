@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Sentinel.Models.K8sDTOs;
@@ -14,17 +15,17 @@ namespace Sentinel.Worker.Sync.Tests
     {
         private ITestOutputHelper output;
         private IConnectionMultiplexer multi;
+        private RedisNamespaceStore<TestClass> store;
         public RedisNamespaceStoreTests(ITestOutputHelper output)
         {
             this.output = output;
             multi = RedisExtensions.GetRedisMultiplexer();
+            store = new RedisNamespaceStore<TestClass>(multi, "test:*");
         }
 
         [Fact]
         public void GetDatabase()
         {
-
-            var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
         }
 
@@ -32,8 +33,6 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task GetAsyncEnumerable()
         {
-
-            var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             var items = store.GetAsyncEnumerable();
             await foreach (var item in items)
             {
@@ -44,7 +43,6 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task GetSet()
         {
-            var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
 
             var tt = new TestClass("Name_test", "test:id");
@@ -52,12 +50,19 @@ namespace Sentinel.Worker.Sync.Tests
             Assert.True(q);
             var ttt = await store.GetAsync("test:runs");
             Assert.NotNull(ttt);
+
+            var dd = Guid.NewGuid().ToString();
+            var tttt = await store.GetAsync(dd);
+            Assert.Null(tttt);
+
+            var items = store.GetAsyncEnumerable(dd);
+            //Assert.Null(items);
         }
 
         [Fact]
         public async Task GetSetAsync()
         {
-            var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
+
             output.WriteLine(store.Status());
 
             var tt = new TestClass("Name_test", "id_test");
@@ -71,7 +76,6 @@ namespace Sentinel.Worker.Sync.Tests
         [Fact]
         public async Task GetListAsync()
         {
-            var store = new RedisNamespaceStore<TestClass>(multi, "test:*");
             output.WriteLine(store.Status());
 
             var tt = new TestClass("Name_test", "id_test");
