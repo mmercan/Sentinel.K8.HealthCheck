@@ -72,6 +72,7 @@ pipelines:
 
 configmap:
   ASPNETCORE_ENVIRONMENT: "Production"
+  queue__healthcheck: "healthcheck.service"
   DOTNET_RUNNING_IN_CONTAINER: "true"
   RunOnCluster: "true"
 

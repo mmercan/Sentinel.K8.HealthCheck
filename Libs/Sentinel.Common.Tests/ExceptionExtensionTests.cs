@@ -26,7 +26,7 @@ namespace Sentinel.Common.Tests
         [Fact]
         public void TestExceptionExtensionwhenNull()
         {
-            Exception q = null;
+            Exception? q = null;
             var message = ExceptionExtension.MessageWithInnerException(q);
             Assert.Equal(string.Empty, message);
         }
