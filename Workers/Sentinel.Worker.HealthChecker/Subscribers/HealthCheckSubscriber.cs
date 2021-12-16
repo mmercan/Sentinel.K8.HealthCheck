@@ -45,7 +45,6 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
             executingTask = Task.Factory.StartNew(new Action(SubscribeQueue), TaskCreationOptions.LongRunning);
             if (executingTask.IsCompleted)
             {
@@ -58,13 +57,12 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         {
             try
             {
-
                 _logger.LogInformation("Connected to bus");
-                //_bus.SubscribeAsync<ServiceV1>(_configuration["queue:servicev1"], Handler); //, x => x.WithTopic("product.*"));
+
                 _bus.PubSub.SubscribeAsync<HealthCheckResourceV1>(_configuration["queue:healthcheck"], Handler);
 
-                _logger.LogInformation("Listening on topic " + _configuration["queue:servicev1"]);
-                // HealthcheckQueueSubscriberStats.SetIsqueueSubscriberStarted(true);
+                _logger.LogInformation("Listening on topic " + _configuration["queue:healthcheck"]);
+
                 _ResetEvent.Wait();
             }
             catch (Exception ex)
