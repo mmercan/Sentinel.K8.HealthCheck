@@ -20,6 +20,8 @@ namespace Sentinel.Worker.Comms
             var appname = System.AppDomain.CurrentDomain.FriendlyName;
             var builder = CreateHostBuilder(args);
             builder.UseSerilogAuto(appname, environment, LogEventLevel.Debug);
+
+            builder.Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
