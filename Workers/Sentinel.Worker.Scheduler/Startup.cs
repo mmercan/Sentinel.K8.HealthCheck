@@ -28,6 +28,7 @@ using Sentinel.Worker.Scheduler.Schedules;
 using Turquoise.HealthChecks.Common.Checks;
 using Turquoise.HealthChecks.Redis;
 using Turquoise.HealthChecks.RabbitMQ;
+using Sentinel.Common;
 
 namespace Sentinel.Worker.Scheduler
 {
@@ -113,19 +114,8 @@ namespace Sentinel.Worker.Scheduler
             {
                 app.UseDeveloperExceptionPage();
             }
-            var logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(Configuration)
-            .Enrich.FromLogContext()
-            .Enrich.WithProperty("Enviroment", env.EnvironmentName)
-            .Enrich.WithProperty("ApplicationName", "Sentinel.Worker.Scheduler")
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-            .WriteTo.Console()
-            .WriteTo.File("Logs/logs.txt");
-            logger.WriteTo.Console();
-            loggerFactory.AddSerilog();
-            Log.Logger = logger.CreateLogger();
-            app.UseExceptionLogger();
 
+            app.UseExceptionLogger();
 
             var options = new CrystalQuartzOptions
             {

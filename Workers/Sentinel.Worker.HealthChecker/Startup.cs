@@ -105,16 +105,8 @@ namespace Sentinel.Worker.HealthChecker
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            var logger = LoggerHelper.ConfigureLogger("Sentinel.Worker.HealthChecker",
-                env.EnvironmentName, Configuration, LogEventLevel.Debug);
-
-            loggerFactory.AddSerilog();
-            Log.Logger = logger.CreateLogger();
             app.UseExceptionLogger();
-
             app.UseRouting();
-
 
             app.UseHealthChecks("/Health/IsAliveAndWell", new HealthCheckOptions()
             {

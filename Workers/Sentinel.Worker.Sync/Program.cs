@@ -31,7 +31,12 @@ namespace Sentinel.Worker.Sync
     {
         public static void Main(string[] args)
         {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var appname = System.AppDomain.CurrentDomain.FriendlyName;
+
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Host.UseSerilogAuto(appname, environment, LogEventLevel.Debug);
 
             if (builder.Configuration["RunOnCluster"] == "true") { builder.Services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.InClusterConfig()); }
             else { builder.Services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.BuildConfigFromConfigFile()); }
@@ -133,12 +138,6 @@ namespace Sentinel.Worker.Sync
                 app.UseDeveloperExceptionPage();
             }
 
-
-            var logger = LoggerHelper.ConfigureLogger("Sentinel.Worker.Sync",
-                app.Environment.EnvironmentName, app.Configuration, LogEventLevel.Debug);
-
-            //  loggerFactory.AddSerilog();
-            Log.Logger = logger.CreateLogger();
             app.UseExceptionLogger();
 
             var options = new CrystalQuartzOptions

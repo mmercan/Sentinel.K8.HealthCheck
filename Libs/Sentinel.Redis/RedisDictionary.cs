@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Polly;
 using Sentinel.Models.Redis;
 using StackExchange.Redis;
 
@@ -22,6 +23,8 @@ namespace Sentinel.Redis
         private readonly IDatabase database;
         private readonly ILogger _logger;
         private readonly string _redisKey;
+
+        private Polly.Policy policy;
         public RedisDictionary(IConnectionMultiplexer multiplexer, ILogger logger, string redisKey)
         {
             _redisKey = redisKey;
@@ -29,6 +32,27 @@ namespace Sentinel.Redis
             Logger = logger;
             database = multiplexer.GetDatabase();
             _logger = logger;
+
+
+            policy = Policy.Handle<RedisTimeoutException>().Or<RedisConnectionException>()
+                    .WaitAndRetry(new[] {
+                        TimeSpan.FromSeconds(1),TimeSpan.FromSeconds(2),TimeSpan.FromSeconds(3)
+                    }, (ex, timeSpan, retryCount, context) =>
+                    {
+                        _logger.LogError(ex, "RedisDictionary : Polly retry " + retryCount.ToString() + "  Error");
+                        if (retryCount == 2) { throw ex; }
+                        // Add logic to be executed before each retry, such as logging    
+                    });
+            // policy.Execute(() =>
+            // {
+            //     var service = taskThatShouldRun.Item.FindServiceRelatedtoHealthCheckResourceV1(redisServiceDictionary);
+            //     taskThatShouldRun.Item.RelatedService = service;
+            //     if (service == null)
+            //     {
+            //         _logger.LogCritical("BusScheduler : Error Finding Service Related to HealthCheckResourceV1 Logged in RedisHealCheckServiceNotFoundDictionary");
+            //         redisHealCheckServiceNotFoundDictionary.Add(taskThatShouldRun.Item);
+            //     }
+            // });
 
         }
 
@@ -44,7 +68,11 @@ namespace Sentinel.Redis
         public void Add(TValue value) => Add(PropertyInfoHelpers.GetKeyValue<string, TValue>(value), value);
         public void Add(string key, TValue value)
         {
-            database.HashSet(_redisKey, key, Serialize(value));
+            policy.Execute(() =>
+            {
+                database.HashSet(_redisKey, key, Serialize(value));
+            });
+
         }
 
 
@@ -52,25 +80,42 @@ namespace Sentinel.Redis
         public async Task AddAsync(TValue value) => await AddAsync(PropertyInfoHelpers.GetKeyValue<string, TValue>(value), value);
         public async Task AddAsync(string key, TValue value)
         {
-            await database.HashSetAsync(_redisKey, key, Serialize(value));
+            await policy.Execute(async () =>
+            {
+                await database.HashSetAsync(_redisKey, key, Serialize(value));
+            });
         }
 
         public bool ContainsKey(TValue value) => ContainsKey(PropertyInfoHelpers.GetKeyValue<string, TValue>(value));
         public bool ContainsKey(string key)
         {
-            return database.HashExists(_redisKey, key);
+            var result = false;
+            policy.Execute(() =>
+           {
+               result = database.HashExists(_redisKey, key);
+           });
+            return result;
         }
 
         public bool Remove(KeyValuePair<string, TValue> item) => Remove(item.Key);
         public bool Remove(TValue value) => Remove(PropertyInfoHelpers.GetKeyValue<string, TValue>(value));
         public bool Remove(string key)
         {
-            return database.HashDelete(_redisKey, key);
+            var result = false;
+            policy.Execute(() =>
+           {
+               result = database.HashDelete(_redisKey, key);
+           });
+            return result;
         }
 
         public bool TryGetValue(string key, out TValue value)
         {
-            var redisValue = database.HashGet(_redisKey, key);
+            RedisValue redisValue = new RedisValue();
+            policy.Execute(() =>
+            {
+                redisValue = database.HashGet(_redisKey, key);
+            });
             if (redisValue.IsNull)
             {
                 _logger.LogInformation(key + " Value not found");
@@ -87,7 +132,12 @@ namespace Sentinel.Redis
 
         private ICollection<TValue> getValues()
         {
-            return new Collection<TValue>(database.HashValues(_redisKey).Select(h => Deserialize<TValue>(h.ToString())).ToList());
+            ICollection<TValue>? values = null;
+            policy.Execute(() =>
+            {
+                values = new Collection<TValue>(database.HashValues(_redisKey).Select(h => Deserialize<TValue>(h.ToString())).ToList());
+            });
+            return values;
         }
         public ICollection<string> Keys
         {
@@ -95,8 +145,12 @@ namespace Sentinel.Redis
         }
         private ICollection<string> getKeys()
         {
-            return new Collection<string>(database.HashKeys(_redisKey).Select(
-                h => h.ToString()).ToList());
+            ICollection<string>? keys = null;
+            policy.Execute(() =>
+            {
+                keys = new Collection<string>(database.HashKeys(_redisKey).Select(h => h.ToString()).ToList());
+            });
+            return keys;
         }
 
         public TValue this[string key]

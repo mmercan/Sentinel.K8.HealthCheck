@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Sentinel.Common;
+using Serilog;
+using Serilog.Events;
 
 namespace Sentinel.Worker.Comms
 {
@@ -13,7 +16,10 @@ namespace Sentinel.Worker.Comms
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var appname = System.AppDomain.CurrentDomain.FriendlyName;
+            var builder = CreateHostBuilder(args);
+            builder.UseSerilogAuto(appname, environment, LogEventLevel.Debug);
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

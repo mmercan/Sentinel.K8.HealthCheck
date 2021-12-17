@@ -7,6 +7,7 @@ using System.Linq;
 using Serilog;
 using Serilog.Events;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace Sentinel.Common
 {
@@ -28,8 +29,27 @@ namespace Sentinel.Common
                 .WriteTo.Console()
                 .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day);
             logger.WriteTo.Console();
+            logger.WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day);
 
             return logger;
+        }
+
+        public static void UseSerilogAuto(
+            this IHostBuilder builder, string applicationName,
+            string environmentName, LogEventLevel minimumLogLevel = LogEventLevel.Information)
+        {
+
+            builder.UseSerilog((ctx, lc) => lc
+                .Enrich.FromLogContext()
+                .Enrich.WithProperty("Enviroment", environmentName)
+                .Enrich.WithProperty("ApplicationName", applicationName)
+                .MinimumLevel.Override("Microsoft", minimumLogLevel)
+                .WriteTo.Console()
+                .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day)
+            );
+
+
+
         }
 
     }
