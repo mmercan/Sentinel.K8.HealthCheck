@@ -18,7 +18,7 @@ namespace Sentinel.Worker.HealthChecker
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             var appname = System.AppDomain.CurrentDomain.FriendlyName;
             var builder = CreateHostBuilder(args);
-            builder.UseSerilogAuto(appname, environment, LogEventLevel.Debug);
+            builder.UseSerilogAuto(appname, environment, LogEventLevel.Information);
 
             builder.Build().Run();
         }
