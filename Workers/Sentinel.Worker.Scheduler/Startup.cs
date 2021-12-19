@@ -116,13 +116,11 @@ namespace Sentinel.Worker.Scheduler
             }
 
             app.UseExceptionLogger();
-
             var options = new CrystalQuartzOptions
             {
                 ErrorDetectionOptions = new CrystalQuartz.Application.ErrorDetectionOptions
                 { VerbosityLevel = ErrorVerbosityLevel.Detailed }
             };
-
 
             var scheduler = schedulerFactory.GetScheduler().GetAwaiter().GetResult();
             app.UseCrystalQuartz(() => scheduler, options);
@@ -133,7 +131,6 @@ namespace Sentinel.Worker.Scheduler
             {
                 ResponseWriter = WriteResponses.WriteListResponse,
             });
-
 
             app.UseEndpoints(endpoints =>
             {
