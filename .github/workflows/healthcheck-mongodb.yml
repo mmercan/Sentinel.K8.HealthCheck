@@ -129,7 +129,7 @@ jobs:
           --history-max 1 \
           --values ./Helm/values/$chartName/dev-values.yaml \
           --set image.tag=$GITHUB_RUN_ID \
-          --set secrets.MONGO_INITDB_ROOT_USERNAME=$MONGODB_PASSWORD \
+          --set secrets.MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD \
           --set branch=master \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
