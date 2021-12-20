@@ -17,7 +17,6 @@ on:
 
 jobs:
   deploy-dev:
-    needs: build
     runs-on: ubuntu-latest
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
