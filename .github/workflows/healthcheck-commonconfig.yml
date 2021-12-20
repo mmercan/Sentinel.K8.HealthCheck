@@ -23,9 +23,9 @@ jobs:
       IMAGE_NAME: ${{ github.repository }}
       chartName: "healthcheck-commonconfig"
       namespace: "sentinel-healthcheck"
-      BUILDTIME_ADID: "{{ secrets.BUILDTIME_ADID }}"
-      BUILDTIME_APPID: "{{ secrets.BUILDTIME_APPID }}"
-      BUILDTIME_APPSECRET: "{{ secrets.BUILDTIME_APPSECRET }}"
+      BUILDTIME_ADID: "${{ secrets.BUILDTIME_ADID }}"
+      BUILDTIME_APPID: "${{ secrets.BUILDTIME_APPID }}"
+      BUILDTIME_APPSECRET: "${{ secrets.BUILDTIME_APPSECRET }}"
       pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
     steps:
       - name: Checkout repository
@@ -60,8 +60,9 @@ jobs:
           helm upgrade --namespace $namespace --install \
           --history-max 1 \
           --values ./Helm/values/$chartName/dev-values.yaml \
-          --set AzureAd__ClientId=$BUILDTIME_APPID \
-          --set AzureAd__Secret=$BUILDTIME_APPSECRET \
-          --set AzureAd__TenantId=$BUILDTIME_ADID \
+          --set AzureAd__ClientId="$BUILDTIME_APPID" \
+          --set AzureAd__Secret="$BUILDTIME_APPSECRET" \
+          --set AzureAd__TenantId="$BUILDTIME_ADID" \
+          --set branch=master \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
