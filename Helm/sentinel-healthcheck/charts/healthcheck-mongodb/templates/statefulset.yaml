@@ -1,0 +1,51 @@
+{{- $name := include "healthcheck-mongodb.fullname" . -}}
+{{- $cfgname := printf "%s-%s" $name "config" -}}
+{{- $secretname := printf "%s-%s" $name "secret" -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name:  {{ include "healthcheck-mongodb.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "healthcheck-mongodb.name" . }}
+    helm.sh/chart: {{ include "healthcheck-mongodb.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/version:  {{ .Chart.AppVersion }}
+    branch:  {{ .Values.branch }}
+spec:
+  serviceName: {{ include "healthcheck-mongodb.fullname" . }}
+  # Number of PODS
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      service: {{ include "healthcheck-mongodb.fullname" . }}
+  template:
+    metadata:
+      labels:
+        service: {{ include "healthcheck-mongodb.fullname" . }}
+        app.kubernetes.io/name: {{ include "healthcheck-mongodb.name" . }}
+        helm.sh/chart: {{ include "healthcheck-mongodb.chart" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/version:  {{ .Chart.AppVersion }}
+        branch:  {{ .Values.branch }}
+    spec:
+      terminationGracePeriodSeconds: 15
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 27017
+          name: tcp
+        envFrom:
+          - configMapRef:
+              name: {{ $cfgname }}
+          - secretRef:
+              name: {{ $secretname }}
+        volumeMounts:
+          - mountPath: /data/db
+            name: mongodb
+      volumes:
+        - name: mongodb
+          persistentVolumeClaim:
+            claimName: px-healthcheck-mongodb-pvc 

@@ -1,2 +1,2 @@
 configmap:
-  databases: "12"
+  databases: "6"

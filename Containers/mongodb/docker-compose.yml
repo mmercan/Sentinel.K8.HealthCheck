@@ -1,0 +1,17 @@
+version: "3.4"
+
+services:
+  healthcheck-db-mongodb:
+    image: mmercan/healthcheck-db-mongodb:${TAGVersion}-prod-linux
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_DATABASE=cookbook
+      - MONGO_INITDB_ROOT_USERNAME=""
+      - MONGO_INITDB_ROOT_PASSWORD=""
+      - MONGODB_DATABASE=cookbook
+    ports:
+      - 27017:27017
