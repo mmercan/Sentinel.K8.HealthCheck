@@ -61,9 +61,9 @@ jobs:
           helm upgrade --namespace $namespace --install \
           --history-max 1 \
           --values ./Helm/values/$chartName/dev-values.yaml \
-          --set AzureAd__ClientId=$BUILDTIME_APPID \
-          --set AzureAd__Secret=$BUILDTIME_APPSECRET \
-          --set AzureAd__TenantId=$BUILDTIME_ADID \
+          --set secrets.AzureAd__ClientId=$BUILDTIME_APPID \
+          --set secrets.AzureAd__Secret=$BUILDTIME_APPSECRET \
+          --set secrets.AzureAd__TenantId=$BUILDTIME_ADID \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
 

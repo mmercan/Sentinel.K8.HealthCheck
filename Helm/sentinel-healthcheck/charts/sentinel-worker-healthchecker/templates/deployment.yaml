@@ -64,6 +64,8 @@ spec:
                 name: "healthcheck-redis-secret"
             - secretRef:
                 name: "healthcheck-rabbitmq-secret"
+            - secretRef:
+                name: "healthcheck-commonconfig-secret"
           env:
             - name: buildnumber
               value: {{ .Values.buildnumber | quote }}
