@@ -88,6 +88,7 @@ jobs:
         run: |
           IP=$(curl "https://api.happi.dev/v1/generate-password?apikey=${{ secrets.HAPPI_APIKEY }}&limit=1&length=24&num=1&upper=1&symbols=0")
           password=$(jq -n "$IP" | jq .passwords[0] | tr -d '"')
+          echo "::add-mask::$password"
           echo "MONGODB_PASSWORD=$(echo $password)" >> $GITHUB_ENV
 
       - name: Test
@@ -155,4 +156,5 @@ jobs:
           external_ip=$(kubectl get svc $chartName -n $namespace --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
           [ -z "$external_ip" ] && sleep 10
           done
+          echo "::add-mask::$external_ip"
           echo 'End point ready:' && echo $external_ip
