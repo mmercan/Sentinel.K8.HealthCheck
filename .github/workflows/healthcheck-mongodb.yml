@@ -148,3 +148,11 @@ jobs:
           echo  " $pipelines_gitsha "
           echo  " $pipelines_branch "
           echo  " $pipelines_runuri "
+      - name: extractExternalIP
+        run: |
+          while [ -z $external_ip ]; do
+          echo "Waiting for end point..."
+          external_ip=$(kubectl get svc $chartName -n $namespace --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
+          [ -z "$external_ip" ] && sleep 10
+          done
+          echo 'End point ready:' && echo $external_ip
