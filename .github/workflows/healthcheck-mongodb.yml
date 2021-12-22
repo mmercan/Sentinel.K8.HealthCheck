@@ -148,12 +148,12 @@ jobs:
             else
               echo "update resource" $arecord
               oldIP=$(az network dns record-set list -g dnsmanagement -z myrcan.com  --query "[?name=='$arecord'] | [].aRecords[].ipv4Address | [0]")
-              echo $oldIP $EXTERNAL_IP
-              if [[ $oldIP == $EXTERNAL_IP ]]; then
-                echo "Different IP delete old create new" $arecord
+              echo "$oldIP" "$EXTERNAL_IP"
+              if [[ "$oldIP" == "$EXTERNAL_IP" ]]; then
+                echo "Different IP del create new"
                 az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
                 az network dns record-set a remove-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $oldIP
               else
-                echo "Same IP no update" $arecord
+                echo "Same IP no update"
               fi
             fi
