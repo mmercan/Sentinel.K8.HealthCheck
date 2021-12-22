@@ -159,6 +159,28 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: extract password
+        run: |
+          IP=$(curl "https://api.happi.dev/v1/generate-password?apikey=${{ secrets.HAPPI_APIKEY }}&limit=1&length=24&num=1&upper=1&symbols=0")
+          password=$(jq -n "$IP" | jq .passwords[0] | tr -d '"')
+          echo "::add-mask::$password"
+          echo "MONGODB_PASSWORD=$(echo $password)" >> $GITHUB_ENV
+
+      - name: Kubernetes set context
+        uses: Azure/k8s-set-context@v1.1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          context: matt-test-aks2
+
+      - name: add KUBECONFIG To env file
+        run: |
+          cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
+          ls /home/runner/work/_temp
+
       - name: Checkout
         uses: actions/checkout@v1
 
