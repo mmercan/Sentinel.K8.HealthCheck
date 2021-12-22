@@ -65,7 +65,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     outputs:
-      externalip: ${{ steps.extractExternalIP.outputs.externalip }}
+      externalip: ${{ steps.step2.outputs.externalip }}
 
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
@@ -139,8 +139,10 @@ jobs:
           [ -z "$external_ip" ] && sleep 10
           done
           echo "::add-mask::$external_ip"
-          echo "::set-output name=externalip::$external_ip"
           echo 'End point ready:' && echo $external_ip
+
+      - id: step2
+        run: echo "::set-output name=externalip::$external_ip"
 
   configure-dev:
     environment: Dev
@@ -159,7 +161,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - run: echo ${{ needs.deploy-dev.outputs.external_ip }}
+      - run: echo ${{ needs.deploydev.outputs.externalip }}
 
       - name: Azure CLI script file
         uses: azure/CLI@v1
