@@ -133,7 +133,7 @@ jobs:
           external_ip=$(kubectl get svc $chartName -n $namespace --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
           [ -z "$external_ip" ] && sleep 10
           done
-          echo "::add-mask::$external_ip"
+
           echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
           echo 'End point ready:' && echo $EXTERNAL_IP
 
@@ -148,8 +148,8 @@ jobs:
             else
               echo "update resource" $arecord
               oldIP=$(az network dns record-set list -g dnsmanagement -z myrcan.com  --query "[?name=='$arecord'] | [].aRecords[].ipv4Address | [0]")
-              echo $oldIP
-              if [[ "$oldIP" == "$EXTERNAL_IP" ]]; then
+              echo $oldIP $EXTERNAL_IP
+              if [[ $oldIP == $EXTERNAL_IP ]]; then
                 echo "Different IP delete old create new" $arecord
                 az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
                 az network dns record-set a remove-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $oldIP
