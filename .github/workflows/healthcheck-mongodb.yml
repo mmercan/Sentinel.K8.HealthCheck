@@ -172,6 +172,6 @@ jobs:
         uses: Azure/cli@v1.0.0
         with:
           inlineScript: |
-            az network dns record-set list -g dnsmanagement -z myrcan.com  --query "[?name=='blahtest-dev']"
+            az network dns record-set list -g dnsmanagement -z $domainName  --query "[?name=='blahtest-dev']"
 
             az storage -h
