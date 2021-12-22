@@ -65,7 +65,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     outputs:
-      EXTERNAL_IP: $EXTERNAL_IP
+      EXTERNAL_IP: ${{steps.step2.outputs.externalip}}
 
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
