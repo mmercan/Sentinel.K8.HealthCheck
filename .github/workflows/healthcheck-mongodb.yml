@@ -143,14 +143,6 @@ jobs:
           echo "::set-output external_ip=$external_ip"
           echo 'End point ready:' && echo $external_ip
 
-      - name: Azure CLI script file
-        uses: azure/CLI@v1
-        with:
-          azcliversion: 2.30.0
-          inlineScript: |
-            chmod +x $GITHUB_WORKSPACE/sampleScript.sh
-            $GITHUB_WORKSPACE/sampleScript.sh
-
   configure-dev:
     environment: Dev
     needs: deploy-dev
@@ -169,5 +161,5 @@ jobs:
         with:
           azcliversion: 2.30.0
           inlineScript: |
-            chmod +x $GITHUB_WORKSPACE/sampleScript.sh
-            $GITHUB_WORKSPACE/sampleScript.sh
+            az network dns record-set list -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }}  --query "[?name=='blahtest-dev']"
+            az storage -h
