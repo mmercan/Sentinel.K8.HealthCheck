@@ -163,9 +163,27 @@ jobs:
           enable-AzPSSession: true
 
       - name: Azure CLI script
-        uses: Azure/cli@v1.0.3
+        uses: Azure/cli@v1.0.0
         with:
           inlineScript: |
             az network dns record-set list -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }}  --query "[?name=='blahtest-dev']"
-
             az storage -h
+  build-and-deploy:
+    environment: Dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Azure CLI script file
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.30.0
+          inlineScript: |
+            chmod +x $GITHUB_WORKSPACE/sampleScript.sh
+            $GITHUB_WORKSPACE/sampleScript.sh
