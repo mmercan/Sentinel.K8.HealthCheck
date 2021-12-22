@@ -163,3 +163,5 @@ jobs:
           inlineScript: |
             az network dns record-set list -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }}  --query "[?name=='blahtest-dev']"
             az storage -h
+
+      - run: echo ${{needs.deploy-dev.outputs.external_ip}}
