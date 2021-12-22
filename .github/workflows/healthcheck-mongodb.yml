@@ -64,6 +64,9 @@ jobs:
     environment: Dev
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      $external_ip: ${{ steps.extractExternalIP.outputs.external_ip }}
+
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
@@ -93,9 +96,6 @@ jobs:
           password=$(jq -n "$IP" | jq .passwords[0] | tr -d '"')
           echo "::add-mask::$password"
           echo "MONGODB_PASSWORD=$(echo $password)" >> $GITHUB_ENV
-
-      - name: Test
-        run: echo $MONGODB_PASSWORD
 
       - name: Kubernetes set context
         uses: Azure/k8s-set-context@v1.1
@@ -132,20 +132,6 @@ jobs:
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
 
-      - name: output env vars
-        run: |
-          echo  " $ARTIFACT_PATH "
-          echo  " $IMAGE_NAME "
-          echo  " $chartName "
-          echo  " $namespace "
-          echo  " $releaseName "
-          echo  " $pipelines_pipeline "
-          echo  " $pipelines_run "
-          echo  " $pipelines_org "
-          echo  " $pipelines_repo "
-          echo  " $pipelines_gitsha "
-          echo  " $pipelines_branch "
-          echo  " $pipelines_runuri "
       - name: extractExternalIP
         run: |
           while [ -z $external_ip ]; do
@@ -154,22 +140,20 @@ jobs:
           [ -z "$external_ip" ] && sleep 10
           done
           echo "::add-mask::$external_ip"
+          echo "::set-output external_ip=$external_ip"
           echo 'End point ready:' && echo $external_ip
 
-      - name: Azure Login
-        uses: Azure/login@v1
+      - name: Azure CLI script file
+        uses: azure/CLI@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIAL_ENTERPRISE }}
-          enable-AzPSSession: true
-
-      - name: Azure CLI script
-        uses: Azure/cli@v1.0.0
-        with:
+          azcliversion: 2.30.0
           inlineScript: |
-            az network dns record-set list -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }}  --query "[?name=='blahtest-dev']"
-            az storage -h
-  build-and-deploy:
+            chmod +x $GITHUB_WORKSPACE/sampleScript.sh
+            $GITHUB_WORKSPACE/sampleScript.sh
+
+  configure-dev:
     environment: Dev
+    needs: deploy-dev
     runs-on: ubuntu-latest
     steps:
       - name: Azure Login
