@@ -73,14 +73,6 @@ jobs:
       chartName: "healthcheck-mongodb"
       namespace: "sentinel-healthcheck"
       releaseName: "healthcheck-mongodb-dev"
-      pipelines_pipeline: '"${{ github.WORKFLOW }}"'
-      pipelines_run: ${{ github.RUN_ID }}
-      pipelines_org: '"${{ github.SERVER_URL }}"'
-      pipelines_repo: ${{ github.repository }}
-      pipelines_gitsha: ${{ github.sha }}
-      pipelines_branch: ${{ github.ref }}
-      pipelines_job: ${{ github.job }}
-      pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
 
     steps:
       - name: Checkout repository
@@ -153,6 +145,9 @@ jobs:
       domainName: "${{ secrets.ENV_DOMAIN }}"
       arecord: '"mongodb-${{ secrets.ENV_DOMAIN_PREFIX }}"'
       externalip: ${{ needs.deploydev.outputs.EXTERNAL_IP }}
+      chartName: "healthcheck-mongodb"
+      namespace: "sentinel-healthcheck"
+      releaseName: "healthcheck-mongodb-dev"
     steps:
       - name: Azure Login
         uses: azure/login@v1
@@ -180,6 +175,17 @@ jobs:
         run: |
           cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
           ls /home/runner/work/_temp
+
+      - name: extractExternalIP
+        run: |
+          while [ -z $external_ip ]; do
+          echo "Waiting for end point..."
+          external_ip=$(kubectl get svc $chartName -n $namespace --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
+          [ -z "$external_ip" ] && sleep 10
+          done
+          echo "::add-mask::$external_ip"
+          echo 'End point ready:' && echo $external_ip
+          echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v1
