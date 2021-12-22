@@ -64,15 +64,13 @@ jobs:
     environment: Dev
     needs: build
     runs-on: ubuntu-latest
-    outputs:
-      EXTERNAL_IP: ${{steps.step2.outputs.externalip}}
-
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
       chartName: "healthcheck-mongodb"
       namespace: "sentinel-healthcheck"
       releaseName: "healthcheck-mongodb-dev"
+      arecord: "mongo-dev"
 
     steps:
       - name: Azure Login
@@ -144,10 +142,10 @@ jobs:
         with:
           azcliversion: 2.30.0
           inlineScript: |
-            if [ $(az network dns record-set list -g dnsmanagement  ${{ secrets.ENV_DOMAIN }}  --query "[?name=='blahtest-dev']|  length(@)") = 0]; then
-              echo "create resource"
+            if [ $(az network dns record-set list -g dnsmanagement  ${{ secrets.ENV_DOMAIN }}  --query "[?name=='$arecord']|  length(@)") = 0]; then
+              echo "create resource" $arecord
             else
-              echo "update resource"
+              echo "update resource" $arecord
             fi
 
             az storage -h
