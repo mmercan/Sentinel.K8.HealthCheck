@@ -113,6 +113,7 @@ jobs:
           helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
 
       - name: Helm upgrade
+        if: ${{ false }}
         run: |
           helm upgrade --namespace $namespace --install \
           --history-max 1 \
