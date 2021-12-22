@@ -79,7 +79,7 @@ jobs:
       pipelines_job: ${{ github.job }}
       pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
       domainName: "${{ secrets.ENV_DOMAIN }}"
-      arecord: "$chartName-${{ secrets.ENV_DOMAIN_PREFIX }} "
+      arecord: "${{ chartName }}-${{ secrets.ENV_DOMAIN_PREFIX }} "
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
