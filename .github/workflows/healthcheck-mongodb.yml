@@ -65,7 +65,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     outputs:
-      externalip: ${{ steps.step2.outputs.externalip }}
+      EXTERNAL_IP: $EXTERNAL_IP
 
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
@@ -140,9 +140,10 @@ jobs:
           done
           echo "::add-mask::$external_ip"
           echo 'End point ready:' && echo $external_ip
+          echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
 
       - id: step2
-        run: echo "::set-output name=externalip::$external_ip"
+        run: echo "::set-output name=externalip::$EXTERNAL_IP"
 
   configure-dev:
     environment: Dev
@@ -151,7 +152,7 @@ jobs:
     env:
       domainName: "${{ secrets.ENV_DOMAIN }}"
       arecord: '"mongodb-${{ secrets.ENV_DOMAIN_PREFIX }}"'
-      externalip: ${{ needs.deploydev.outputs.externalip }}
+      externalip: ${{ needs.deploydev.outputs.EXTERNAL_IP }}
     steps:
       - name: Azure Login
         uses: azure/login@v1
@@ -161,7 +162,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - run: echo ${{ needs.deploydev.outputs.externalip }}
+      - run: echo ${{ needs.deploydev.outputs.EXTERNAL_IP }}
+
+      - run: echo $EXTERNAL_IP
 
       - name: Azure CLI script file
         uses: azure/CLI@v1
