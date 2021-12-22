@@ -60,12 +60,12 @@ jobs:
           do 
             docker image push --all-tags ${image}
           done
-  deploy-dev:
+  deploydev:
     environment: Dev
     needs: build
     runs-on: ubuntu-latest
     outputs:
-      $external_ip: ${{ steps.extractExternalIP.outputs.external_ip }}
+      externalip: ${{ steps.extractExternalIP.outputs.externalip }}
 
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
@@ -139,17 +139,17 @@ jobs:
           [ -z "$external_ip" ] && sleep 10
           done
           echo "::add-mask::$external_ip"
-          echo "::set-output name=external_ip::$external_ip"
+          echo "::set-output name=externalip::$external_ip"
           echo 'End point ready:' && echo $external_ip
 
   configure-dev:
     environment: Dev
-    needs: deploy-dev
+    needs: deploydev
     runs-on: ubuntu-latest
     env:
       domainName: "${{ secrets.ENV_DOMAIN }}"
       arecord: '"mongodb-${{ secrets.ENV_DOMAIN_PREFIX }}"'
-      external_ip: ${{ needs.deploy-dev.outputs.external_ip }}
+      externalip: ${{ needs.deploydev.outputs.externalip }}
     steps:
       - name: Azure Login
         uses: azure/login@v1
