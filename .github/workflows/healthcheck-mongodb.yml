@@ -142,7 +142,7 @@ jobs:
         with:
           azcliversion: 2.30.0
           inlineScript: |
-            if [ $(az network dns record-set list -g dnsmanagement  ${{ secrets.ENV_DOMAIN }}  --query "[?name=='$arecord']|  length(@)") = 0 ]; then
+            if [ $(az network dns record-set list -g dnsmanagement -z  ${{ secrets.ENV_DOMAIN }}  --query "[?name=='$arecord']|  length(@)") = 0 ]; then
               echo "create resource" $arecord
             else
               echo "update resource" $arecord
