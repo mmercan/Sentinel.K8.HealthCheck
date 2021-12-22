@@ -187,10 +187,12 @@ jobs:
           echo 'End point ready:' && echo $external_ip
           echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
 
+      - name: Check Helm Version
+        run: |
+          helm version
+
       - name: Checkout
         uses: actions/checkout@v1
-
-      - run: echo ${{ needs.deploydev.outputs.EXTERNAL_IP }}
 
       - run: echo $EXTERNAL_IP
 
