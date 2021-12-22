@@ -139,12 +139,11 @@ jobs:
 
   configure-dev:
     environment: Dev
-    needs: deploydev
+    needs: build
     runs-on: ubuntu-latest
     env:
       domainName: "${{ secrets.ENV_DOMAIN }}"
       arecord: '"mongodb-${{ secrets.ENV_DOMAIN_PREFIX }}"'
-      externalip: ${{ needs.deploydev.outputs.EXTERNAL_IP }}
       chartName: "healthcheck-mongodb"
       namespace: "sentinel-healthcheck"
       releaseName: "healthcheck-mongodb-dev"
@@ -176,6 +175,32 @@ jobs:
           cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
           ls /home/runner/work/_temp
 
+      - name: Check Helm Version
+        run: |
+          helm version
+
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Helm Package
+        run: |
+          helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartName
+
+      - name: Validate Helm Package
+        run: |
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
+
+      - name: Helm upgrade
+        run: |
+          helm upgrade --namespace $namespace --install \
+          --history-max 1 \
+          --values ./Helm/values/$chartName/dev-values.yaml \
+          --set image.tag=$GITHUB_RUN_ID \
+          --set secrets.MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD \
+          --set branch=master \
+          --wait $releaseName \
+          /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
+
       - name: extractExternalIP
         run: |
           while [ -z $external_ip ]; do
@@ -186,13 +211,6 @@ jobs:
           echo "::add-mask::$external_ip"
           echo 'End point ready:' && echo $external_ip
           echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
-
-      - name: Check Helm Version
-        run: |
-          helm version
-
-      - name: Checkout
-        uses: actions/checkout@v1
 
       - run: echo $EXTERNAL_IP
 
