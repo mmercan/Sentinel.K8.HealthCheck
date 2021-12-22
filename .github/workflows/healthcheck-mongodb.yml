@@ -75,8 +75,10 @@ jobs:
       releaseName: "healthcheck-mongodb-dev"
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Install jq
         run: sudo apt-get install -y jq
@@ -104,6 +106,9 @@ jobs:
         run: |
           helm version
 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Helm Package
         run: |
           helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartName
@@ -113,7 +118,6 @@ jobs:
           helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
 
       - name: Helm upgrade
-        if: ${{ false }}
         run: |
           helm upgrade --namespace $namespace --install \
           --history-max 1 \
@@ -197,6 +201,7 @@ jobs:
           helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
 
       - name: Helm upgrade
+        if: ${{ false }}
         run: |
           helm upgrade --namespace $namespace --install \
           --history-max 1 \
