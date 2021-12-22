@@ -144,91 +144,10 @@ jobs:
         with:
           azcliversion: 2.30.0
           inlineScript: |
-            az network dns record-set list -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }}  --query "[?name=='blahtest-dev']"
-            az storage -h
+            if [ $(az network dns record-set list -g dnsmanagement  ${{ secrets.ENV_DOMAIN }}  --query "[?name=='blahtest-dev']|  length(@)") = 0]; then
+              echo "create resource"
+            else
+              echo "update resource"
+            fi
 
-  configure-dev:
-    environment: Dev
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      domainName: "${{ secrets.ENV_DOMAIN }}"
-      arecord: '"mongodb-${{ secrets.ENV_DOMAIN_PREFIX }}"'
-      chartName: "healthcheck-mongodb"
-      namespace: "sentinel-healthcheck"
-      releaseName: "healthcheck-mongodb-dev"
-    steps:
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Install jq
-        run: sudo apt-get install -y jq
-
-      - name: extract password
-        run: |
-          IP=$(curl "https://api.happi.dev/v1/generate-password?apikey=${{ secrets.HAPPI_APIKEY }}&limit=1&length=24&num=1&upper=1&symbols=0")
-          password=$(jq -n "$IP" | jq .passwords[0] | tr -d '"')
-          echo "::add-mask::$password"
-          echo "MONGODB_PASSWORD=$(echo $password)" >> $GITHUB_ENV
-
-      - name: Kubernetes set context
-        uses: Azure/k8s-set-context@v1.1
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBECONFIG }}
-          context: matt-test-aks2
-
-      - name: add KUBECONFIG To env file
-        run: |
-          cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
-          ls /home/runner/work/_temp
-
-      - name: Check Helm Version
-        run: |
-          helm version
-
-      - name: Checkout
-        uses: actions/checkout@v1
-
-      - name: Helm Package
-        run: |
-          helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartName
-
-      - name: Validate Helm Package
-        run: |
-          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
-
-      - name: Helm upgrade
-        if: ${{ false }}
-        run: |
-          helm upgrade --namespace $namespace --install \
-          --history-max 1 \
-          --values ./Helm/values/$chartName/dev-values.yaml \
-          --set image.tag=$GITHUB_RUN_ID \
-          --set secrets.MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD \
-          --set branch=master \
-          --wait $releaseName \
-          /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
-
-      - name: extractExternalIP
-        run: |
-          while [ -z $external_ip ]; do
-          echo "Waiting for end point..."
-          external_ip=$(kubectl get svc $chartName -n $namespace --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
-          [ -z "$external_ip" ] && sleep 10
-          done
-          echo "::add-mask::$external_ip"
-          echo 'End point ready:' && echo $external_ip
-          echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
-
-      - run: echo $EXTERNAL_IP
-
-      - name: Azure CLI script file
-        uses: azure/CLI@v1
-        with:
-          azcliversion: 2.30.0
-          inlineScript: |
-            az network dns record-set list -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }}  --query "[?name=='blahtest-dev']"
             az storage -h
