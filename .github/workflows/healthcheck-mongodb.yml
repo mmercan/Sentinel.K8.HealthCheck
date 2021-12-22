@@ -158,3 +158,8 @@ jobs:
           done
           echo "::add-mask::$external_ip"
           echo 'End point ready:' && echo $external_ip
+          
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIAL_ENTERPRISE }}
