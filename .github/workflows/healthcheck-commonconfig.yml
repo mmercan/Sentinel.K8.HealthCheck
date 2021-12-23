@@ -23,7 +23,7 @@ jobs:
       IMAGE_NAME: ${{ github.repository }}
       chartName: "healthcheck-commonconfig"
       namespace: "sentinel-healthcheck"
-      releaseName: "healthcheck-mongodb-dev"
+      releaseName: "sentinel-healthcheck-dev"
       BUILDTIME_ADID: "${{ secrets.BUILDTIME_ADID }}"
       BUILDTIME_APPID: "${{ secrets.BUILDTIME_APPID }}"
       BUILDTIME_APPSECRET: "${{ secrets.BUILDTIME_APPSECRET }}"
