@@ -8,7 +8,7 @@
               
                 modified="${oldIP:1:-1}"
               
-              echo ${$oldIP::-1} && echo "$EXTERNAL_IP"
+              echo $oldIP && echo "$EXTERNAL_IP"
               if [ "$oldIP" = "$EXTERNAL_IP" ]; then
                 echo "Different IP del create new"
                 az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
