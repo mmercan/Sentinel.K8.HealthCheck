@@ -133,9 +133,8 @@ jobs:
           external_ip=$(kubectl get svc $chartName -n $namespace --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
           [ -z "$external_ip" ] && sleep 10
           done
-
           echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
-          echo 'End point ready:' && echo $EXTERNAL_IP
+          echo "::add-mask::$external_ip"
 
       - name: Azure CLI script file
         uses: azure/CLI@v1
@@ -143,22 +142,22 @@ jobs:
           azcliversion: 2.30.0
           inlineScript: |
             if [ $(az network dns record-set list -g dnsmanagement -z  ${{ secrets.ENV_DOMAIN }}  --query "[?name=='$arecord']|  length(@)") = 0 ]; then
-              echo "create resource" $arecord
+              echo $arecord" not found, create resource" 
               az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord -a $EXTERNAL_IP
             else
-              echo "update resource" $arecord
+              echo  $arecord "found, checking resource IP"
               oldIP=$(az network dns record-set list -g dnsmanagement -z myrcan.com  --query "[?name=='$arecord'] | [].aRecords[].ipv4Address | [0]")
-              
-              
+
+              # remove first and last char
               oldIP="${oldIP:1:-1}"
-              echo $oldIP
-              
+              echo "::add-mask::$oldIP"
+
               echo $oldIP && echo $EXTERNAL_IP
               if [ "$oldIP" = "$EXTERNAL_IP" ]; then
-                echo "Different IP del create new"
-                az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
-                az network dns record-set a remove-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $oldIP
+               echo "Same IP no update"
               else
-                echo "Same IP no update"
+               echo "Different IP delete and create new"
+                az network dns record-set a remove-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $oldIP 
+                az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
               fi
             fi
