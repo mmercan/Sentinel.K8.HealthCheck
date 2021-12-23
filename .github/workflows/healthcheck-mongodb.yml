@@ -150,9 +150,8 @@ jobs:
               oldIP=$(az network dns record-set list -g dnsmanagement -z myrcan.com  --query "[?name=='$arecord'] | [].aRecords[].ipv4Address | [0]")
               
               
-              string2=${oldIP#"""}
-              string2=${string2%"""}
-              echo $string2
+              modified="${oldIP:1:-1}"
+              echo $modified
               
               echo ${$oldIP::-1} && echo "$EXTERNAL_IP"
               if [ "$oldIP" = "$EXTERNAL_IP" ]; then
