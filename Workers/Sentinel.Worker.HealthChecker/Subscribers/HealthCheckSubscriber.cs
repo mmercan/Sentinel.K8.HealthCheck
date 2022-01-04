@@ -60,18 +60,18 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         {
             try
             {
-                _logger.LogInformation("Connected to bus");
+                _logger.LogInformation("HealthCheckSubscriber: Connected to bus");
 
                 _bus.PubSub.SubscribeAsync<HealthCheckResourceV1>(_configuration["queue:healthcheck"], Handler);
 
-                _logger.LogInformation("Listening on topic " + _configuration["queue:healthcheck"]);
+                _logger.LogInformation("HealthCheckSubscriber: Listening on topic " + _configuration["queue:healthcheck"]);
 
                 _ResetEvent.Wait();
             }
             catch (Exception ex)
             {
                 this.ReportUnhealthy(ex.Message);
-                _logger.LogError("Exception: " + ex.Message);
+                _logger.LogError("HealthCheckSubscriber: Exception: " + ex.Message);
             }
         }
 
@@ -86,7 +86,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
                 serviceName = healthcheck.RelatedService.NameandNamespace;
                 var results = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService);
             }
-            _logger.LogInformation(" Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
+            _logger.LogInformation("HealthCheckSubscriber: Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
             // _ResetEvent.Set();
         }
 

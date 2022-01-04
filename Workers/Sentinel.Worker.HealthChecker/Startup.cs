@@ -30,6 +30,7 @@ using Turquoise.HealthChecks.Common.CheckCaller;
 using Turquoise.HealthChecks.Common.Checks;
 using Turquoise.HealthChecks.RabbitMQ;
 using Turquoise.HealthChecks.Redis;
+using Turquoise.HealthChecks.Mongo;
 
 namespace Sentinel.Worker.HealthChecker
 {
@@ -82,6 +83,7 @@ namespace Sentinel.Worker.HealthChecker
             services.AddHealthChecks()
                 .AddSystemInfoCheck()
                 .AddRedisHealthCheck(Configuration["RedisConnection"])
+                .AddMongoHealthCheck(Configuration["Mongodb:ConnectionString"])
                 .AddRabbitMQHealthCheckWithDiIBus();
 
 

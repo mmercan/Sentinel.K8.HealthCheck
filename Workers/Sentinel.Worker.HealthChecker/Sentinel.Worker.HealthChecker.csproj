@@ -21,6 +21,8 @@
     <PackageReference Include="TimeZoneConverter" Version="3.3.0" />
 
     <PackageReference Include="Turquoise.HealthChecks.Common" Version="2.2.1-ci-20211110.4" />
+
+    <PackageReference Include="Turquoise.HealthChecks.Mongo" Version="2.2.1-ci-20211110.3" />
     <PackageReference Include="Turquoise.HealthChecks.RabbitMQ" Version="2.2.1-ci-20211110.4" />
     <PackageReference Include="Turquoise.HealthChecks.Redis" Version="2.2.1-ci-20200720.14" />
   </ItemGroup>
