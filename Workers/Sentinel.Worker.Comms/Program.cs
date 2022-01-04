@@ -17,6 +17,7 @@ namespace Sentinel.Worker.Comms
         public static void Main(string[] args)
         {
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            if (environment == null) { environment = "Development"; }
             var appname = System.AppDomain.CurrentDomain.FriendlyName;
             var builder = CreateHostBuilder(args);
             builder.UseSerilogAuto(appname, environment, LogEventLevel.Debug);

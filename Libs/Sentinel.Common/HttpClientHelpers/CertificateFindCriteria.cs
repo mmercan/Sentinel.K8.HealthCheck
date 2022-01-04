@@ -63,7 +63,7 @@ namespace Sentinel.Common.HttpClientHelpers
                 X509Certificate2Collection certificates = store.Certificates.Find(FindType, FindValue, ValidOnly);
                 if (certificates == null || certificates.Count == 0)
                 {
-                    string validText = ValidOnly ? "valid " : null;
+                    string validText = ValidOnly ? "valid " : string.Empty;
                     //throw new Exception($"Unable to find {validText} certificate {this.ToString()}");
                     return null;
                 }

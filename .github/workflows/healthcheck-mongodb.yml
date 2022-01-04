@@ -162,11 +162,15 @@ jobs:
               fi
             fi
 
+      - name: generate con string
+        run: |
+          echo "mongodb://root:${{ env.MONGODB_PASSWORD }}@ ${{ secrets.ENV_DOMAIN }}"
+
       - name: save secret
         uses: mmercan/actions-set-secret@v/4.0.0
         with:
-          name: 'Mongodb__ConnectionString'
-          value: 'mongodb://root:${{ env.MONGODB_PASSWORD }}@${{ env.arecord }}.myrcan.com:27017/admin?readPreference=primary'
+          name: "Mongodb__ConnectionString"
+          value: "mongodb://root:${{ env.MONGODB_PASSWORD }}@${{ env.arecord }}.myrcan.com:27017/admin?readPreference=primary"
           repository: mmercan/Sentinel.K8.HealthCheck
           environment: dev
           token: ${{ secrets.REPO_ACCESS_TOKEN }}

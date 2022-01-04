@@ -11,6 +11,10 @@ namespace Sentinel.Common.HttpClientHelpers
         public static X509Certificate2? GetCertFromcertThumbprint()
         {
             var certThumbprint = Environment.GetEnvironmentVariable("CertThumbprint");
+            if (string.IsNullOrEmpty(certThumbprint))
+            {
+                return null;
+            }
             var clientCert = FindCert(certThumbprint);
 
             return clientCert;
