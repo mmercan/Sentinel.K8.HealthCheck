@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ include "healthcheck-mongodb.fullname" . }}-config"
+  name: "{{ include "healthcheck-mongodb.name" . }}-config"
 data:
  {{- if .Values.configmap -}}
 {{- range $key, $value := .Values.configmap }}
