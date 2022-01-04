@@ -1,4 +1,4 @@
-{{- $name := include "healthcheck-mongodb.fullname" . -}}
+{{- $name := include "healthcheck-mongodb.name" . -}}
 {{- $cfgname := printf "%s-%s" $name "config" -}}
 {{- $secretname := printf "%s-%s" $name "secret" -}}
 apiVersion: apps/v1
