@@ -165,7 +165,8 @@ jobs:
       - name: save secret
         uses: mmercan/actions-set-secret@v/3.0.0
         with:
-          name: 'MY_SECRET_NAME'
-          value: 'Lorem ipsun dolor simit'
+          name: 'Mongodb__ConnectionString'
+          value: 'mongodb://root:${{ env.MONGODB_PASSWORD }}@${{ env.arecord }}.myrcan.com:27017/admin?readPreference=primary'
           repository: mmercan/Sentinel.K8.HealthCheck
+          environment: dev
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
