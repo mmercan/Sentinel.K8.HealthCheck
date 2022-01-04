@@ -161,3 +161,11 @@ jobs:
                 az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
               fi
             fi
+
+      - name: save secret
+        uses: mmercan/actions-set-secret@v1.0.0
+        with:
+          name: 'MY_SECRET_NAME'
+          value: 'Lorem ipsun dolor simit'
+          repository: mmercan/Sentinel.K8.HealthCheck
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
