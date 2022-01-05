@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "sentinel-api-healthmonitoring.fullname" . }}
+  name: {{ include "sentinel-api-healthmonitoring.name" . }}
   labels:
     {{- include "sentinel-api-healthmonitoring.labels" . | nindent 4 }}
 spec:

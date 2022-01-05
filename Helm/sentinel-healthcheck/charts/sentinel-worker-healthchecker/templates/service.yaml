@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "sentinel-worker-healthchecker.fullname" . }}
+  name: {{ include "sentinel-worker-healthchecker.name" . }}
   labels:
     {{- include "sentinel-worker-healthchecker.labels" . | nindent 4 }}
 spec:

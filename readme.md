@@ -47,7 +47,14 @@ dotnet watch -p .\Sentinel.K8.HealthCheck.sln test --logger:"console;verbosity=d
 
 
 # Port-forward
-  kubectl port-forward service/sentinel-worker-scheduler-dev 8080:80 -n sentinel-healthcheck
+
+  kubectl port-forward service/sentinel-worker-healthchecker 8080:80 -n sentinel-healthcheck
+  kubectl port-forward service/sentinel-worker-secretgenerator 8080:80 -n sentinel-healthcheck
+  kubectl port-forward service/sentinel-worker-screenshot 8080:80 -n sentinel-healthcheck
+  kubectl port-forward service/sentinel-worker-scaler 8080:80 -n sentinel-healthcheck
+  kubectl port-forward service/sentinel-worker-comms 8080:80 -n sentinel-healthcheck
+  kubectl port-forward service/sentinel-worker-scheduler 8080:80 -n sentinel-healthcheck
+  kubectl port-forward service/sentinel-worker-sync 8080:80 -n sentinel-healthcheck
 
   sentinel-worker-healthchecker-dev
   sentinel-worker-scheduler-dev
