@@ -166,8 +166,8 @@ jobs:
         run: |
           server=${{ env.arecord }}+"."+"test.com"
           username="root"
-          password= "mypassword"
-          ConnectionString = "mongodb://${username}:${password}@ ${server}:27017/admin?readPreference=primary"
+          password="mypassword"
+          ConnectionString="mongodb://${username}:${password}@ ${server}:27017/admin?readPreference=primary"
           echo "${ConnectionString}"
           echo "ConnectionString=$(echo $ConnectionString)" >> $GITHUB_ENV
 
