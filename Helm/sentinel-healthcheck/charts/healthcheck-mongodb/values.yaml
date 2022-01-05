@@ -67,6 +67,7 @@ env:
 secrets:
   MONGO_INITDB_ROOT_USERNAME: root
   MONGO_INITDB_ROOT_PASSWORD: ""
+  MONGO_ExternalConnectionString: ""
 
 configmap:
   MONGO_DATA_DIR: "/data/db"
