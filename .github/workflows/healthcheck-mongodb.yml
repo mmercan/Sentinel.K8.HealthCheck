@@ -134,7 +134,7 @@ jobs:
           [ -z "$external_ip" ] && sleep 10
           done
           echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
-          echo "::add-mask::$external_ip"
+          # echo "::add-mask::$external_ip"
 
       - name: Azure CLI script file
         uses: azure/CLI@v1
