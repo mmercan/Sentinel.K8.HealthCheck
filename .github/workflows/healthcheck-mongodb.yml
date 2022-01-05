@@ -170,7 +170,7 @@ jobs:
           connectionString="mongodb://${name}:${name2}@${server}:27017/admin?readPreference=primary"
           echo "${connectionString}"
           echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
-          echo "${connectionString}" > output\file.txt
+          echo "${connectionString}" > output/file.txt
 
       - name: save secret
         uses: mmercan/actions-set-secret@v/4.0.0
