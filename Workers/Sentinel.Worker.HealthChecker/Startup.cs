@@ -31,6 +31,9 @@ using Turquoise.HealthChecks.Common.Checks;
 using Turquoise.HealthChecks.RabbitMQ;
 using Turquoise.HealthChecks.Redis;
 using Turquoise.HealthChecks.Mongo;
+using Microsoft.Identity.Web;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Sentinel.Worker.HealthChecker
 {
@@ -55,6 +58,18 @@ namespace Sentinel.Worker.HealthChecker
             services.AddMemoryCache();
             services.Configure<AZAuthServiceSettings>(Configuration.GetSection("AzureAd"));
             services.AddSingleton<AZAuthService>();
+
+            services.AddMicrosoftIdentityWebApiAuthentication(Configuration)
+                .EnableTokenAcquisitionToCallDownstreamApi()
+                .AddMicrosoftGraph(Configuration.GetSection("DownstreamApi"))
+                .AddInMemoryTokenCaches();
+
+            // IdentityModelEventSource.ShowPII = true;
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+            // services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
+            // {
+            //     options.TokenValidationParameters.RoleClaimType = "roles";
+            // });
 
             services.AddSingleton<DownloadJsonService>();
             services.AddSingleton<IsAliveAndWellHealthCheckDownloader>();
@@ -111,7 +126,11 @@ namespace Sentinel.Worker.HealthChecker
             app.UseExceptionLogger();
             app.UseRouting();
 
-            app.UseHealthChecks("/Health/IsAliveAndWell", new HealthCheckOptions()
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseHealthChecks("/Health/IsAliveAndWell", new HealthCheckOptions() { });
+            app.UseHealthChecksWithAuth("/Health/IsAliveAndWellDetail", new HealthCheckOptions()
             {
                 ResponseWriter = WriteResponses.WriteListResponse,
             });
@@ -123,6 +142,13 @@ namespace Sentinel.Worker.HealthChecker
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsync("{\"IsAlive\":true}");
                 });
+
+                endpoints.MapGet("/user", async context =>
+                {
+                    var q = context.User.IsInRole("Admin");
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsync("{\"IsAlive\":true}");
+                }).RequireAuthorization();
             });
         }
     }
