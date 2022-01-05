@@ -128,8 +128,8 @@ jobs:
 
       - name: Helm upgrade
         run: |
-          helm uninstall $releaseName -n $namespace
-          sleep 30
+          helm uninstall $releaseName -n $namespace --wait
+          sleep 60
           helm upgrade --namespace $namespace --install \
           --history-max 1 \
           --values ./Helm/values/$chartName/dev-values.yaml \
