@@ -84,7 +84,8 @@ namespace Sentinel.Worker.HealthChecker
                 .AddSystemInfoCheck()
                 .AddRedisHealthCheck(Configuration["RedisConnection"])
                 .AddMongoHealthCheck(Configuration["Mongodb:ConnectionString"])
-                .AddRabbitMQHealthCheckWithDiIBus();
+                .AddRabbitMQHealthCheckWithDiIBus()
+                .AddConfigurationChecker(Configuration);
 
 
             services.AddSingleton<EasyNetQ.IBus>((ctx) =>
