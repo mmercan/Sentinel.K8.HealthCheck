@@ -164,7 +164,12 @@ jobs:
 
       - name: generate con string
         run: |
-          echo "mongodb://root:${{ env.MONGODB_PASSWORD }}@ ${{ secrets.ENV_DOMAIN }}"
+          server=${{ env.arecord }}+"."+"test.com"
+          username="root"
+          password= "mypassword"
+          ConnectionString = "mongodb://${username}:${password}@ ${server}:27017/admin?readPreference=primary"
+          echo "${ConnectionString}"
+          echo "ConnectionString=$(echo $ConnectionString)" >> $GITHUB_ENV
 
       - name: save secret
         uses: mmercan/actions-set-secret@v/4.0.0
