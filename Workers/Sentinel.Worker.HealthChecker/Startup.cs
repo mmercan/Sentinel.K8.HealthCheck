@@ -67,15 +67,12 @@ namespace Sentinel.Worker.HealthChecker
             // IdentityModelEventSource.ShowPII = true;
             JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
             // services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
-            // {
-            //     options.TokenValidationParameters.RoleClaimType = "roles";
-            // });
+            // { options.TokenValidationParameters.RoleClaimType = "roles"; });
 
             services.AddSingleton<DownloadJsonService>();
             services.AddSingleton<IsAliveAndWellHealthCheckDownloader>();
 
             services.AddAutoMapper(typeof(Startup).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
-
 
             services.AddHttpClient<HealthCheckReportDownloaderService>("HealthCheckReportDownloader", options =>
             {
@@ -84,7 +81,6 @@ namespace Sentinel.Worker.HealthChecker
                 options.DefaultRequestHeaders.Add("OData-MaxVersion", "4.0");
                 options.DefaultRequestHeaders.Add("OData-Version", "4.0");
                 options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
             })
             .AddPolicyHandler(HttpClientHelpers.GetRetryPolicy())
             .AddPolicyHandler(HttpClientHelpers.GetCircuitBreakerPolicy());
@@ -101,7 +97,6 @@ namespace Sentinel.Worker.HealthChecker
                 .AddMongoHealthCheck(Configuration["Mongodb:ConnectionString"])
                 .AddRabbitMQHealthCheckWithDiIBus()
                 .AddConfigurationChecker(Configuration);
-
 
             services.AddSingleton<EasyNetQ.IBus>((ctx) =>
             {
