@@ -9,5 +9,5 @@ spec:
   service: "my-existed-service"
   crontab: "*/3 * * * *"
   isaliveUrl: "/Health/IsAlive"
-  isaliveandwellUrl: "/Health/IsAliveAndWell"
+  isaliveandwellUrl: "/Health/IsAliveAndWellDetail"
   clientid: "67d009b1-97fe-4963-84ff-3590b06df0da"
