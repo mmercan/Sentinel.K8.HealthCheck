@@ -13,7 +13,6 @@ namespace Sentinel.Scheduler.Tests
     public class HealthCheckResourceHelperTests
     {
         private ITestOutputHelper output;
-        private IConfiguration config;
         private Redis.RedisDictionary<ServiceV1> serviceRedisDic;
 
         public HealthCheckResourceHelperTests(ITestOutputHelper output)
