@@ -57,19 +57,36 @@ namespace Sentinel.Common.Tests.HttpClientServices
 
 
         [Fact]
-        public void TestName()
+        public void downloadJsonServiceShouldGetJson()
         {
 
             // Given
             var task = downloadJsonService.DownloadAsync(new Uri("https://httpbin.org/json"), settingsOptions.Value);
             task.Wait();
+
+
+            // When
             var contentTask = task.Result.Content.ReadAsStringAsync();
             contentTask.Wait();
             var content = contentTask.Result.FromJSON<SlideShowContainer>();
-            Assert.NotEmpty(content.SlideShow.Title);
-            // When
 
             // Then
+            Assert.NotEmpty(content.SlideShow.Title);
+        }
+
+        [Fact]
+        public void downloadJsonServiceCanHandleNonSuccessCode()
+        {
+            // Given
+            var task = downloadJsonService.DownloadAsync(new Uri("https://httpbin.org/status/401"), settingsOptions.Value);
+            task.Wait();
+
+
+            // When
+
+
+            // Then
+            Assert.Equal(task.Result.StatusCode, System.Net.HttpStatusCode.Unauthorized);
         }
 
 

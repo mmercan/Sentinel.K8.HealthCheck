@@ -32,7 +32,7 @@ namespace Sentinel.Common.HttpClientServices
             {
                 _logger.LogInformation(getitem.StatusCode.ToString() + " ");
             }
-            else if (getitem.StatusCode == HttpStatusCode.Unauthorized)
+            if (getitem.StatusCode == HttpStatusCode.Unauthorized)
             {
                 _logger.LogError(url.ToString() + " Unauthorized");
             }

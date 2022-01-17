@@ -1,0 +1,95 @@
+{
+    "NameandNamespace": "sentinel-dev-health-ui-app-health-ui.sentinel-dev",
+    "Uid": "54bed626-8953-4be8-8c6a-11350545ade4",
+    "Name": "sentinel-dev-health-ui-app-health-ui",
+    "Namespace": "sentinel-dev",
+    "Labels": [
+      {
+        "Key": "app",
+        "Value": "app-health-ui"
+      },
+      {
+        "Key": "app.kubernetes.io/instance",
+        "Value": "sentinel-dev-health-ui"
+      },
+      {
+        "Key": "app.kubernetes.io/managed-by",
+        "Value": "Helm"
+      },
+      {
+        "Key": "app.kubernetes.io/name",
+        "Value": "app-health-ui"
+      },
+      {
+        "Key": "app.kubernetes.io/version",
+        "Value": "1.0.0"
+      },
+      {
+        "Key": "branch",
+        "Value": "master"
+      },
+      {
+        "Key": "helm.sh/chart",
+        "Value": "app-health-ui-2.0.0-20200922.1"
+      },
+      {
+        "Key": "version",
+        "Value": "1.0.0"
+      }
+    ],
+    "CreationTime": "2020-09-07T08:17:06Z",
+    "LabelSelector": [
+      {
+        "Key": "app",
+        "Value": "app-health-ui"
+      },
+      {
+        "Key": "app.kubernetes.io/instance",
+        "Value": "sentinel-dev-health-ui"
+      },
+      {
+        "Key": "app.kubernetes.io/name",
+        "Value": "app-health-ui"
+      },
+      {
+        "Key": "branch",
+        "Value": "master"
+      },
+      {
+        "Key": "version",
+        "Value": "1.0.0"
+      }
+    ],
+    "LabelSelectorString": "app=app-health-ui,app.kubernetes.io/instance=sentinel-dev-health-ui,app.kubernetes.io/name=app-health-ui,branch=master,version=1.0.0",
+    "Annotations": [
+      {
+        "Key": "healthcheck/crontab",
+        "Value": "0 * * * *"
+      },
+      {
+        "Key": "healthcheck/isaliveandwell",
+        "Value": "/"
+      }
+    ],
+    "Type": "ClusterIP",
+    "SessionAffinity": "None",
+    "ClusterIP": "10.0.190.102",
+    "InternalEndpoints": [
+      "sentinel-dev-health-ui-app-health-ui.sentinel-dev:80"
+    ],
+    "ExternalEndpoints": [],
+    "Ingresses": [
+      "https://health.dev.ui.sentinel.mercan.io"
+    ],
+    "VirtualServiceUrl": null,
+    "LatestSyncDateUTC": "2022-01-17T06:18:42.6838798Z",
+    "Deleted": false,
+    "ServiceApiVersion": null,
+    "ServiceResourceVersion": "4825693",
+    "LivenessProbe": null,
+    "ReadinessProbe": null,
+    "StartupProbe": null,
+    "CronDescription": null,
+    "CronTab": null,
+    "CronTabException": null
+  }

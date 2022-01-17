@@ -71,8 +71,6 @@ namespace Sentinel.Common.HttpClientServices
                 result.Exception = ex.Message;
                 _logger.LogError(ex, $"IsAliveAndWellHealthCheckDownloader : Exception {uri}");
             }
-
-
             return await Task.FromResult(result);
         }
 
