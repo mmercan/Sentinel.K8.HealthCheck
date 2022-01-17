@@ -9,10 +9,10 @@ namespace Sentinel.Common.HttpClientServices
 {
     public class IsAliveAndWellHealthCheckDownloader
     {
-        HttpClient _client;
-        private ILogger<IsAliveAndWellHealthCheckDownloader> _logger;
-        private IConfiguration _configuration;
-        private AZAuthService _azAuthService;
+        private readonly HttpClient _client;
+        private readonly ILogger<IsAliveAndWellHealthCheckDownloader> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly AZAuthService _azAuthService;
 
         public IsAliveAndWellHealthCheckDownloader(HttpClient client, ILogger<IsAliveAndWellHealthCheckDownloader> logger, IConfiguration configuration, AZAuthService azAuthService)
         {

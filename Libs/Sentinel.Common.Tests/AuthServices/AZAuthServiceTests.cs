@@ -8,7 +8,7 @@ using Sentinel.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Sentinel.Common.Tests
+namespace Sentinel.Common.Tests.AuthServices
 {
     public class AZAuthServiceTests
     {

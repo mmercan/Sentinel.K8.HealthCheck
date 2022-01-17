@@ -8,11 +8,10 @@ namespace Sentinel.Common.HttpClientServices
 {
     public class DownloadJsonService
     {
-        HttpClient _client;
-        private ILogger<DownloadJsonService> _logger;
-        private IConfiguration _configuration;
-        private AZAuthService _azAuthService;
-
+        private readonly HttpClient _client;
+        private readonly ILogger<DownloadJsonService> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly AZAuthService _azAuthService;
 
         public DownloadJsonService(HttpClient client, ILogger<DownloadJsonService> logger, IConfiguration configuration, AZAuthService azAuthService)
         {

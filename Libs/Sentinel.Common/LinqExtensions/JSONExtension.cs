@@ -34,5 +34,19 @@ namespace System.Linq
             T? item = JsonConvert.DeserializeObject<T>(json);
             return item;
         }
+
+        public static T? FromJSON<T>(this Stream stream)
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+            using var streamReader = new StreamReader(stream);
+            using var jsonReader = new JsonTextReader(streamReader);
+
+            JsonSerializer serializer = new JsonSerializer();
+            return serializer.Deserialize<T>(jsonReader);
+
+        }
     }
 }
