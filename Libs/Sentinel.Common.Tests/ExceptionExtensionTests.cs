@@ -23,6 +23,7 @@ namespace Sentinel.Common.Tests
             Assert.Equal("test2", message);
         }
 
+#pragma warning disable CS8604
         [Fact]
         public void TestExceptionExtensionwhenNull()
         {

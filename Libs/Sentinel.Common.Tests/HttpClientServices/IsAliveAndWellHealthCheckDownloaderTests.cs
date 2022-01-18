@@ -65,11 +65,11 @@ namespace Sentinel.Common.Tests.HttpClientServices
             // When
 
             // Then
-            Assert.NotEmpty(serv.Name);
+            Assert.NotEmpty(serv?.Name);
 
-           var downTask = downloader.DownloadAsync(serv);
-           downTask.Wait();
-           Assert.NotEmpty(downTask.Result);
+            var downTask = downloader.DownloadAsync(serv);
+            downTask.Wait();
+            Assert.NotEmpty(downTask.Result);
         }
 
     }

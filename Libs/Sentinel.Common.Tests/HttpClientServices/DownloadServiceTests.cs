@@ -16,7 +16,7 @@ using Xunit.Abstractions;
 
 namespace Sentinel.Common.Tests.HttpClientServices
 {
-    public class DownloadJsonServiceTests
+    public class DownloadServiceTests
     {
         private ITestOutputHelper output;
         private IConfiguration config;
@@ -24,8 +24,8 @@ namespace Sentinel.Common.Tests.HttpClientServices
         private AZAuthService azAuthService;
         private HttpClient client;
         private readonly IOptions<AZAuthServiceSettings> settingsOptions;
-        private DownloadJsonService downloadJsonService;
-        public DownloadJsonServiceTests(ITestOutputHelper output)
+        private DownloadService downloadJsonService;
+        public DownloadServiceTests(ITestOutputHelper output)
         {
             this.output = output;
 
@@ -49,10 +49,10 @@ namespace Sentinel.Common.Tests.HttpClientServices
 
 
             azAuthService = new AZAuthService(logger, settingsOptions, memoryCache);
-            ILogger<DownloadJsonService> jsonlogger = Helpers.GetLogger<DownloadJsonService>();
+            ILogger<DownloadService> jsonlogger = Helpers.GetLogger<DownloadService>();
 
             client = new HttpClient();
-            downloadJsonService = new DownloadJsonService(client, jsonlogger, config, azAuthService);
+            downloadJsonService = new DownloadService(client, jsonlogger, azAuthService);
         }
 
 
@@ -71,7 +71,7 @@ namespace Sentinel.Common.Tests.HttpClientServices
             var content = contentTask.Result.FromJSON<SlideShowContainer>();
 
             // Then
-            Assert.NotEmpty(content.SlideShow.Title);
+            Assert.NotEmpty(content?.SlideShow.Title);
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace Sentinel.Common.Tests.HttpClientServices
 
 
             // Then
-            Assert.Equal(task.Result.StatusCode, System.Net.HttpStatusCode.Unauthorized);
+            Assert.Equal(System.Net.HttpStatusCode.Unauthorized, task.Result.StatusCode);
         }
 
 

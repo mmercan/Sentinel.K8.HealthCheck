@@ -260,6 +260,7 @@ namespace Sentinel.K8s
             }
             catch (HttpOperationException e) when (e.Response.StatusCode == HttpStatusCode.NotFound)
             {
+
             }
         }
 

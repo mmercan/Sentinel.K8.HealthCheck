@@ -6,22 +6,22 @@ using Sentinel.Common.AuthServices;
 
 namespace Sentinel.Common.HttpClientServices
 {
-    public class DownloadJsonService
+    public class DownloadService
     {
         private readonly HttpClient _client;
-        private readonly ILogger<DownloadJsonService> _logger;
-        private readonly IConfiguration _configuration;
+        private readonly ILogger<DownloadService> _logger;
+
         private readonly AZAuthService _azAuthService;
 
-        public DownloadJsonService(HttpClient client, ILogger<DownloadJsonService> logger, IConfiguration configuration, AZAuthService azAuthService)
+        public DownloadService(HttpClient client, ILogger<DownloadService> logger, AZAuthService azAuthService)
         {
             _client = client;
             _logger = logger;
-            _configuration = configuration;
+
             _azAuthService = azAuthService;
         }
 
-        private async Task<HttpResponseMessage> DownloadAsync(HttpClient client, Uri url)
+        private async Task<HttpResponseMessage> DownloadAsync(HttpClient client, Uri url, bool retry = true)
         {
             _logger.LogInformation("Uri is : " + url.ToString());
             var getitem = await _client.GetAsync(url);
@@ -35,9 +35,14 @@ namespace Sentinel.Common.HttpClientServices
             if (getitem.StatusCode == HttpStatusCode.Unauthorized)
             {
                 _logger.LogError(url.ToString() + " Unauthorized");
+                await authenticate(client);
+                if (retry)
+                {
+                    return await DownloadAsync(client, url, false);
+                }
             }
-            var status = getitem.StatusCode.ToString();
-            var content = await getitem.Content.ReadAsStringAsync();
+            // var status = getitem.StatusCode.ToString();
+            // var content = await getitem.Content.ReadAsStringAsync();
             return getitem;
             // return new IsAliveAndWellResult { Result = content, Status = status, IsSuccessStatusCode = isSuccessStatusCode, CheckedUrl = url.AbsoluteUri };
         }
@@ -51,7 +56,7 @@ namespace Sentinel.Common.HttpClientServices
 
         public async Task<HttpResponseMessage> DownloadAsync(Uri url, string certThumbprint)
         {
-
+            _logger.LogInformation("Download with a Cert Started");
             return await DownloadAsync(_client, url);
         }
 
@@ -66,7 +71,7 @@ namespace Sentinel.Common.HttpClientServices
 
         private async Task authenticate(HttpClient client)
         {
-            _logger.LogInformation("Auth is Started");
+            _logger.LogInformation("Auth with default AZAuthServiceSettings is Started");
             string bearerToken = await _azAuthService.Authenticate();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
         }

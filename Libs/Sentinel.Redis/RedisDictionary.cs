@@ -23,8 +23,7 @@ namespace Sentinel.Redis
         private readonly IDatabase database;
         private readonly ILogger _logger;
         private readonly string _redisKey;
-
-        private Polly.Policy policy;
+        private readonly Polly.Policy policy;
         public RedisDictionary(IConnectionMultiplexer multiplexer, ILogger logger, string redisKey)
         {
             _redisKey = redisKey;
@@ -227,7 +226,6 @@ namespace Sentinel.Redis
 
         public void UpSert(IEnumerable<TValue> items)
         {
-            var keys = Keys;
             foreach (var item in items)
             {
                 Add(item);

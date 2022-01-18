@@ -81,10 +81,6 @@ namespace Sentinel.Redis
                         {
                             await database.SetAsync(keystr, item);
                         }
-                        else
-                        {
-
-                        }
                     }
                 }
             }

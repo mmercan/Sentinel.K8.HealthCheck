@@ -7,9 +7,8 @@ namespace Sentinel.Common.AuthServices
 {
     public class AZAuthService
     {
-        private ILogger<AZAuthService> _logger;
-        private IOptions<AZAuthServiceSettings> _settingsOptions;
-
+        private readonly ILogger<AZAuthService> _logger;
+        private readonly IOptions<AZAuthServiceSettings> _settingsOptions;
         private readonly IMemoryCache _memoryCache;
 
         // private static readonly HttpClient client = new HttpClient();
@@ -61,7 +60,10 @@ namespace Sentinel.Common.AuthServices
 
         private async Task<CacheToken?> downloadToken(AZAuthServiceSettings setting)
         {
-            var url = "https://login.microsoftonline.com/" + setting.TenantId + "/oauth2/token?resource=" + setting.ClientId;
+            //  var url = "https://login.microsoftonline.com/" + setting.TenantId + "/oauth2/token?resource=" + setting.ClientId;
+
+            Uri baseUri = new Uri("https://login.microsoftonline.com/");
+            Uri url = new Uri(baseUri, setting.TenantId + "/oauth2/token?resource=" + setting.ClientId);
 
             var nvc = new List<KeyValuePair<string, string>>();
             nvc.Add(new KeyValuePair<string, string>("grant_type", "client_credentials"));
@@ -79,12 +81,12 @@ namespace Sentinel.Common.AuthServices
             result.Wait();
 
             var s = Newtonsoft.Json.JsonConvert.DeserializeObject<AZToken>(result.Result);
-            var token = s?.AccessToken as string;
+            var token = s?.AccessToken;
 
             _logger.LogInformation(token);
 
             var date = DateTime.UtcNow;
-            var expires_on = s?.ExpiresOn as string;
+            var expires_on = s?.ExpiresOn;
             if (expires_on != null)
             {
                 date = convertDatetime(expires_on);

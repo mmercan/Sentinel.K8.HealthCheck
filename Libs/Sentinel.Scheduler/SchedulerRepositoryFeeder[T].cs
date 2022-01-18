@@ -59,7 +59,6 @@ namespace Sentinel.Scheduler
                     _schedulerRepository.UpdateItem(pair.Value);
 
                     _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {pair.Key} updated  new Schedule {pair.Value.Schedule}");
-
                 }
             }
             _logger.LogDebug("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");

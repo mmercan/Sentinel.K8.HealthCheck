@@ -10,7 +10,7 @@ namespace Sentinel.K8s
     {
         public static void SetTcpKeepAlives(IKubernetes iclient)
         {
-            if (iclient == null || !(iclient is Kubernetes))
+            if (!(iclient is Kubernetes))
             {
                 throw new ArgumentException("iclient is null or not Kubernetes object");
             }

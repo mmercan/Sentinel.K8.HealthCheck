@@ -45,7 +45,7 @@ namespace Sentinel.K8s.Tests
 
 
             CancellationTokenSource source = new CancellationTokenSource();
-            source.CancelAfter(60 * 1000);
+            source.CancelAfter(TimeSpan.FromSeconds(20));
 
 
             watcher.WatchEvents.Subscribe(onNext: (p) =>
@@ -69,6 +69,7 @@ namespace Sentinel.K8s.Tests
             _output.WriteLine("Subscribe ResourceWatcherShouldHaveWatch started");
             await Task.Delay(TimeSpan.FromSeconds(20));
             await watcher.Stop();
+            Assert.NotNull(watcher);
         }
 
 
@@ -86,7 +87,7 @@ namespace Sentinel.K8s.Tests
 
 
             CancellationTokenSource source = new CancellationTokenSource();
-            source.CancelAfter(60 * 1000);
+            source.CancelAfter(TimeSpan.FromSeconds(20));
 
 
             watcher.WatchEvents.Subscribe(onNext: (p) =>
@@ -115,7 +116,7 @@ namespace Sentinel.K8s.Tests
             watcher.Dispose();
 
             await Task.Delay(TimeSpan.FromSeconds(2));
-
+            Assert.NotNull(watcher);
         }
 
 
@@ -162,6 +163,7 @@ namespace Sentinel.K8s.Tests
 
 
             await watcher.Stop();
+            Assert.NotNull(watcher);
         }
 
 

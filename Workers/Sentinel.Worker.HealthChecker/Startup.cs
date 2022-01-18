@@ -69,7 +69,7 @@ namespace Sentinel.Worker.HealthChecker
             // services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             // { options.TokenValidationParameters.RoleClaimType = "roles"; });
 
-            services.AddSingleton<DownloadJsonService>();
+            services.AddSingleton<DownloadService>();
             services.AddSingleton<IsAliveAndWellHealthCheckDownloader>();
 
             services.AddAutoMapper(typeof(Startup).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
