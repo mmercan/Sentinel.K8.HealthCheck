@@ -68,7 +68,7 @@ namespace Sentinel.Common.Tests.HttpClientServices
             // Assert.NotEmpty(serv?.Name);
 
             var downTask = downloader.DownloadAsync(serv);
-            downTask.Wait(TimeSpan.FromSeconds(50));
+            // downTask.Wait(TimeSpan.FromSeconds(50));
             Assert.NotEmpty(downTask.Result);
             Assert.NotNull(serv);
         }
