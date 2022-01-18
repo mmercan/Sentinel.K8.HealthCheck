@@ -60,8 +60,8 @@ namespace Sentinel.Common.Tests.HttpClientServices
         {
             // // Given
             // // download textfile for test
-            // var text = File.ReadAllText("../../../sentinel-dev-health-ui-app-health-ui.sentinel-dev.txt");
-            // var serv = text.FromJSON<ServiceV1>();
+            var text = File.ReadAllText("../../../sentinel-dev-health-ui-app-health-ui.sentinel-dev.txt");
+            var serv = text.FromJSON<ServiceV1>();
             // // When
 
             // // Then
@@ -70,7 +70,7 @@ namespace Sentinel.Common.Tests.HttpClientServices
             // var downTask = downloader.DownloadAsync(serv);
             // downTask.Wait();
             // Assert.NotEmpty(downTask.Result);
-            Assert.Equal(1, 1);
+            Assert.NotNull(serv);
         }
 
     }
