@@ -39,7 +39,7 @@ namespace Sentinel.Common.HttpClientServices
                 results.Add(result);
             }
 
-            var isAliveAndWellHealthCheck = _configuration.GetSection("IsAliveAndWellHealthCheck");
+            // var isAliveAndWellHealthCheck = _configuration.GetSection("IsAliveAndWellHealthCheck");
             return await Task.FromResult<List<IsAliveAndWellResult>>(results);
         }
 
