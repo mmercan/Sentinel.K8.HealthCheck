@@ -2,7 +2,7 @@ namespace Sentinel.Common
 {
     public static class ExceptionExtension
     {
-        public static string MessageWithInnerException(this Exception ex)
+        public static string MessageWithInnerException(this Exception? ex)
         {
             if (ex == null)
             {
