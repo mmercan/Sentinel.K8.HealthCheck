@@ -16,18 +16,23 @@ using TimeZoneConverter;
 using Sentinel.Scheduler.Helpers;
 using Polly;
 using Sentinel.Models.CRDs;
+using Polly.Retry;
 
 namespace Sentinel.Worker.Scheduler.Schedules
 {
     public class BusScheduler : BackgroundServiceWithHealthCheck
     {
 
+       
+        
+       
         private readonly EasyNetQ.IBus _bus;
         private readonly SchedulerRepository<HealthCheckResourceV1> _healthCheckRepository;
         private readonly IConfiguration _configuration;
         private readonly RedisDictionary<ServiceV1> redisServiceDictionary;
         private readonly RedisDictionary<HealthCheckResourceV1> redisHealCheckServiceNotFoundDictionary;
         private readonly string timezone;
+        protected readonly RetryPolicy policy;
         public BusScheduler(
             ILogger<BusScheduler> logger,
             IBus bus,
@@ -52,6 +57,22 @@ namespace Sentinel.Worker.Scheduler.Schedules
             {
                 timezone = "Australia/Melbourne";
             }
+
+            policy = Policy.Handle<RedisTimeoutException>().Or<RedisConnectionException>().WaitAndRetry(new[]
+              {
+                TimeSpan.FromSeconds(1),
+                TimeSpan.FromSeconds(2),
+                TimeSpan.FromSeconds(3)
+              }, (ex, timeSpan, retryCount, context) =>
+              {
+                  _logger.LogError(ex, "BusScheduler : Polly retry " + retryCount.ToString() + "  Error Finding Service Related to HealthCheckResourceV1");
+                  if (retryCount == 2)
+                  {
+                      throw ex;
+                  }
+                  // Add logic to be executed before each retry, such as logging    
+              });
+
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -59,7 +80,6 @@ namespace Sentinel.Worker.Scheduler.Schedules
             while (!stoppingToken.IsCancellationRequested)
             {
                 await ExecuteOnceAsync(stoppingToken);
-
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }
@@ -80,25 +100,6 @@ namespace Sentinel.Worker.Scheduler.Schedules
 
                 try
                 {
-
-                    var policy = Policy
-                      .Handle<RedisTimeoutException>()
-                      .Or<RedisConnectionException>()
-                      .WaitAndRetry(new[]
-                      {
-                        TimeSpan.FromSeconds(1),
-                        TimeSpan.FromSeconds(2),
-                        TimeSpan.FromSeconds(3)
-                      }, (ex, timeSpan, retryCount, context) =>
-                      {
-
-                          _logger.LogError(ex, "BusScheduler : Polly retry " + retryCount.ToString() + "  Error Finding Service Related to HealthCheckResourceV1");
-                          if (retryCount == 2)
-                          {
-                              throw ex;
-                          }
-                          // Add logic to be executed before each retry, such as logging    
-                      });
                     policy.Execute(() =>
                     {
                         var service = taskThatShouldRun.Item.FindServiceRelatedtoHealthCheckResourceV1(redisServiceDictionary);

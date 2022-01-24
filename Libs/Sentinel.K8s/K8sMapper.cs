@@ -32,7 +32,8 @@ namespace Sentinel.K8s
 
             HealthcheckMapper();
             DeploymentScalerMapper();
-            //CreateMap<V1HttpHeader,HttpHeaderV1>()
+
+            CreateMap<V1HTTPHeader, HttpHeaderV1>();
 
         }
 

@@ -95,13 +95,13 @@ namespace Sentinel.K8s.Tests
 
         }
 
-        // [Fact]
-        // public void Map_HttpHeaderV1()
-        // {
-        //     V1HTTPHeader port = new V1HTTPHeader();
-        //     var mapped = mapper.Map<HttpHeaderV1>(port);
-        //     Assert.NotNull(mapped);
-        // }
+        [Fact]
+        public void Map_HttpHeaderV1()
+        {
+            V1HTTPHeader port = new V1HTTPHeader();
+            var mapped = mapper.Map<HttpHeaderV1>(port);
+            Assert.NotNull(mapped);
+        }
 
         [Fact]
         public void Map_MetadataV1()

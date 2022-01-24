@@ -1,2 +1,5 @@
 {
+   "omnisharp.path" :"",
+   "omnisharp.useglobalmono" : true,
+   "csharp.referencesCodeLens.enabled": false
 }
