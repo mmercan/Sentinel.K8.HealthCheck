@@ -65,7 +65,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
                 TimeSpan.FromSeconds(3)
               }, (ex, timeSpan, retryCount, context) =>
               {
-                  _logger.LogError(ex, "BusScheduler : Polly retry " + retryCount.ToString() + "  Error Finding Service Related to HealthCheckResourceV1");
+                  _logger.LogError(ex, "BusScheduler : Polly retry {retryCount}  Error Finding Service Related to HealthCheckResourceV1", retryCount.ToString());
                   if (retryCount == 2)
                   {
                       throw ex;
@@ -117,15 +117,15 @@ namespace Sentinel.Worker.Scheduler.Schedules
                 }
 
                 // TODO: Add a check to see if the service added to object before sending the message
-                _bus.PubSub.PublishAsync(taskThatShouldRun.Item, _configuration["queue:healthcheck"]).ContinueWith(task =>
+                _bus.PubSub.PublishAsync(taskThatShouldRun.Item, _configuration["queue:healthcheck"],stoppingToken).ContinueWith(task =>
                 {
                     if (task.IsCompleted && !task.IsFaulted)
                     {
-                        _logger.LogInformation("Task Added to RabbitMQ " + _configuration["queue:healthcheck"] + " " + taskThatShouldRun.Task.Key);
+                        _logger.LogInformation("Task Added to RabbitMQ {healthcheck} {Key} " , _configuration["queue:healthcheck"] , taskThatShouldRun.Task.Key);
                     }
                     if (task.IsFaulted)
                     {
-                        _logger.LogError("BusScheduler Failed : " + task.Exception.MessageWithInnerException());
+                        _logger.LogError("BusScheduler Failed : {Exception} " , task.Exception.MessageWithInnerException());
                         var constring = _configuration["RabbitMQConnection"];
                         _logger.LogDebug(constring);
                     }
