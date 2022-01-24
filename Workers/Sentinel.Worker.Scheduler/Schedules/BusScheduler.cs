@@ -23,9 +23,9 @@ namespace Sentinel.Worker.Scheduler.Schedules
     public class BusScheduler : BackgroundServiceWithHealthCheck
     {
 
-       
-        
-       
+
+
+
         private readonly EasyNetQ.IBus _bus;
         private readonly SchedulerRepository<HealthCheckResourceV1> _healthCheckRepository;
         private readonly IConfiguration _configuration;
@@ -117,19 +117,19 @@ namespace Sentinel.Worker.Scheduler.Schedules
                 }
 
                 // TODO: Add a check to see if the service added to object before sending the message
-                _bus.PubSub.PublishAsync(taskThatShouldRun.Item, _configuration["queue:healthcheck"],stoppingToken).ContinueWith(task =>
-                {
-                    if (task.IsCompleted && !task.IsFaulted)
-                    {
-                        _logger.LogInformation("Task Added to RabbitMQ {healthcheck} {Key} " , _configuration["queue:healthcheck"] , taskThatShouldRun.Task.Key);
-                    }
-                    if (task.IsFaulted)
-                    {
-                        _logger.LogError("BusScheduler Failed : {Exception} " , task.Exception.MessageWithInnerException());
-                        var constring = _configuration["RabbitMQConnection"];
-                        _logger.LogDebug(constring);
-                    }
-                });
+                _bus.PubSub.PublishAsync(taskThatShouldRun.Item, _configuration["queue:healthcheck"], stoppingToken).ContinueWith(task =>
+                 {
+                     if (task.IsCompleted && !task.IsFaulted)
+                     {
+                         _logger.LogInformation("Task Added to RabbitMQ {healthcheck} {Key} ", _configuration["queue:healthcheck"], taskThatShouldRun.Task.Key);
+                     }
+                     if (task.IsFaulted)
+                     {
+                         _logger.LogError("BusScheduler Failed : {Exception} ", task.Exception.MessageWithInnerException());
+                         var constring = _configuration["RabbitMQConnection"];
+                         _logger.LogDebug("RabbitMQConnection {RabbitMQConnection}", constring);
+                     }
+                 }, stoppingToken);
 
             }
 
