@@ -62,13 +62,17 @@ namespace Sentinel.Common.Tests.HttpClientServices
             // // download textfile for test
             var text = File.ReadAllText("../../../sentinel-dev-health-ui-app-health-ui.sentinel-dev.txt");
             var serv = text.FromJSON<ServiceV1>();
+
+            var hc = new HealthCheckResourceV1 { Schedule = "* * * * *", Name = "test", Namespace = "default" };
+            hc.Spec = new HealthCheckResourceSpecV1 { Service = "kubernetes", Cert = "68A1711EFC66EEA676F8B165102D94697DEE342F" };
+
             // // When
 
             // // Then
             // Assert.NotEmpty(serv?.Name);
             Task.Run(() =>
             {
-                var downTask = downloader.DownloadAsync(serv);
+                var downTask = downloader.DownloadAsync(serv, hc);
                 downTask.Wait(TimeSpan.FromSeconds(50));
                 // Assert.NotEmpty(downTask.Result);
             }).Wait(TimeSpan.FromSeconds(60));
