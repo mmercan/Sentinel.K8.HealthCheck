@@ -19,12 +19,12 @@ namespace Sentinel.Common.AuthServices
             this._memoryCache = memoryCache;
         }
 
-        public Task<string> Authenticate()
+        public Task<string> AuthenticateAsync()
         {
-            return Authenticate(_settingsOptions.Value);
+            return AuthenticateAsync(_settingsOptions.Value);
         }
 
-        public async Task<string> Authenticate(AZAuthServiceSettings authsettings)
+        public async Task<string> AuthenticateAsync(AZAuthServiceSettings authsettings)
         {
             if (authsettings == null)
             {

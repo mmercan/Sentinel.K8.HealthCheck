@@ -36,14 +36,13 @@ namespace Sentinel.Common.HttpClientServices
                 {
                     headers.Add("X-ARR-ClientCert", _configuration[healthcheck.Spec.Cert]);
                 }
-                if (healthcheck.Spec.ClientId != null && _configuration[healthcheck.Spec.ClientId] != null)
+                if (healthcheck.Spec.ClientId != null)
                 {
-
-
-                    var setting = _configuration.GetValue<AZAuthServiceSettings>(healthcheck.Spec.ClientId);
+                    AZAuthServiceSettings setting = new AZAuthServiceSettings();
+                    _configuration.GetSection(healthcheck.Spec.ClientId).Bind(setting);
                     if (setting?.ClientId != null)
                     {
-                        var token = _azAuthService.Authenticate(setting);
+                        var token = await _azAuthService.AuthenticateAsync(setting);
                         headers.Add(HttpRequestHeader.Authorization.ToString(), "Bearer " + token);
                     }
                 }
@@ -83,39 +82,9 @@ namespace Sentinel.Common.HttpClientServices
             return results;
         }
 
-
-
-
-        // public async Task<List<IsAliveAndWellResult>> DownloadAsync(ServiceV1 service, string? healthcheckPath = null)
-        // {
-        //     var results = new List<IsAliveAndWellResult>();
-
-        //     var uris = ExtractUriFromService(service);
-        //     var isaliveandWellSuffix = ExtractIsAliveAndWellSuffix(service, healthcheckPath);
-        //     await Authenticate(service, _client);
-
-        //     foreach (var uri in uris)
-        //     {
-        //         Uri isaliveandwellUri = new Uri(uri, isaliveandWellSuffix);
-        //         _logger.LogInformation($"Checking {isaliveandwellUri}");
-
-        //         var result = await DownloadAsync(isaliveandwellUri);
-        //         results.Add(result);
-        //     }
-
-
-
-
-
-        //     return await Task.FromResult<List<IsAliveAndWellResult>>(results);
-        // }
-
-
-
         public async Task<IsAliveAndWellResult> DownloadAsync(HttpRequestMessage message)
         {
             var result = new IsAliveAndWellResult();
-            //result.CheckedUrl = uri.AbsoluteUri;
 
             try
             {
@@ -151,7 +120,7 @@ namespace Sentinel.Common.HttpClientServices
 
                 // TODO: add AZAuthServiceSettings for ClientId and ClientSecret
 
-                string bearerToken = await _azAuthService.Authenticate();
+                string bearerToken = await _azAuthService.AuthenticateAsync();
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
             }
         }
