@@ -130,7 +130,6 @@ namespace Sentinel.Worker.Scheduler.Schedules
                          _logger.LogDebug("RabbitMQConnection {RabbitMQConnection}", constring);
                      }
                  }, stoppingToken);
-
             }
 
             return Task.CompletedTask;

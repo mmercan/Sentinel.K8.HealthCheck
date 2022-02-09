@@ -38,7 +38,7 @@ namespace Sentinel.Scheduler.Tests
         public void HealthCheckResourceHelperShouldFindServiceShortFormat()
         {
             var hc = new HealthCheckResourceV1 { Schedule = "* * * * *", Name = "test", Namespace = "default" };
-            hc.Spec = new HealthCheckResourceSpecV1 { Service = "kubernetes" };
+            hc.Spec = new HealthCheckResourceSpecV1 { Service = "kubernetes", Cert = "68A1711EFC66EEA676F8B165102D94697DEE342F" };
             var service = HealthCheckResourceHelper.FindServiceRelatedtoHealthCheckResourceV1(hc, serviceRedisDic);
             Assert.NotNull(service);
         }
