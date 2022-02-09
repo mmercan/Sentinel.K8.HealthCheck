@@ -30,10 +30,9 @@ namespace Sentinel.Common.Tests.HttpClientServices
             this.output = output;
 
             var q = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            if (q == null) { q = "."; }
             var loc = Path.Combine(q, "../../../appsettings.json");
             var config_orj = new ConfigurationBuilder()
-
-            //.AddJsonFile("../../../appsettings.json", optional: false, reloadOnChange: true)
             .AddEnvironmentVariables().Build();
 
             var myConfiguration = new Dictionary<string, string>
@@ -46,7 +45,6 @@ namespace Sentinel.Common.Tests.HttpClientServices
                 {"67d009b1-97fe-4963-84ff-3590b06df0da:TenantId",config_orj["AzureAd:TenantId"]},
                 {"67d009b1-97fe-4963-84ff-3590b06df0da:Secret",config_orj["AzureAd:Secret"]}
             };
-
 
 
             config = new ConfigurationBuilder()
@@ -74,8 +72,8 @@ namespace Sentinel.Common.Tests.HttpClientServices
             // // Given
             // // download textfile for test
             var text = File.ReadAllText("../../../sentinel-dev-health-ui-app-health-ui.sentinel-dev.txt");
-            var serv = text.FromJSON<ServiceV1>();
-
+            ServiceV1? serv = text.FromJSON<ServiceV1>();
+            if (serv == null) return;
             var hc = new HealthCheckResourceV1 { Schedule = "* * * * *", Name = "test", Namespace = "default" };
             hc.Spec = new HealthCheckResourceSpecV1
             {

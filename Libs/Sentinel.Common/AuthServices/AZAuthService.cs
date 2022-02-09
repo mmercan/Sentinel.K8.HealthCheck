@@ -38,24 +38,32 @@ namespace Sentinel.Common.AuthServices
             }
             _logger.LogInformation(setting.Secret.Length + " Chars on Secret");
 
-            CacheToken token;
+            CacheToken? token;
             bool isExist = _memoryCache.TryGetValue("token", out token);
             if (isExist)
             {
-                _logger.LogInformation("expitres : " + token.ExpiresOn.ToUniversalTime().ToString() + " Now : " + DateTime.UtcNow);
+                _logger.LogInformation("expitres : " + token?.ExpiresOn.ToUniversalTime().ToString() + " Now : " + DateTime.UtcNow);
             }
 
-            if (!isExist || DateTime.UtcNow.AddMinutes(1) > token.ExpiresOn.ToUniversalTime())
+            if (!isExist || DateTime.UtcNow.AddMinutes(1) > token?.ExpiresOn.ToUniversalTime())
             {
                 _logger.LogInformation("token is expired or missing download, getting token ...");
                 token = await downloadToken(setting);
             }
-            else
+            else if (token != null)
             {
                 var totalmin = (DateTime.UtcNow - token.ExpiresOn).TotalMinutes;
                 _logger.LogInformation("used cached token expires in " + totalmin.ToString() + " Minutes  at UTC " + token.ExpiresOn.ToString());
             }
-            return token?.Token;
+
+            if (token?.Token == null)
+            {
+                throw new Exception("token is null");
+            }
+            else
+            {
+                return token.Token;
+            }
         }
 
         private async Task<CacheToken?> downloadToken(AZAuthServiceSettings setting)
