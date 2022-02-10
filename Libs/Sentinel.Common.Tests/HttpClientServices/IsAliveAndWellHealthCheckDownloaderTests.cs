@@ -14,6 +14,7 @@ using Sentinel.Models.K8sDTOs;
 using Sentinel.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
+using FluentAssertions;
 
 namespace Sentinel.Common.Tests.HttpClientServices
 {
@@ -67,7 +68,7 @@ namespace Sentinel.Common.Tests.HttpClientServices
         }
 
         [Fact]
-        public void IsAliveAndWellHealthCheckDownloaderShouldReturnResult()
+        public void DownloaderShouldReturnResult()
         {
             // // Given
             // // download textfile for test
@@ -96,5 +97,147 @@ namespace Sentinel.Common.Tests.HttpClientServices
             Assert.NotNull(serv);
         }
 
+
+        [Fact]
+        public void DownloaderShouldReturnForNonAuthNonCert()
+        {
+            // // Given
+            // // download textfile for test
+            var text = File.ReadAllText("../../../sentinel-tester-testapp-dev.sentinel-tester.sentinel-dev.txt");
+            ServiceV1? serv = text.FromJSON<ServiceV1>();
+            if (serv == null) return;
+            var hc = new HealthCheckResourceV1
+            {
+                Schedule = "* * * * *",
+                Name = "test",
+                Namespace = "sentinel-tester"
+            };
+            hc.Spec = new HealthCheckResourceSpecV1
+            {
+                Service = "kubernetes",
+                IsaliveandwellUrl = "Health/IsAliveAndWellDetails"
+            };
+
+            // // When
+
+            // // Then
+            Task.Run(() =>
+            {
+                var downTask = downloader.DownloadAsync(serv, hc);
+                downTask.Wait(TimeSpan.FromSeconds(50));
+                downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+
+            }).Wait(TimeSpan.FromSeconds(60));
+
+            Assert.NotNull(serv);
+        }
+
+
+        [Fact]
+        public void DownloaderShouldReturnForCert()
+        {
+            // // Given
+            // // download textfile for test
+            var text = File.ReadAllText("../../../sentinel-tester-testapp-dev.sentinel-tester.sentinel-dev.txt");
+            ServiceV1? serv = text.FromJSON<ServiceV1>();
+            if (serv == null) return;
+            var hc = new HealthCheckResourceV1
+            {
+                Schedule = "* * * * *",
+                Name = "test",
+                Namespace = "sentinel-tester"
+            };
+            hc.Spec = new HealthCheckResourceSpecV1
+            {
+                Service = "kubernetes",
+                Cert = "68A1711EFC66EEA676F8B165102D94697DEE342F",
+                IsaliveandwellUrl = "Health/IsAliveAndWellDetailsCert"
+            };
+
+            // // When
+
+            // // Then
+            // Assert.NotEmpty(serv?.Name);
+            Task.Run(() =>
+            {
+                var downTask = downloader.DownloadAsync(serv, hc);
+                downTask.Wait(TimeSpan.FromSeconds(50));
+                downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+
+            }).Wait(TimeSpan.FromSeconds(60));
+
+            Assert.NotNull(serv);
+        }
+
+        [Fact]
+        public void DownloaderShouldReturnForAuth()
+        {
+            // // Given
+            // // download textfile for test
+            var text = File.ReadAllText("../../../sentinel-tester-testapp-dev.sentinel-tester.sentinel-dev.txt");
+            ServiceV1? serv = text.FromJSON<ServiceV1>();
+            if (serv == null) return;
+            var hc = new HealthCheckResourceV1
+            {
+                Schedule = "* * * * *",
+                Name = "test",
+                Namespace = "sentinel-tester"
+            };
+            hc.Spec = new HealthCheckResourceSpecV1
+            {
+                Service = "kubernetes",
+                ClientId = "67d009b1-97fe-4963-84ff-3590b06df0da",
+                IsaliveandwellUrl = "Health/IsAliveAndWellDetailsAuth"
+            };
+
+            // // When
+
+            // // Then
+            Task.Run(() =>
+            {
+                var downTask = downloader.DownloadAsync(serv, hc);
+                downTask.Wait(TimeSpan.FromSeconds(50));
+                downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+
+            }).Wait(TimeSpan.FromSeconds(60));
+
+            Assert.NotNull(serv);
+        }
+
+        [Fact]
+        public void DownloaderShouldReturnForCertAndAuth()
+        {
+            // // Given
+            // // download textfile for test
+            var text = File.ReadAllText("../../../sentinel-tester-testapp-dev.sentinel-tester.sentinel-dev.txt");
+            ServiceV1? serv = text.FromJSON<ServiceV1>();
+            if (serv == null) return;
+            var hc = new HealthCheckResourceV1
+            {
+                Schedule = "* * * * *",
+                Name = "test",
+                Namespace = "sentinel-tester"
+            };
+            hc.Spec = new HealthCheckResourceSpecV1
+            {
+                Service = "kubernetes",
+                Cert = "68A1711EFC66EEA676F8B165102D94697DEE342F",
+                ClientId = "67d009b1-97fe-4963-84ff-3590b06df0da",
+                IsaliveandwellUrl = "Health/IsAliveAndWellDetailsCertAuth"
+            };
+
+            // // When
+
+            // // Then
+            Task.Run(() =>
+            {
+                var downTask = downloader.DownloadAsync(serv, hc);
+                downTask.Wait(TimeSpan.FromSeconds(50));
+                downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+
+            }).Wait(TimeSpan.FromSeconds(60));
+
+            Assert.NotNull(serv);
+        }
     }
 }

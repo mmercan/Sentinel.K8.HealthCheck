@@ -112,24 +112,6 @@ namespace Sentinel.Common.HttpClientServices
             return await Task.FromResult(result);
         }
 
-        // public async Task Authenticate(HealthCheckResourceV1 healthcheck, HttpClient client)
-        // {
-        //     if (checkAuthentication(healthcheck))
-        //     {
-        //         _logger.LogInformation("Auth is Started");
-
-        //         // TODO: add AZAuthServiceSettings for ClientId and ClientSecret
-
-        //         string bearerToken = await _azAuthService.AuthenticateAsync();
-        //         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
-        //     }
-        // }
-
-        // private bool checkAuthentication(HealthCheckResourceV1 healthcheck)
-        // {
-        //     return healthcheck?.Spec?.ClientId != null;
-        // }
-
         public List<Uri> ExtractUriFromService(ServiceV1 service)
         {
             List<Uri> endpoints = new List<Uri>();
