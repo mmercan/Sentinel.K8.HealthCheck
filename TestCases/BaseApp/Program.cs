@@ -62,11 +62,11 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+app.UseSwagger();
+app.UseSwaggerUI();
+// }
 
 if (builder.Configuration.GetValue<bool>("AzureAd:IsValidationEnabled"))
 {
