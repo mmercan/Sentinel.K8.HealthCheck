@@ -74,3 +74,62 @@ jobs:
           echo  " $chartName "
           echo  " $namespace "
           echo  " $releaseName "
+
+  deploy-test:
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_PATH: ${{ github.workspace }}
+      IMAGE_NAME: ${{ github.repository }}
+      chartName: "healthcheck-commonconfig"
+      namespace: "sentinel-tester"
+      releaseName: "healthcheck-commonconfig-test"
+      BUILDTIME_ADID: "${{ secrets.BUILDTIME_ADID }}"
+      BUILDTIME_APPID: "${{ secrets.BUILDTIME_APPID }}"
+      BUILDTIME_APPSECRET: "${{ secrets.BUILDTIME_APPSECRET }}"
+      pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Kubernetes set context
+        uses: Azure/k8s-set-context@v1.1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          context: matt-test-aks2
+
+      - name: add KUBECONFIG To env file
+        run: |
+          cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
+          ls /home/runner/work/_temp
+
+      - name: Check Helm Version
+        run: |
+          helm version
+
+      - name: Helm Package
+        run: |
+          helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartName
+
+      - name: Validate Helm Package
+        run: |
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
+
+      - name: Helm upgrade
+        run: |
+          helm upgrade --namespace $namespace --install \
+          --history-max 1 \
+          --values ./Helm/values/$chartName/dev-values.yaml \
+          --set secrets.AzureAd__ClientId=$BUILDTIME_APPID \
+          --set secrets.AzureAd__Secret=$BUILDTIME_APPSECRET \
+          --set secrets.AzureAd__TenantId=$BUILDTIME_ADID \
+          --wait $releaseName \
+          /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
+
+      - name: output env vars
+        run: |
+          echo  " $ARTIFACT_PATH "
+          echo  " $IMAGE_NAME "
+          echo  " $chartName "
+          echo  " $namespace "
+          echo  " $releaseName "

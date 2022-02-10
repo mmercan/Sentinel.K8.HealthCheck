@@ -1,4 +1,4 @@
-name: Sentinel Worker HealthChecker
+name: Sentinel TestApp
 
 on:
   push:

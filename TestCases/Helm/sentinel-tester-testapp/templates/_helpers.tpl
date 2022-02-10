@@ -47,8 +47,21 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "sentinel-tester-testapp.selectorLabels" -}}
+app: {{ include "sentinel-tester-testapp.name" . }}
+version: {{ .Chart.AppVersion  | quote }}
 app.kubernetes.io/name: {{ include "sentinel-tester-testapp.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+branch:  {{ .Values.branch }}
+{{- end -}}
+
+
+{{- define "sentinel-tester-testapp.annotations" -}}
+pipelines/run: {{ .Values.pipelines.run }}
+pipelines/pipeline: {{ .Values.pipelines.pipeline }}
+pipelines/jobName: {{ .Values.pipelines.job }}
+pipelines/runuri: {{ .Values.pipelines.runuri | replace " " "%20" | replace "(" "%28" | replace ")" "%29" | replace "*" "%2A"}}
+pipelines/project: {{ .Values.pipelines.project | replace " " "%20" | replace "(" "%28" | replace ")" "%29" | replace "*" "%2A"}}
+pipelines/org: {{ .Values.pipelines.org }}
 {{- end -}}
 
 {{/*

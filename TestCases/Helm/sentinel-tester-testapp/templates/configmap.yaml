@@ -1,0 +1,16 @@
+{{- if .Values.configmap -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ include "sentinel-tester-testapp.fullname" . }}-config"
+  labels:
+    {{- include "sentinel-tester-testapp.labels" . | nindent 4 }}
+data:
+ {{- if .Values.configmap -}}
+{{- range $key, $value := .Values.configmap }}
+ {{ $key }}: {{ default "" $value  | quote }}
+{{- end -}}
+{{- end }}
+
+{{- end }}
+
