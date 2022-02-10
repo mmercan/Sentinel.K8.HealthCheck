@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "WebApplication2": {
+    "BaseApp": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
