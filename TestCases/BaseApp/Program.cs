@@ -74,18 +74,25 @@ if (builder.Configuration.GetValue<bool>("AzureAd:IsValidationEnabled"))
     app.UseAuthorization();
 }
 
+app.UseHealthChecks("/Health/IsAliveAndWellDetails", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
+
+app.UseHealthChecksWithAuth("/Health/IsAliveAndWellDetailsAuth", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
+
 if (builder.Configuration.GetValue<bool>("CertValidation:IsValidationEnabled"))
 {
     app.UseClientCertificateValidationMiddleware();
 }
 
+app.UseHealthChecks("/Health/IsAliveAndWellDetailsCert", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
+
+app.UseHealthChecksWithAuth("/Health/IsAliveAndWellDetailsCertAuth", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
 // if (builder.Configuration.GetValue<bool>("AzureAd:IsValidationEnabled"))
 // {
-app.UseHealthChecksWithAuth("/Health/IsAliveAndWellDetailsAuth", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
+
 // }
 // else
 // {
-app.UseHealthChecks("/Health/IsAliveAndWellDetails", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
+
 // }
 
 app.UseHealthChecks("/Health/IsAliveAndWell");
