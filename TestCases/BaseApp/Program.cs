@@ -79,14 +79,14 @@ if (builder.Configuration.GetValue<bool>("CertValidation:IsValidationEnabled"))
     app.UseClientCertificateValidationMiddleware();
 }
 
-if (builder.Configuration.GetValue<bool>("AzureAd:IsValidationEnabled"))
-{
-    app.UseHealthChecksWithAuth("/Health/IsAliveAndWellDetails", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
-}
-else
-{
-    app.UseHealthChecks("/Health/IsAliveAndWellDetails", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
-}
+// if (builder.Configuration.GetValue<bool>("AzureAd:IsValidationEnabled"))
+// {
+app.UseHealthChecksWithAuth("/Health/IsAliveAndWellDetailsAuth", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
+// }
+// else
+// {
+app.UseHealthChecks("/Health/IsAliveAndWellDetails", new HealthCheckOptions() { ResponseWriter = WriteResponses.WriteListResponse });
+// }
 
 app.UseHealthChecks("/Health/IsAliveAndWell");
 app.MapControllerRoute(
