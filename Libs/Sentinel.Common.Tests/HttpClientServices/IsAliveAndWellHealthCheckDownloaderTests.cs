@@ -264,7 +264,7 @@ namespace Sentinel.Common.Tests.HttpClientServices
             {
                 Service = "kubernetes",
                 // ClientId = "67d009b1-97fe-4963-84ff-3590b06df0da",
-                IsaliveandwellUrl = "Health/IsAliveAndWellDetailsAuth"
+                IsaliveandwellUrl = "Health/IsAliveAndWellDetailsAuth",
                 IsaliveUrl  = "Health/IsAliveAndWellDetailsAuth"
             };
 
