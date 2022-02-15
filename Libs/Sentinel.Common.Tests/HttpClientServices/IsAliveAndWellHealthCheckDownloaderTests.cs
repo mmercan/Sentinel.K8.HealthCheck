@@ -250,9 +250,10 @@ namespace Sentinel.Common.Tests.HttpClientServices
             // // download textfile for test
             var text = File.ReadAllText("../../../sentinel-tester-testapp-dev.sentinel-tester.sentinel-dev.txt");
             ServiceV1? serv = text.FromJSON<ServiceV1>();
-
-            serv.Ingresses = new List<string> { "http://localhost:8080" };
-
+            if (serv != null)
+            {
+                serv.Ingresses = new List<string> { "http://localhost:8080" };
+            }
             if (serv == null) return;
             var hc = new HealthCheckResourceV1
             {
@@ -265,7 +266,7 @@ namespace Sentinel.Common.Tests.HttpClientServices
                 Service = "kubernetes",
                 // ClientId = "67d009b1-97fe-4963-84ff-3590b06df0da",
                 IsaliveandwellUrl = "Health/IsAliveAndWellDetailsAuth",
-                IsaliveUrl  = "Health/IsAliveAndWellDetailsAuth"
+                IsaliveUrl = "Health/IsAliveAndWellDetailsAuth"
             };
 
             // // When
