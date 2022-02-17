@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sentinel.Common.AuthServices;
+using Sentinel.Models.HealthCheck;
 using Sentinel.Models.K8sDTOs;
 
 namespace Sentinel.Common.HttpClientServices
@@ -166,12 +167,5 @@ namespace Sentinel.Common.HttpClientServices
 
     }
 
-    public class IsAliveAndWellResult
-    {
-        public string Result { get; set; } = default!;
-        public string Status { get; set; } = default!;
-        public bool IsSuccessStatusCode { get; set; } = default!;
-        public string CheckedUrl { get; set; } = default!;
-        public string Exception { get; set; } = default!;
-    }
+
 }
