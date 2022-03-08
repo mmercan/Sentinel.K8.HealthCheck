@@ -25,7 +25,10 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: {{ include "healthcheck-rabbitmq.fullname" . }}-http
-          servicePort: 80
+          service:
+            name: {{ include "healthcheck-rabbitmq.fullname" . }}-http
+            port:
+              number: 80
 {{- end }}
