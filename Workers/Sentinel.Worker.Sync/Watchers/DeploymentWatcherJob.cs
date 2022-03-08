@@ -73,7 +73,7 @@ namespace Sentinel.Worker.Sync.Watchers
 
         private void watcher(WatchEventType type, V1Deployment item)
         {
-            _logger.LogInformation("OnEvent" + item.Name());
+            _logger.LogInformation("DeploymentWatcherJob OnEvent: " + item.Name());
             this.ReportHealthy("received new Deployment" + item.Name());
 
             if (type == WatchEventType.Added || type == WatchEventType.Modified)

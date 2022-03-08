@@ -2,7 +2,7 @@
 {{- $fullName := include "healthcheck-rabbitmq.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{- $host := printf "%s.%s.%s" "rabbitmq" .Values.environment .Values.hostdomain -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}

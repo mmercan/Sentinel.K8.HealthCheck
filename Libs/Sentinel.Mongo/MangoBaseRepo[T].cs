@@ -20,7 +20,6 @@ namespace Sentinel.Mongo
         public MongoClient mongoClient { get; private set; }
         public string IdFieldName { get; private set; }
         private string collectionName;
-
         readonly ILogger<MangoBaseRepo<T>> logger;
 
         public MangoBaseRepo(IOptions<MangoBaseRepoSettings<T>> options, ILogger<MangoBaseRepo<T>> logger, string collectionName) : this(options.Value.ConnectionString, options.Value.DatabaseName, collectionName, logger)
@@ -47,15 +46,15 @@ namespace Sentinel.Mongo
         public MangoBaseRepo(string connectionString, string databaseName, string collectionName, Expression<Func<T, object>> IdField, ILogger<MangoBaseRepo<T>> logger)
         {
             this.logger = logger;
-            string field = null;
-            if (IdField != null && IdField.Body is MemberExpression)
+            string? field = null;
+            if (IdField?.Body != null && IdField.Body is MemberExpression)
             {
                 field = (IdField.Body as MemberExpression).Member.Name;
             }
-            init(connectionString, databaseName, collectionName, field);
+            this.init(connectionString, databaseName, collectionName, field);
         }
 
-        private void init(string connectionString, string databaseName, string collectionName, string IdField)
+        private void init(string connectionString, string databaseName, string collectionName, string? IdField)
         {
             if (IdField != null)
             {
@@ -84,7 +83,6 @@ namespace Sentinel.Mongo
                     if (item == null)
                     {
                         item = typeParameterType.GetProperties().FirstOrDefault(p => p.Name.ToLower() == "id");
-
                     }
                     if (item != null)
                     {
@@ -95,8 +93,6 @@ namespace Sentinel.Mongo
 
             logger.LogCritical(" IdFieldName " + IdFieldName);
             logger.LogCritical(" collectionName " + collectionName);
-            // logger.LogCritical("mongoProductRepo " + items1.Count().ToString());
-            // logger.LogCritical("mongoProductRepo " + items1.Count().ToString());
 
             this.collectionName = collectionName;
             mongoClient = new MongoClient(connectionString);
@@ -131,7 +127,6 @@ namespace Sentinel.Mongo
             logger.LogCritical(name + " collectionName " + collectionName);
             var res = await Items.FindAsync(FilterDefinition<T>.Empty);
             return res.ToList();
-
         }
 
         public IEnumerable<T> Find(FilterDefinition<T> filter)
@@ -273,7 +268,6 @@ namespace Sentinel.Mongo
                 }
                 else
                 {
-
                     BsonClassMap.RegisterClassMap<T>(cm =>
                     {
                         cm.AutoMap();

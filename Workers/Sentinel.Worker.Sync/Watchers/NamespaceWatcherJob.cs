@@ -77,7 +77,7 @@ namespace Sentinel.Worker.Sync.Watchers
 
         private void OnEvent(WatchEventType arg1, V1Namespace @namespace)
         {
-            _logger.LogInformation("OnEvent" + @namespace.Name());
+            _logger.LogInformation("NamespaceWatcherJob OnEvent: " + @namespace.Name());
             this.ReportHealthy("received new namespace" + @namespace.Name());
 
             if (arg1 == WatchEventType.Added || arg1 == WatchEventType.Modified)
