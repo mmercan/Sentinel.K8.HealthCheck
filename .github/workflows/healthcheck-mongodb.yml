@@ -126,10 +126,14 @@ jobs:
         run: |
           helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
 
-      - name: Helm upgrade
+      - name: Helm uninstall
         run: |
           helm uninstall $releaseName -n $namespace --wait
           sleep 60
+        continue-on-error: true
+
+      - name: Helm upgrade
+        run: |
           helm upgrade --namespace $namespace --install \
           --history-max 1 \
           --values ./Helm/values/$chartName/dev-values.yaml \
