@@ -84,7 +84,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             {
                 serviceFound = true;
                 serviceName = healthcheck.RelatedService.NameandNamespace;
-                var results = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService);
+                var results = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService, healthcheck);
             }
             _logger.LogInformation("HealthCheckSubscriber: Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
             // _ResetEvent.Set();

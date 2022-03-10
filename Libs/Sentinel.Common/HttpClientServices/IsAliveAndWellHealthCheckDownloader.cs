@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sentinel.Common.AuthServices;
+using Sentinel.Models.HealthCheck;
 using Sentinel.Models.K8sDTOs;
 
 namespace Sentinel.Common.HttpClientServices
@@ -22,46 +23,84 @@ namespace Sentinel.Common.HttpClientServices
             _azAuthService = azAuthService;
         }
 
-        public async Task<List<IsAliveAndWellResult>> DownloadAsync(ServiceV1 service)
+
+        public async Task<List<IsAliveAndWellResult>> DownloadAsync(ServiceV1 service, HealthCheckResourceV1 healthcheck)
         {
             var results = new List<IsAliveAndWellResult>();
+            var headers = new Dictionary<string, string>();
+
+            string? IsaliveandwellPath = null;
+
+            if (healthcheck?.Spec != null)
+            {
+                if (healthcheck.Spec.Cert != null && _configuration[healthcheck.Spec.Cert] != null)
+                {
+                    headers.Add("X-ARR-ClientCert", _configuration[healthcheck.Spec.Cert]);
+                }
+                if (healthcheck.Spec.ClientId != null)
+                {
+                    AZAuthServiceSettings setting = new AZAuthServiceSettings();
+                    _configuration.GetSection(healthcheck.Spec.ClientId).Bind(setting);
+                    if (setting?.ClientId != null)
+                    {
+                        var token = await _azAuthService.AuthenticateAsync(setting);
+                        headers.Add(HttpRequestHeader.Authorization.ToString(), "Bearer " + token);
+                    }
+                }
+                if (healthcheck.Spec.IsaliveandwellUrl != null)
+                {
+                    IsaliveandwellPath = healthcheck.Spec.IsaliveandwellUrl;
+                }
+                if (healthcheck.Spec.IsaliveUrl != null)
+                {
+
+                }
+            }
+            var isaliveandWellSuffix = ExtractIsAliveAndWellSuffix(service, IsaliveandwellPath);
 
             var uris = ExtractUriFromService(service);
-            var isaliveandWellSuffix = ExtractIsAliveAndWellSuffix(service);
-            await Authenticate(service, _client);
-
             foreach (var uri in uris)
             {
                 Uri isaliveandwellUri = new Uri(uri, isaliveandWellSuffix);
                 _logger.LogInformation($"Checking {isaliveandwellUri}");
 
-                var result = await DownloadAsync(isaliveandwellUri);
+                var httpRequestMessage = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = isaliveandwellUri,
+                    // Headers = { { HttpRequestHeader.Accept.ToString(), "application/json" }, },
+                    // Content = new StringContent(JsonConvert.SerializeObject(svm))
+                };
+                foreach (var item in headers)
+                {
+                    httpRequestMessage.Headers.Add(item.Key, item.Value);
+                }
+
+                var result = await DownloadAsync(httpRequestMessage);
                 results.Add(result);
             }
 
-            // var isAliveAndWellHealthCheck = _configuration.GetSection("IsAliveAndWellHealthCheck");
-            return await Task.FromResult<List<IsAliveAndWellResult>>(results);
+            return results;
         }
 
-        public async Task<IsAliveAndWellResult> DownloadAsync(Uri uri)
+        public async Task<IsAliveAndWellResult> DownloadAsync(HttpRequestMessage message)
         {
             var result = new IsAliveAndWellResult();
-            result.CheckedUrl = uri.AbsoluteUri;
 
             try
             {
-                var response = await _client.GetAsync(uri);
+                var response = await _client.SendAsync(message);
                 result.Status = response.StatusCode.ToString();
                 result.IsSuccessStatusCode = response.IsSuccessStatusCode;
                 result.Result = await response.Content.ReadAsStringAsync();
 
                 if ((response.StatusCode == HttpStatusCode.Unauthorized))
                 {
-                    _logger.LogInformation($"IsAliveAndWellHealthCheckDownloader : Unauthorized {uri}");
+                    _logger.LogInformation($"IsAliveAndWellHealthCheckDownloader : Unauthorized {message.RequestUri}");
                 }
                 else
                 {
-                    _logger.LogInformation($"IsAliveAndWellHealthCheckDownloader : {uri} {result.Status}");
+                    _logger.LogInformation($"IsAliveAndWellHealthCheckDownloader : {message.RequestUri} {result.Status}");
                 }
             }
             catch (Exception ex)
@@ -69,28 +108,11 @@ namespace Sentinel.Common.HttpClientServices
                 result.IsSuccessStatusCode = false;
                 result.Status = HttpStatusCode.InternalServerError.ToString();
                 result.Exception = ex.Message;
-                _logger.LogError(ex, $"IsAliveAndWellHealthCheckDownloader : Exception {uri}");
+                _logger.LogError(ex, $"IsAliveAndWellHealthCheckDownloader : Exception {message.RequestUri}");
             }
             return await Task.FromResult(result);
         }
 
-        public async Task Authenticate(ServiceV1 service, HttpClient client)
-        {
-            if (checkAuthentication(service))
-            {
-                _logger.LogInformation("Auth is Started");
-
-                // TODO: add AZAuthServiceSettings for ClientId and ClientSecret
-
-                string bearerToken = await _azAuthService.Authenticate();
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
-            }
-        }
-
-        private bool checkAuthentication(ServiceV1 service)
-        {
-            return service.Annotations.Any(p => p.Key == "healthcheck/clientid");
-        }
         public List<Uri> ExtractUriFromService(ServiceV1 service)
         {
             List<Uri> endpoints = new List<Uri>();
@@ -133,24 +155,17 @@ namespace Sentinel.Common.HttpClientServices
             return endpoints;
         }
 
-        public string ExtractIsAliveAndWellSuffix(ServiceV1 service)
+        public string ExtractIsAliveAndWellSuffix(ServiceV1 service, string? healthcheckPath = null)
         {
-            var suffix = service.Annotations.FirstOrDefault(p => p.Key == "healthcheck/isaliveandwell")?.Value;
-            if (string.IsNullOrWhiteSpace(suffix))
+            // var suffix = service.Annotations.FirstOrDefault(p => p.Key == "healthcheck/isaliveandwell")?.Value;
+            if (string.IsNullOrWhiteSpace(healthcheckPath))
             {
-                suffix = _configuration["DefaultIsAliveAndWellSuffix"];
+                healthcheckPath = _configuration["DefaultIsAliveAndWellSuffix"];
             }
-            return suffix;
+            return healthcheckPath;
         }
 
     }
 
-    public class IsAliveAndWellResult
-    {
-        public string Result { get; set; } = default!;
-        public string Status { get; set; } = default!;
-        public bool IsSuccessStatusCode { get; set; } = default!;
-        public string CheckedUrl { get; set; } = default!;
-        public string Exception { get; set; } = default!;
-    }
+
 }

@@ -1,0 +1,79 @@
+{{- $name := include "sentinel-tester-testapp.fullname" . -}}
+{{- $cfgname := printf "%s-%s" $name "config" -}}
+{{- $secretname := printf "%s-%s" $name "secret" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "sentinel-tester-testapp.fullname" . }}
+  labels:
+    {{- include "sentinel-tester-testapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      {{- include "sentinel-tester-testapp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "sentinel-tester-testapp.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "sentinel-tester-testapp.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+
+          envFrom:
+          {{- if .Values.configmap }}
+            - configMapRef:
+                name: {{ $cfgname }}
+          {{- end }}
+          {{- if .Values.secrets }}   
+            - secretRef:
+                name: {{ $secretname }}
+           {{- end }}
+            - secretRef:
+                name: "healthcheck-commonconfig-secret"
+
+          env:
+            - name: buildnumber
+              value: {{ .Values.buildnumber | quote }}
+            - name: branch
+              value: {{  .Values.branch | quote }}
+          {{- if .Values.envVariables -}}
+          {{- range $key, $value := .Values.envVariables }}
+            - name: {{ $key }}
+              value: {{  $value | quote }}
+          {{- end -}}
+          {{- end -}}
+
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

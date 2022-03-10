@@ -64,7 +64,7 @@ namespace Sentinel.Common.HttpClientServices
         private async Task authenticate(HttpClient client, AZAuthServiceSettings azAuthSettings)
         {
             _logger.LogInformation("Auth is Started");
-            string bearerToken = await _azAuthService.Authenticate(azAuthSettings);
+            string bearerToken = await _azAuthService.AuthenticateAsync(azAuthSettings);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
         }
 
@@ -72,7 +72,7 @@ namespace Sentinel.Common.HttpClientServices
         private async Task authenticate(HttpClient client)
         {
             _logger.LogInformation("Auth with default AZAuthServiceSettings is Started");
-            string bearerToken = await _azAuthService.Authenticate();
+            string bearerToken = await _azAuthService.AuthenticateAsync();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", bearerToken);
         }
 

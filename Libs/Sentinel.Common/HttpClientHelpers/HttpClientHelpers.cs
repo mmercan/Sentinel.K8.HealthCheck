@@ -24,16 +24,16 @@ namespace Sentinel.Common.HttpClientHelpers
                 .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
         }
     }
-    public class CertMessageHandler : HttpClientHandler
-    {
-        public CertMessageHandler()
-        {
-            ClientCertificateOptions = ClientCertificateOption.Manual;
-            var cert = HttpClientCertificateHelpers.GetCertFromcertThumbprint();
-            if (cert != null)
-            {
-                ClientCertificates.Add(cert);
-            }
-        }
-    }
+    // public class CertMessageHandler : HttpClientHandler
+    // {
+    //     public CertMessageHandler()
+    //     {
+    //         ClientCertificateOptions = ClientCertificateOption.Manual;
+    //         var cert = HttpClientCertificateHelpers.GetCertFromcertThumbprint();
+    //         if (cert != null)
+    //         {
+    //             ClientCertificates.Add(cert);
+    //         }
+    //     }
+    // }
 }

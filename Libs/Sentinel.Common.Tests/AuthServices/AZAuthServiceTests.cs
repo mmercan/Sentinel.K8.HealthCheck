@@ -41,10 +41,10 @@ namespace Sentinel.Common.Tests.AuthServices
 
 
             var azAuthService = new AZAuthService(logger, settingsOptions, memoryCache);
-            var token = await azAuthService.Authenticate();
+            var token = await azAuthService.AuthenticateAsync();
             Assert.NotNull(token);
 
-            var token_2 = await azAuthService.Authenticate();
+            var token_2 = await azAuthService.AuthenticateAsync();
             Assert.NotNull(token_2);
         }
     }

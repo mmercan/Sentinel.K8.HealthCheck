@@ -1,0 +1,95 @@
+{
+  "NameandNamespace": "sentinel-tester-testapp-dev.sentinel-tester",
+  "Uid": "66d0239b-28fa-4b50-86ed-5ce1e6658eed",
+  "Name": "sentinel-tester-testapp-dev",
+  "Namespace": "sentinel-tester",
+  "Labels": [
+    {
+      "Key": "app",
+      "Value": "sentinel-tester-testapp"
+    },
+    {
+      "Key": "app.kubernetes.io/instance",
+      "Value": "sentinel-tester-testapp-dev"
+    },
+    {
+      "Key": "app.kubernetes.io/managed-by",
+      "Value": "Helm"
+    },
+    {
+      "Key": "app.kubernetes.io/name",
+      "Value": "sentinel-tester-testapp"
+    },
+    {
+      "Key": "app.kubernetes.io/version",
+      "Value": "1.16.0"
+    },
+    {
+      "Key": "branch",
+      "Value": "master"
+    },
+    {
+      "Key": "helm.sh/chart",
+      "Value": "sentinel-tester-testapp-2.0.0-1822030433"
+    },
+    {
+      "Key": "version",
+      "Value": "1.16.0"
+    }
+  ],
+  "CreationTime": "2022-02-10T04:28:56Z",
+  "LabelSelector": [
+    {
+      "Key": "app",
+      "Value": "sentinel-tester-testapp"
+    },
+    {
+      "Key": "app.kubernetes.io/instance",
+      "Value": "sentinel-tester-testapp-dev"
+    },
+    {
+      "Key": "app.kubernetes.io/name",
+      "Value": "sentinel-tester-testapp"
+    },
+    {
+      "Key": "branch",
+      "Value": "master"
+    },
+    {
+      "Key": "version",
+      "Value": "1.16.0"
+    }
+  ],
+  "LabelSelectorString": "app=sentinel-tester-testapp,app.kubernetes.io/instance=sentinel-tester-testapp-dev,app.kubernetes.io/name=sentinel-tester-testapp,branch=master,version=1.16.0",
+  "Annotations": [
+    {
+      "Key": "meta.helm.sh/release-name",
+      "Value": "sentinel-tester-testapp-dev"
+    },
+    {
+      "Key": "meta.helm.sh/release-namespace",
+      "Value": "sentinel-tester"
+    }
+  ],
+  "Type": "ClusterIP",
+  "SessionAffinity": "None",
+  "ClusterIP": "10.0.222.218",
+  "InternalEndpoints": [
+    "sentinel-tester-testapp-dev.sentinel-tester:80"
+  ],
+  "ExternalEndpoints": [],
+  "Ingresses": [
+    "https://testapp.health.myrcan.com"
+  ],
+  "VirtualServiceUrl": null,
+  "LatestSyncDateUTC": "2022-02-10T10:49:00.0423414Z",
+  "Deleted": false,
+  "ServiceApiVersion": null,
+  "ServiceResourceVersion": "139106038",
+  "LivenessProbe": null,
+  "ReadinessProbe": null,
+  "StartupProbe": null,
+  "CronDescription": null,
+  "CronTab": null,
+  "CronTabException": null
+}

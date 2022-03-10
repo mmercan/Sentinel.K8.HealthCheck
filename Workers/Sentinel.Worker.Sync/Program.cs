@@ -133,7 +133,6 @@ namespace Sentinel.Worker.Sync
 
             var schedulerFactory = app.Services.GetService<ISchedulerFactory>();
 
-
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -146,7 +145,6 @@ namespace Sentinel.Worker.Sync
                 ErrorDetectionOptions = new CrystalQuartz.Application.ErrorDetectionOptions
                 { VerbosityLevel = ErrorVerbosityLevel.Detailed }
             };
-
 
             var scheduler = schedulerFactory?.GetScheduler().GetAwaiter().GetResult();
             app.UseCrystalQuartz(() => scheduler, options);
@@ -168,7 +166,6 @@ namespace Sentinel.Worker.Sync
             });
 
             app.Run();
-
         }
     }
 }
