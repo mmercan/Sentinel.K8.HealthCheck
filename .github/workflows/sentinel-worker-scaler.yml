@@ -95,7 +95,7 @@ jobs:
         with:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBECONFIG }}
-          context: matt-test-aks2
+          context: matt-aks
 
       - name: add KUBECONFIG To env file
         run: |

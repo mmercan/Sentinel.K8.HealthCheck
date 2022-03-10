@@ -50,11 +50,11 @@ namespace Sentinel.Worker.Scheduler.Tests.Schedules
 
             };
 
-            var configuration = new ConfigurationBuilder()
+            config = new ConfigurationBuilder()
             .AddInMemoryCollection(myConfiguration)
             .Build();
 
-            busScheduler = new BusScheduler(logger, bus, hcoptions, healthCheckRepository, _multiplexer, configuration);
+            busScheduler = new BusScheduler(logger, bus, hcoptions, healthCheckRepository, _multiplexer, config);
 
 
         }

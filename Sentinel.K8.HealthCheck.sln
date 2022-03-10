@@ -1,61 +1,63 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{9DF4D31B-55A7-4062-A079-43CA413F3EAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Common", "Libs\Sentinel.Common\Sentinel.Common.csproj", "{EC11DCCF-DA7A-4940-B2DF-753FDC843674}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Common", "Libs\Sentinel.Common\Sentinel.Common.csproj", "{EC11DCCF-DA7A-4940-B2DF-753FDC843674}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Common.Tests", "Libs\Sentinel.Common.Tests\Sentinel.Common.Tests.csproj", "{A7CECCC5-BFF8-49D5-AB1A-D986D536A527}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Common.Tests", "Libs\Sentinel.Common.Tests\Sentinel.Common.Tests.csproj", "{A7CECCC5-BFF8-49D5-AB1A-D986D536A527}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.K8s", "Libs\Sentinel.K8s\Sentinel.K8s.csproj", "{4FC9F467-DEE7-4048-981B-299B0A10223D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.K8s", "Libs\Sentinel.K8s\Sentinel.K8s.csproj", "{4FC9F467-DEE7-4048-981B-299B0A10223D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.K8s.Tests", "Libs\Sentinel.K8s.Tests\Sentinel.K8s.Tests.csproj", "{3144A2BA-82EC-480C-8722-97E4AA39F476}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.K8s.Tests", "Libs\Sentinel.K8s.Tests\Sentinel.K8s.Tests.csproj", "{3144A2BA-82EC-480C-8722-97E4AA39F476}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Models", "Libs\Sentinel.Models\Sentinel.Models.csproj", "{745E6BD0-D36F-457D-BCCE-2EEC41A3516D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Models", "Libs\Sentinel.Models\Sentinel.Models.csproj", "{745E6BD0-D36F-457D-BCCE-2EEC41A3516D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Models.Tests", "Libs\Sentinel.Models.Tests\Sentinel.Models.Tests.csproj", "{B524554A-C30D-4831-B222-AA4CCAA3909F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Models.Tests", "Libs\Sentinel.Models.Tests\Sentinel.Models.Tests.csproj", "{B524554A-C30D-4831-B222-AA4CCAA3909F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workers", "Workers", "{5EA38950-6A73-400C-8858-6840DCA6FD52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Sync", "Workers\Sentinel.Worker.Sync\Sentinel.Worker.Sync.csproj", "{D7BBCB03-A4C9-4174-B2E8-77500F2590D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Sync", "Workers\Sentinel.Worker.Sync\Sentinel.Worker.Sync.csproj", "{D7BBCB03-A4C9-4174-B2E8-77500F2590D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Sync.Tests", "Workers\Sentinel.Worker.Sync.Tests\Sentinel.Worker.Sync.Tests.csproj", "{30FCD57D-B53E-4A84-A504-C582B73A72B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Sync.Tests", "Workers\Sentinel.Worker.Sync.Tests\Sentinel.Worker.Sync.Tests.csproj", "{30FCD57D-B53E-4A84-A504-C582B73A72B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Comms", "Workers\Sentinel.Worker.Comms\Sentinel.Worker.Comms.csproj", "{D3402911-8E11-45C9-A4B3-2867BCC41467}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Comms", "Workers\Sentinel.Worker.Comms\Sentinel.Worker.Comms.csproj", "{D3402911-8E11-45C9-A4B3-2867BCC41467}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Comms.Tests", "Workers\Sentinel.Worker.Comms.Tests\Sentinel.Worker.Comms.Tests.csproj", "{3DE102E2-9641-475A-A1FB-EB5E6D2A74DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Comms.Tests", "Workers\Sentinel.Worker.Comms.Tests\Sentinel.Worker.Comms.Tests.csproj", "{3DE102E2-9641-475A-A1FB-EB5E6D2A74DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.HealthChecker", "Workers\Sentinel.Worker.HealthChecker\Sentinel.Worker.HealthChecker.csproj", "{BB7DDF67-A9D7-4E4C-8E24-04315167B4A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.HealthChecker", "Workers\Sentinel.Worker.HealthChecker\Sentinel.Worker.HealthChecker.csproj", "{BB7DDF67-A9D7-4E4C-8E24-04315167B4A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.HealthChecker.Tests", "Workers\Sentinel.Worker.HealthChecker.Tests\Sentinel.Worker.HealthChecker.Tests.csproj", "{373B16B4-C149-4631-A6D6-71C82360BEF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.HealthChecker.Tests", "Workers\Sentinel.Worker.HealthChecker.Tests\Sentinel.Worker.HealthChecker.Tests.csproj", "{373B16B4-C149-4631-A6D6-71C82360BEF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Scaler", "Workers\Sentinel.Worker.Scaler\Sentinel.Worker.Scaler.csproj", "{E9E80BE3-ADCF-4943-B555-6BBB5F8FBD92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Scaler", "Workers\Sentinel.Worker.Scaler\Sentinel.Worker.Scaler.csproj", "{E9E80BE3-ADCF-4943-B555-6BBB5F8FBD92}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Scaler.Tests", "Workers\Sentinel.Worker.Scaler.Tests\Sentinel.Worker.Scaler.Tests.csproj", "{B0214478-0745-464A-8176-7153C4CC2EE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Scaler.Tests", "Workers\Sentinel.Worker.Scaler.Tests\Sentinel.Worker.Scaler.Tests.csproj", "{B0214478-0745-464A-8176-7153C4CC2EE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Scheduler", "Workers\Sentinel.Worker.Scheduler\Sentinel.Worker.Scheduler.csproj", "{D689000D-3E4B-4602-AF95-177F87A8D342}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Scheduler", "Workers\Sentinel.Worker.Scheduler\Sentinel.Worker.Scheduler.csproj", "{D689000D-3E4B-4602-AF95-177F87A8D342}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Scheduler.Tests", "Workers\Sentinel.Worker.Scheduler.Tests\Sentinel.Worker.Scheduler.Tests.csproj", "{009E5D60-8304-42EB-8156-6E544253ED0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Scheduler.Tests", "Workers\Sentinel.Worker.Scheduler.Tests\Sentinel.Worker.Scheduler.Tests.csproj", "{009E5D60-8304-42EB-8156-6E544253ED0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Screenshot", "Workers\Sentinel.Worker.Screenshot\Sentinel.Worker.Screenshot.csproj", "{85345BE2-B175-4637-AF95-0E6EAB9321CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Screenshot", "Workers\Sentinel.Worker.Screenshot\Sentinel.Worker.Screenshot.csproj", "{85345BE2-B175-4637-AF95-0E6EAB9321CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.Screenshot.Tests", "Workers\Sentinel.Worker.Screenshot.Tests\Sentinel.Worker.Screenshot.Tests.csproj", "{D7722F9B-D675-4D2C-9AD4-CA55F54AC552}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.Screenshot.Tests", "Workers\Sentinel.Worker.Screenshot.Tests\Sentinel.Worker.Screenshot.Tests.csproj", "{D7722F9B-D675-4D2C-9AD4-CA55F54AC552}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.SecretGenerator", "Workers\Sentinel.Worker.SecretGenerator\Sentinel.Worker.SecretGenerator.csproj", "{FAF78AF0-13A8-4D55-BA1E-08606C93E52E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.SecretGenerator", "Workers\Sentinel.Worker.SecretGenerator\Sentinel.Worker.SecretGenerator.csproj", "{FAF78AF0-13A8-4D55-BA1E-08606C93E52E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Worker.SecretGenerator.Tests", "Workers\Sentinel.Worker.SecretGenerator.Tests\Sentinel.Worker.SecretGenerator.Tests.csproj", "{21035A90-6636-461A-8CA6-945A86660D01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Worker.SecretGenerator.Tests", "Workers\Sentinel.Worker.SecretGenerator.Tests\Sentinel.Worker.SecretGenerator.Tests.csproj", "{21035A90-6636-461A-8CA6-945A86660D01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Redis", "Libs\Sentinel.Redis\Sentinel.Redis.csproj", "{9C1B87EA-24CD-4730-A0ED-8D2EA08D381B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Redis", "Libs\Sentinel.Redis\Sentinel.Redis.csproj", "{9C1B87EA-24CD-4730-A0ED-8D2EA08D381B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Redis.Tests", "Libs\Sentinel.Redis.Tests\Sentinel.Redis.Tests.csproj", "{F5BA5D36-A1AB-4A08-B968-E7906861DFCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Redis.Tests", "Libs\Sentinel.Redis.Tests\Sentinel.Redis.Tests.csproj", "{F5BA5D36-A1AB-4A08-B968-E7906861DFCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Scheduler", "Libs\Sentinel.Scheduler\Sentinel.Scheduler.csproj", "{6BA8E14A-35CD-4F60-8102-B7F777561D11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Scheduler", "Libs\Sentinel.Scheduler\Sentinel.Scheduler.csproj", "{6BA8E14A-35CD-4F60-8102-B7F777561D11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Scheduler.Tests", "Libs\Sentinel.Scheduler.Tests\Sentinel.Scheduler.Tests.csproj", "{50C42321-57A8-4152-9997-D0407BBC5562}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Scheduler.Tests", "Libs\Sentinel.Scheduler.Tests\Sentinel.Scheduler.Tests.csproj", "{50C42321-57A8-4152-9997-D0407BBC5562}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Scheduler.Benchmark", "Libs\Sentinel.Scheduler.Benchmark\Sentinel.Scheduler.Benchmark.csproj", "{2B606ECE-FADF-483E-9EDD-21805852A44D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Scheduler.Benchmark", "Libs\Sentinel.Scheduler.Benchmark\Sentinel.Scheduler.Benchmark.csproj", "{2B606ECE-FADF-483E-9EDD-21805852A44D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sentinel.Tests.Helpers", "Libs\Sentinel.Tests.Helpers\Sentinel.Tests.Helpers.csproj", "{D8357E1B-8B21-42B6-9781-2065C348DD78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,9 +67,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EC11DCCF-DA7A-4940-B2DF-753FDC843674}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -370,6 +369,21 @@ Global
 		{2B606ECE-FADF-483E-9EDD-21805852A44D}.Release|x64.Build.0 = Release|Any CPU
 		{2B606ECE-FADF-483E-9EDD-21805852A44D}.Release|x86.ActiveCfg = Release|Any CPU
 		{2B606ECE-FADF-483E-9EDD-21805852A44D}.Release|x86.Build.0 = Release|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Debug|x64.Build.0 = Debug|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Debug|x86.Build.0 = Debug|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Release|x64.ActiveCfg = Release|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Release|x64.Build.0 = Release|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Release|x86.ActiveCfg = Release|Any CPU
+		{D8357E1B-8B21-42B6-9781-2065C348DD78}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EC11DCCF-DA7A-4940-B2DF-753FDC843674} = {9DF4D31B-55A7-4062-A079-43CA413F3EAD}
@@ -397,5 +411,9 @@ Global
 		{6BA8E14A-35CD-4F60-8102-B7F777561D11} = {9DF4D31B-55A7-4062-A079-43CA413F3EAD}
 		{50C42321-57A8-4152-9997-D0407BBC5562} = {9DF4D31B-55A7-4062-A079-43CA413F3EAD}
 		{2B606ECE-FADF-483E-9EDD-21805852A44D} = {9DF4D31B-55A7-4062-A079-43CA413F3EAD}
+		{D8357E1B-8B21-42B6-9781-2065C348DD78} = {9DF4D31B-55A7-4062-A079-43CA413F3EAD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {93191453-27ED-4ED0-B39B-96D595053BF3}
 	EndGlobalSection
 EndGlobal
