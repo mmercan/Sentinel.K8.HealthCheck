@@ -76,7 +76,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS_ENT }}
 
       - name: Install jq
         run: sudo apt-get install -y jq
