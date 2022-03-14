@@ -3,7 +3,7 @@ kind: Certificate
 metadata:
   name: wildcard-domain
 spec:
-  secretName: wildcard-domain-tls-secret
+  secretName: wildcard-tls
   dnsNames:
     - '*.myrcan.com' 
   commonName: '*.myrcan.com'
@@ -11,10 +11,4 @@ spec:
     name: myrcan-issuer
     kind: Issuer
     group: cert-manager.io
-  acme:
-    config:
-    - dns01:
-        provider: azure-dns
-        ingressClass: nginx
-      domains:
-      - '*.myrcan.com'
+
