@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-domain
+  namespace: sentinel-healthcheck
+spec:
+  secretName: wildcard-domain-tls-secret
+  issuerRef:
+    name: myrcan-issuer
+    kind: Issuer
+    group: cert-manager.io
+  duration: 2160h # 90d
+  renewBefore: 360h # 15d
+ 
+  commonName: '*.myrcan.com'
+  dnsNames:
+    - '*.myrcan.com'
+  acme:
+	config:
+	- dns01:
+		provider: azure-dns
+	  domains:  
+	  - '*.myrcan.com'
