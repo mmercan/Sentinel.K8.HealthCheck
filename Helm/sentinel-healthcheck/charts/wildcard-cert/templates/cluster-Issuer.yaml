@@ -4,6 +4,10 @@ metadata:
   name: myrcan-issuer
 spec:
   acme:
+    email: {{ .Values.email }}
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: example-issuer-account-key
     solvers:
     - dns01:
         azureDNS:

@@ -30,6 +30,7 @@ jobs:
       AzureTenantId: ${{ secrets.AZURETENANTID }}
       AzureDnsZoneResourceGroup: ${{ secrets.AZUREDNSZONERESOURCEGROUP }}
       AzurehostedZoneName: ${{ secrets.AZUREHOSTEDZONENAME }}
+      email: ${{ secrets.EMAIL }}
       pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
     steps:
       - name: Checkout repository
@@ -69,6 +70,7 @@ jobs:
           --set AzureTenantId=$AzureTenantId \
           --set AzureDnsZoneResourceGroup=$AzureDnsZoneResourceGroup \
           --set AzurehostedZoneName=$AzurehostedZoneName \
+          --set email=$email \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
 
