@@ -16,10 +16,6 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  tls:
-  - hosts:
-    - {{ $host }}
-    secretName:  {{ $host }}-secret
   rules:
   - host: {{ $host }}
     http:
@@ -31,4 +27,8 @@ spec:
             name: {{ include "healthcheck-rabbitmq.fullname" . }}-http
             port:
               number: 80
+  tls:
+  - hosts:
+    - {{ $host }}
+    secretName: wildcard-tls
 {{- end }}
