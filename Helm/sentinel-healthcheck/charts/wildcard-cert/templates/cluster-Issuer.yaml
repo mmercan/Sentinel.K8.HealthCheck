@@ -4,7 +4,6 @@ metadata:
   name: myrcan-issuer
 spec:
   acme:
-    ...
     solvers:
     - dns01:
         azureDNS:
