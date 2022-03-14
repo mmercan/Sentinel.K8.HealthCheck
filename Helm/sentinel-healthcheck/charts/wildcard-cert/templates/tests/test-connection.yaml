@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "wildcard-cert.fullname" . }}-test-connection"
+  labels:
+    {{- include "wildcard-cert.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "wildcard-cert.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
