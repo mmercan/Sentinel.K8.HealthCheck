@@ -11,4 +11,10 @@ spec:
     name: myrcan-issuer
     kind: Issuer
     group: cert-manager.io
-
+  acme:
+    config:
+    - dns01:
+        provider: azure-dns
+        ingressClass: nginx
+      domains:
+      - '*.myrcan.com'
