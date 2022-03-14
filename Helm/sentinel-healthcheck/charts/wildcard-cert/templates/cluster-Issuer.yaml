@@ -9,12 +9,10 @@ spec:
         azureDNS:
           clientID: {{ .Values.AzureClientId }}
           clientSecretSecretRef:
-          # The following is the secret we created in Kubernetes. Issuer will use this to present challenge to Azure DNS.
             name: azuredns-config
             key: client-secret
           subscriptionID: {{ .Values.AzureSubscriptionId }}
           tenantID: {{ .Values.AzureTenantId }}
           resourceGroupName: {{ .Values.AzureDnsZoneResourceGroup }} 
           hostedZoneName: {{ .Values.AzurehostedZoneName }} 
-          # Azure Cloud Environment, default to AzurePublicCloud
           environment: AzurePublicCloud

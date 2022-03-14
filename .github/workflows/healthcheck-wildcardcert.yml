@@ -24,11 +24,11 @@ jobs:
       chartName: "wildcard-cert"
       namespace: "sentinel-healthcheck"
       releaseName: "wildcard-cert-dev"
-      AzureClientId: "${{ secrets.AZURECLIENTID }}"
-      AzureSubscriptionId: "${{ secrets.AZURESUBSCRIPTIONID }}"
-      AzureTenantId: "${{ secrets.AZURETENANTID }}"
-      AzureDnsZoneResourceGroup: "${{ secrets.AZUREDNSZONERESOURCEGROUP }}"
-      AzurehostedZoneName: "${{ secrets.AZUREHOSTEDZONENAME }}"
+      AzureClientId: ${{ secrets.AZURECLIENTID }}
+      AzureSubscriptionId: ${{ secrets.AZURESUBSCRIPTIONID }}
+      AzureTenantId: ${{ secrets.AZURETENANTID }}
+      AzureDnsZoneResourceGroup: ${{ secrets.AZUREDNSZONERESOURCEGROUP }}
+      AzurehostedZoneName: ${{ secrets.AZUREHOSTEDZONENAME }}
       pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
     steps:
       - name: Checkout repository
