@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-domain
+spec:
+  secretName: health-wildcard-tls
+  dnsNames:
+    - '*.health.myrcan.com' 
+  commonName: '*.health.myrcan.com'
+  issuerRef:
+    name: myrcan-issuer
+    kind: Issuer
+    group: cert-manager.io
+
