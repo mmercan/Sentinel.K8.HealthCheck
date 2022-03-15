@@ -7,7 +7,7 @@ spec:
     email: {{ .Values.email }}
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: example-issuer-account-key
+      name: myrcan-issuer-account-key
     solvers:
     - dns01:
         azureDNS:
