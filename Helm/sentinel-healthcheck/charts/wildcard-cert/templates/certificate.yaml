@@ -9,6 +9,6 @@ spec:
   commonName: '*.myrcan.com'
   issuerRef:
     name: myrcan-issuer
-    kind: Issuer
+    kind: ClusterIssuer
     group: cert-manager.io
 

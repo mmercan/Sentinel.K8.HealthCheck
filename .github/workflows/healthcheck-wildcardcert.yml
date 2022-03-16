@@ -26,6 +26,7 @@ jobs:
       namespace: "sentinel-healthcheck"
       releaseName: "wildcard-cert-dev"
       AzureClientId: ${{ secrets.AZURECLIENTID }}
+      AzureClientSecret: ${{ secrets.AZURECLIENTSECRET }}
       AzureSubscriptionId: ${{ secrets.AZURESUBSCRIPTIONID }}
       AzureTenantId: ${{ secrets.AZURETENANTID }}
       AzureDnsZoneResourceGroup: ${{ secrets.AZUREDNSZONERESOURCEGROUP }}
@@ -66,6 +67,7 @@ jobs:
           --history-max 1 \
           --values ./Helm/values/$chartName/dev-values.yaml \
           --set AzureClientId=$AzureClientId \
+          --set AzureClientSecret=$AzureClientSecret \
           --set AzureSubscriptionId=$AzureSubscriptionId \
           --set AzureTenantId=$AzureTenantId \
           --set AzureDnsZoneResourceGroup=$AzureDnsZoneResourceGroup \
