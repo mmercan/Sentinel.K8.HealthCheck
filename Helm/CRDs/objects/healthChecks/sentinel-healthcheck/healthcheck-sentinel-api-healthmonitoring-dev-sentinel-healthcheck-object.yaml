@@ -1,8 +1,8 @@
 apiVersion: "sentinel.mercan.io/v1"
 kind: HealthCheck
 metadata:
-  name: sentinel-api-healthmonitoring-dev-healthcheck
+  name: sentinel-api-healthmonitoring-healthcheck
 spec:
-  service: "sentinel-api-healthmonitoring-dev"
+  service: "sentinel-api-healthmonitoring"
   crontab: "*/2 * * * *"
   cert: ""
