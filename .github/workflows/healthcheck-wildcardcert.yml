@@ -71,7 +71,7 @@ jobs:
         run: |
           helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
 
-      - name: Helm upgrade
+      - name: Helm upgrade Cluster Issuer
         run: |
           helm upgrade --namespace cert-manager --install \
           --history-max 1 \
@@ -84,6 +84,14 @@ jobs:
           --set email=$email \
           --wait $releaseName \
           /home/runner/work/_temp/$chartNameClusterIssuer-2.0.0-$GITHUB_RUN_ID.tgz \
+
+      - name: Helm upgrade Certs
+        run: |
+          helm upgrade --namespace cert-manager --install \
+           -f "./Helm/values/$chartName/dev-values.yaml" \
+          --history-max 1 \
+          --wait $releaseName \
+          /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
 
       - name: output env vars
         run: |
