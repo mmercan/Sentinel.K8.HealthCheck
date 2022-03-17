@@ -23,8 +23,10 @@ jobs:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
       chartName: "wildcard-cert"
+      chartNameClusterIssuer: "wildcard-cert-cluster-issuer"
       namespace: "sentinel-healthcheck"
       releaseName: "wildcard-cert-dev"
+      releaseNameClusterIssuer: "wildcard-cert-cluster-issuer-dev"
       AzureClientId: ${{ secrets.AZURECLIENTID }}
       AzureClientSecret: ${{ secrets.AZURECLIENTSECRET }}
       AzureSubscriptionId: ${{ secrets.AZURESUBSCRIPTIONID }}
@@ -53,9 +55,17 @@ jobs:
         run: |
           helm version
 
+      - name: Helm Package Cluster Issuer
+        run: |
+          helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartNameClusterIssuer
+
       - name: Helm Package
         run: |
           helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartName
+
+      - name: Validate Helm Package Cluster Issuer
+        run: |
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartNameClusterIssuer/dev-values.yaml"
 
       - name: Validate Helm Package
         run: |
@@ -63,9 +73,9 @@ jobs:
 
       - name: Helm upgrade
         run: |
-          helm upgrade --namespace $namespace --install \
+          helm upgrade --namespace cert-manager --install \
           --history-max 1 \
-          --values ./Helm/values/$chartName/dev-values.yaml \
+          --values ./Helm/values/$chartNameClusterIssuer/dev-values.yaml \
           --set AzureClientId=$AzureClientId \
           --set AzureClientSecret=$AzureClientSecret \
           --set AzureSubscriptionId=$AzureSubscriptionId \
@@ -74,7 +84,7 @@ jobs:
           --set AzurehostedZoneName=$AzurehostedZoneName \
           --set email=$email \
           --wait $releaseName \
-          /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
+          /home/runner/work/_temp/$chartNameClusterIssuer-2.0.0-$GITHUB_RUN_ID.tgz \
 
       - name: output env vars
         run: |
