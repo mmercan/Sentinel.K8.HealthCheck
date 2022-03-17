@@ -65,11 +65,11 @@ jobs:
 
       - name: Validate Helm Package Cluster Issuer
         run: |
-          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartNameClusterIssuer/dev-values.yaml"
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName"
 
       - name: Validate Helm Package
         run: |
-          helm template "./Helm/sentinel-healthcheck/charts/$chartName"
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
 
       - name: Helm upgrade
         run: |
