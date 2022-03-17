@@ -16,7 +16,7 @@ spec:
               name: azuredns-config
               key: client-secret
             subscriptionID: {{ .Values.AzureSubscriptionId }}
-            tenantID: {{ .Values.AzureTenantId } }
+            tenantID: {{ .Values.AzureTenantId }}
             resourceGroupName: {{ .Values.AzureDnsZoneResourceGroup }}
             hostedZoneName: {{ .Values.AzurehostedZoneName }}
             environment: AzurePublicCloud
