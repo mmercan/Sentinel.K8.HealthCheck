@@ -2,7 +2,7 @@
 {{- $fullName := include "sentinel-tester-testapp.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{- $host := printf "%s.%s.%s" "testapp" .Values.environment .Values.hostdomain -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -13,19 +13,22 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: myrcan-issuer
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  tls:
-  - hosts:
-    - {{ $host }}
-    secretName:  {{ $host }}-secret
   rules:
   - host: {{ $host }}
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: {{ include "sentinel-tester-testapp.fullname" . }}
-          servicePort: 80
+          service:
+            name: {{ include "sentinel-tester-testapp.fullname" . }}
+            port: 
+              number: 80
+  tls:
+  - hosts:
+    - {{ $host }}
+    secretName: health-wildcard-tls
 {{- end }}
