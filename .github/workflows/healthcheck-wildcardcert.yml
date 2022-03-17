@@ -73,7 +73,7 @@ jobs:
 
       - name: Helm upgrade Cluster Issuer
         run: |
-          helm upgrade --namespace cert-manager --install \
+          helm upgrade --namespace $namespace --install \
           --history-max 1 \
           --set AzureClientId=$AzureClientId \
           --set AzureClientSecret=$AzureClientSecret \
