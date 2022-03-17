@@ -69,13 +69,12 @@ jobs:
 
       - name: Validate Helm Package
         run: |
-          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName"
 
       - name: Helm upgrade
         run: |
           helm upgrade --namespace cert-manager --install \
           --history-max 1 \
-          --values ./Helm/values/$chartNameClusterIssuer/dev-values.yaml \
           --set AzureClientId=$AzureClientId \
           --set AzureClientSecret=$AzureClientSecret \
           --set AzureSubscriptionId=$AzureSubscriptionId \
