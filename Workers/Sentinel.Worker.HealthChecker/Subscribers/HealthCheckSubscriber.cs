@@ -8,7 +8,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sentinel.Common;
 using Sentinel.Common.HttpClientServices;
+using Sentinel.Models.HealthCheck;
 using Sentinel.Models.K8sDTOs;
+using Sentinel.Mongo;
 
 namespace Sentinel.Worker.HealthChecker.Subscribers
 {
@@ -18,6 +20,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         private readonly EasyNetQ.IBus _bus;
         private readonly IConfiguration _configuration;
         private readonly IsAliveAndWellHealthCheckDownloader _isAliveAndWelldownloader;
+        private readonly MongoBaseRepo<IsAliveAndWellResult> _isAliveAndWellRepo;
         private readonly string timezone;
         private ManualResetEventSlim _ResetEvent = new ManualResetEventSlim(false);
 
@@ -26,12 +29,14 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             IBus bus,
             IOptions<HealthCheckServiceOptions> hcoptions,
             IConfiguration configuration,
-            IsAliveAndWellHealthCheckDownloader isAliveAndWelldownloader
+            IsAliveAndWellHealthCheckDownloader isAliveAndWelldownloader,
+            MongoBaseRepo<IsAliveAndWellResult> isAliveAndWellRepo
             ) : base(logger, hcoptions)
         {
             _bus = bus;
             _configuration = configuration;
             _isAliveAndWelldownloader = isAliveAndWelldownloader;
+            _isAliveAndWellRepo = isAliveAndWellRepo;
             if (!string.IsNullOrWhiteSpace(_configuration["timezone"]))
             {
                 timezone = _configuration["timezone"];

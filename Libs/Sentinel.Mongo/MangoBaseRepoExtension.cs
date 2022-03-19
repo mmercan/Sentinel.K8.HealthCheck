@@ -10,83 +10,83 @@ using Sentinel.Mongo;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class MangoBaseRepoExtension
+    public static class MongoBaseRepoExtension
     {
 
 
-        public static IServiceCollection AddMangoRepo<T>(
+        public static IServiceCollection AddMongoRepo<T>(
                this IServiceCollection serviceCollection,
-               MangoBaseRepoSettings<T> options) where T : new()
+               MongoBaseRepoSettings<T> options) where T : new()
         {
-            serviceCollection.Configure<MangoBaseRepoSettings<T>>(o => o = options);
-            serviceCollection.AddSingleton<MangoBaseRepo<T>>();
+            serviceCollection.Configure<MongoBaseRepoSettings<T>>(o => o = options);
+            serviceCollection.AddSingleton<MongoBaseRepo<T>>();
             return serviceCollection;
         }
 
-        public static IServiceCollection AddMangoRepo<T>(
+        public static IServiceCollection AddMongoRepo<T>(
         this IServiceCollection serviceCollection,
         IConfiguration options,
         string collectionName) where T : new()
         {
             // options["CollectionName"] = collectionName;
-            // serviceCollection.Configure<MangoBaseRepoSettings<T>>(options);
-            // serviceCollection.AddSingleton<MangoBaseRepo<T>>();
+            // serviceCollection.Configure<MongoBaseRepoSettings<T>>(options);
+            // serviceCollection.AddSingleton<MongoBaseRepo<T>>();
             // return serviceCollection;
-            serviceCollection.AddSingleton<MangoBaseRepo<T>>((ctx) =>
+            serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
             {
                 //  var repo = sp.GetService<IDbRepository>();
                 //     var apiKey = repo.GetApiKeyMethodHere();
                 //     return new GlobalRepository(mode, apiKey);
-                var logger = ctx.GetService<ILogger<MangoBaseRepo<T>>>();
-                return new MangoBaseRepo<T>(options["ConnectionString"], options["DatabaseName"], collectionName, logger);
+                var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
+                return new MongoBaseRepo<T>(options["ConnectionString"], options["DatabaseName"], collectionName, logger);
             });
 
             return serviceCollection;
 
         }
 
-        public static IServiceCollection AddMangoRepo<T>(
+        public static IServiceCollection AddMongoRepo<T>(
         this IServiceCollection serviceCollection,
         Configuration.IConfiguration options) where T : new()
         {
-            serviceCollection.Configure<MangoBaseRepoSettings<T>>(options);
-            serviceCollection.AddSingleton<MangoBaseRepo<T>>();
+            serviceCollection.Configure<MongoBaseRepoSettings<T>>(options);
+            serviceCollection.AddSingleton<MongoBaseRepo<T>>();
             return serviceCollection;
         }
 
 
 
-        public static IServiceCollection AddMangoRepo<T>(
+        public static IServiceCollection AddMongoRepo<T>(
         this IServiceCollection serviceCollection) where T : new()
         {
-            serviceCollection.AddSingleton<MangoBaseRepo<T>>();
+            serviceCollection.AddSingleton<MongoBaseRepo<T>>();
             return serviceCollection;
         }
 
 
 
-        public static IServiceCollection AddMangoRepo<T>(
+        public static IServiceCollection AddMongoRepo<T>(
             this IServiceCollection serviceCollection,
             string connectionString,
             string databaseName,
             string collectionName) where T : new()
         {
-            // serviceCollection.Configure<MangoBaseRepoSettings<T>>(options);
-            // serviceCollection.AddSingleton<MangoBaseRepo<T>>();
-            serviceCollection.AddSingleton<MangoBaseRepo<T>>((ctx) =>
+            // serviceCollection.Configure<MongoBaseRepoSettings<T>>(options);
+            // serviceCollection.AddSingleton<MongoBaseRepo<T>>();
+            serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
             {
                 //  var repo = sp.GetService<IDbRepository>();
                 //     var apiKey = repo.GetApiKeyMethodHere();
                 //     return new GlobalRepository(mode, apiKey);
-                var logger = ctx.GetService<ILogger<MangoBaseRepo<T>>>();
-                return new MangoBaseRepo<T>(connectionString, databaseName, collectionName, logger);
+                var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
+                return new MongoBaseRepo<T>(connectionString, databaseName, collectionName, logger);
                 // return RabbitHutch.CreateBus(Configuration["RabbitMQConnection"]);
             });
 
             return serviceCollection;
         }
 
-        public static IServiceCollection AddMangoRepo<T>(
+        public static IServiceCollection AddMongoRepo<T>(
              this IServiceCollection serviceCollection,
             string connectionString,
             string databaseName,
@@ -94,17 +94,12 @@ namespace Microsoft.Extensions.DependencyInjection
             Expression<Func<T, object>> IdField
             ) where T : new()
         {
-            serviceCollection.AddSingleton<MangoBaseRepo<T>>((ctx) =>
+            serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
             {
-                //  var repo = sp.GetService<IDbRepository>();
-                //     var apiKey = repo.GetApiKeyMethodHere();
-                //     return new GlobalRepository(mode, apiKey);
-                var logger = ctx.GetService<ILogger<MangoBaseRepo<T>>>();
+                var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
                 logger.LogInformation("databasename : " + databaseName + " collectionName : " + collectionName);
-                return new MangoBaseRepo<T>(connectionString, databaseName, collectionName, IdField, logger);
-                // return RabbitHutch.CreateBus(Configuration["RabbitMQConnection"]);
+                return new MongoBaseRepo<T>(connectionString, databaseName, collectionName, IdField, logger);
             });
-
             return serviceCollection;
         }
 

@@ -34,6 +34,7 @@ using Turquoise.HealthChecks.Mongo;
 using Microsoft.Identity.Web;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Sentinel.Models.HealthCheck;
 
 namespace Sentinel.Worker.HealthChecker
 {
@@ -107,6 +108,13 @@ namespace Sentinel.Worker.HealthChecker
             {
                 return ConnectionMultiplexer.Connect(Configuration["RedisConnection"]);
             });
+
+            services.AddMongoRepo<IsAliveAndWellResult>(
+                Configuration["Mongodb:ConnectionString"],
+                Configuration["Mongodb:DatabaseName"],
+                "HealthCheckResultSummary",
+                p => p.Id
+            );
 
             services.AddHostedService<HealthCheckSubscriber>();
         }

@@ -12,17 +12,17 @@ using Xunit.Abstractions;
 namespace Sentinel.Mongo.Tests
 {
 
-    public class MangoBaseRepoTests
+    public class MongoBaseRepoTests
     {
 
         private readonly ITestOutputHelper output;
         private readonly IConfiguration config;
         private readonly HttpClient client;
-        private readonly IOptions<MangoBaseRepoSettings<IsAliveAndWellResult>> settingsOptions;
+        private readonly IOptions<MongoBaseRepoSettings<IsAliveAndWellResult>> settingsOptions;
 
-        private readonly MangoBaseRepo<IsAliveAndWellResult> repo;
+        private readonly MongoBaseRepo<IsAliveAndWellResult> repo;
 
-        public MangoBaseRepoTests(ITestOutputHelper output)
+        public MongoBaseRepoTests(ITestOutputHelper output)
         {
             this.output = output;
 
@@ -48,17 +48,17 @@ namespace Sentinel.Mongo.Tests
 
 
 
-            ILogger<MangoBaseRepo<IsAliveAndWellResult>> logger = Helpers.GetLogger<MangoBaseRepo<IsAliveAndWellResult>>();
+            ILogger<MongoBaseRepo<IsAliveAndWellResult>> logger = Helpers.GetLogger<MongoBaseRepo<IsAliveAndWellResult>>();
 
             settingsOptions = Options.Create(
-                new MangoBaseRepoSettings<IsAliveAndWellResult> { ConnectionString = config["Mongodb:ConnectionString"], DatabaseName = "HealthCheckResults", CollectionName = "HealthCheckResults", IdField = "Id" });
+                new MongoBaseRepoSettings<IsAliveAndWellResult> { ConnectionString = config["Mongodb:ConnectionString"], DatabaseName = "HealthCheckResults", CollectionName = "HealthCheckResults", IdField = "Id" });
             // IMemoryCache memoryCache = new MemoryCache(new MemoryCacheOptions());
 
             // azAuthService = new AZAuthService(loggerAzService, settingsOptions, memoryCache);
             // downloader = new IsAliveAndWellHealthCheckDownloader(client, logger, config, azAuthService);
 
 
-            repo = new MangoBaseRepo<IsAliveAndWellResult>(settingsOptions, logger);
+            repo = new MongoBaseRepo<IsAliveAndWellResult>(settingsOptions, logger);
 
 
         }

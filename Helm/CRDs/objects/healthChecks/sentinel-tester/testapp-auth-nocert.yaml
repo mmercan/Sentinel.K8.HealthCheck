@@ -1,0 +1,9 @@
+apiVersion: "sentinel.mercan.io/v1"
+kind: HealthCheck
+metadata:
+  name: testapp-auth-nocert-healthcheck
+spec:
+  service: "sentinel-tester-testapp-dev"
+  isaliveandwellUrl: "/Health/IsAliveAndWellDetailsAuth"
+  crontab: "*/2 * * * *"
+  clientid: "67d009b1-97fe-4963-84ff-3590b06df0da"

@@ -14,36 +14,36 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Sentinel.Mongo
 {
-    public class MangoBaseRepo<T> where T : new()
+    public class MongoBaseRepo<T> where T : new()
     {
         public IMongoDatabase MongoDb { get; private set; }
         public MongoClient mongoClient { get; private set; }
         public string IdFieldName { get; private set; }
         private string collectionName;
-        readonly ILogger<MangoBaseRepo<T>> logger;
+        readonly ILogger<MongoBaseRepo<T>> logger;
 
-        public MangoBaseRepo(IOptions<MangoBaseRepoSettings<T>> options, ILogger<MangoBaseRepo<T>> logger, string collectionName) : this(options.Value.ConnectionString, options.Value.DatabaseName, collectionName, logger)
+        public MongoBaseRepo(IOptions<MongoBaseRepoSettings<T>> options, ILogger<MongoBaseRepo<T>> logger, string collectionName) : this(options.Value.ConnectionString, options.Value.DatabaseName, collectionName, logger)
         {
 
         }
 
-        public MangoBaseRepo(IOptions<MangoBaseRepoSettings<T>> options, ILogger<MangoBaseRepo<T>> logger) : this(options.Value.ConnectionString, options.Value.DatabaseName, options.Value.CollectionName, logger)
+        public MongoBaseRepo(IOptions<MongoBaseRepoSettings<T>> options, ILogger<MongoBaseRepo<T>> logger) : this(options.Value.ConnectionString, options.Value.DatabaseName, options.Value.CollectionName, logger)
         {
 
         }
 
-        public MangoBaseRepo(string connectionString, string databaseName, string collectionName, string IdField, ILogger<MangoBaseRepo<T>> logger)
+        public MongoBaseRepo(string connectionString, string databaseName, string collectionName, string IdField, ILogger<MongoBaseRepo<T>> logger)
         {
             this.logger = logger;
             init(connectionString, databaseName, collectionName, IdField);
         }
 
-        public MangoBaseRepo(string connectionString, string databaseName, string collectionName, ILogger<MangoBaseRepo<T>> logger) : this(connectionString, databaseName, collectionName, null as Expression<Func<T, object>>, logger)
+        public MongoBaseRepo(string connectionString, string databaseName, string collectionName, ILogger<MongoBaseRepo<T>> logger) : this(connectionString, databaseName, collectionName, null as Expression<Func<T, object>>, logger)
         {
 
         }
 
-        public MangoBaseRepo(string connectionString, string databaseName, string collectionName, Expression<Func<T, object>> IdField, ILogger<MangoBaseRepo<T>> logger)
+        public MongoBaseRepo(string connectionString, string databaseName, string collectionName, Expression<Func<T, object>> IdField, ILogger<MongoBaseRepo<T>> logger)
         {
             this.logger = logger;
             string? field = null;
@@ -298,7 +298,7 @@ namespace Sentinel.Mongo
         }
     }
 
-    public class MangoBaseRepoSettings<T> where T : new()
+    public class MongoBaseRepoSettings<T> where T : new()
     {
         public string ConnectionString { get; set; } = default!;
         public string DatabaseName { get; set; } = default!;

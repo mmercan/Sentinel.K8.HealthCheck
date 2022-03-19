@@ -131,7 +131,6 @@ namespace Sentinel.Worker.Scheduler.Schedules
                      }
                  }, stoppingToken);
             }
-
             return Task.CompletedTask;
         }
 

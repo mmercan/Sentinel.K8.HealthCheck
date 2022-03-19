@@ -26,7 +26,6 @@ namespace Sentinel.Scheduler
 
 
             Items.ForEach(p => addItem(p));
-
             Items.CollectionChanged += new NotifyCollectionChangedEventHandler(collectionChanged);
         }
 
