@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using EasyNetQ;
 using StackExchange.Redis;
+using Turquoise.HealthChecks.Common.Checks;
+using Turquoise.HealthChecks.Redis;
+using Turquoise.HealthChecks.RabbitMQ;
 
 namespace Sentinel.Worker.Comms
 {
@@ -31,6 +34,11 @@ namespace Sentinel.Worker.Comms
             services.AddSingleton<IServiceCollection>(services);
             services.AddSingleton<IConfiguration>(Configuration);
 
+            services.AddHealthChecks()
+                .AddSystemInfoCheck()
+                .AddRedisHealthCheck(Configuration["RedisConnection"])
+                .AddRabbitMQHealthCheckWithDiIBus()
+                .AddConfigurationChecker(Configuration);
 
             services.AddSingleton<EasyNetQ.IBus>((ctx) =>
             {

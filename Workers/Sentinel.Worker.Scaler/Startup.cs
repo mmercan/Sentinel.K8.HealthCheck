@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Turquoise.HealthChecks.Common;
+using Turquoise.HealthChecks.Common.Checks;
+using Turquoise.HealthChecks.RabbitMQ;
+using Turquoise.HealthChecks.Redis;
 
 namespace Sentinel.Worker.Scaler
 {
@@ -29,6 +34,13 @@ namespace Sentinel.Worker.Scaler
             services.AddSingleton<IServiceCollection>(services);
             services.AddSingleton<IConfiguration>(Configuration);
 
+
+            services.AddHealthChecks()
+                .AddSystemInfoCheck()
+                // .AddRedisHealthCheck(Configuration["RedisConnection"])
+                // .AddRabbitMQHealthCheckWithDiIBus()
+                .AddConfigurationChecker(Configuration);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +52,11 @@ namespace Sentinel.Worker.Scaler
             }
 
             app.UseRouting();
+
+            app.UseHealthChecks("/Health/IsAliveAndWell", new HealthCheckOptions()
+            {
+                ResponseWriter = WriteResponses.WriteListResponse,
+            });
 
             app.UseEndpoints(endpoints =>
             {

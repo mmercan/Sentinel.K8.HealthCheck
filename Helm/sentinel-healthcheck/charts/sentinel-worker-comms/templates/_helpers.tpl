@@ -47,6 +47,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "sentinel-worker-comms.selectorLabels" -}}
+app: {{ include "sentinel-worker-comms.name" . }}
+version: {{ .Chart.AppVersion  | quote }}
 app.kubernetes.io/name: {{ include "sentinel-worker-comms.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
