@@ -46,10 +46,16 @@ namespace Sentinel.Worker.Sync.JobSchedules
             var virtualservicesJson = virtualservicesTask.Result;
             var services = servicesTask.Result;
 
-            foreach (var item in virtualservicesJson)
+            if (virtualservicesJson != null)
             {
-                var virtualService = VirtualServiceV1.ConvertFromJTokenToVirtualServiceV1(item);
-                virtualservices.Add(virtualService);
+                foreach (var item in virtualservicesJson)
+                {
+                    if (item != null)
+                    {
+                        var virtualService = VirtualServiceV1.ConvertFromJTokenToVirtualServiceV1(item);
+                        virtualservices.Add(virtualService);
+                    }
+                }
             }
 
             var dtoitems = _mapper.Map<IList<ServiceV1>>(services.Body.Items);
