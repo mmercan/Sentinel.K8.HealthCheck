@@ -35,6 +35,8 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "sentinel-worker-comms.labels" -}}
+app: {{ include "sentinel-worker-comms.name" . }}
+version: {{ .Chart.AppVersion  | quote }}
 helm.sh/chart: {{ include "sentinel-worker-comms.chart" . }}
 {{ include "sentinel-worker-comms.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
@@ -47,8 +49,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "sentinel-worker-comms.selectorLabels" -}}
-app: {{ include "sentinel-worker-comms.name" . }}
-version: {{ .Chart.AppVersion  | quote }}
 app.kubernetes.io/name: {{ include "sentinel-worker-comms.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
