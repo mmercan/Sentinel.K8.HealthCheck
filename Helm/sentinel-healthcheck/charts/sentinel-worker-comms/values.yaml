@@ -35,6 +35,9 @@ securityContext:
   # runAsNonRoot: true
   # runAsUser: 1000
 
+istio:
+  enabled: true
+
 service:
   type: ClusterIP
   port: 80
