@@ -21,6 +21,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         private readonly IConfiguration _configuration;
         private readonly IsAliveAndWellHealthCheckDownloader _isAliveAndWelldownloader;
         private readonly MongoBaseRepo<IsAliveAndWellResult> _isAliveAndWellRepo;
+        private readonly MongoBaseRepo<IsAliveAndWellResultTimeSeries> _isAliveAndWellRepoTimeSeries;
         private readonly string timezone;
         private ManualResetEventSlim _ResetEvent = new ManualResetEventSlim(false);
 
@@ -30,13 +31,16 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             IOptions<HealthCheckServiceOptions> hcoptions,
             IConfiguration configuration,
             IsAliveAndWellHealthCheckDownloader isAliveAndWelldownloader,
-            MongoBaseRepo<IsAliveAndWellResult> isAliveAndWellRepo
+            MongoBaseRepo<IsAliveAndWellResult> isAliveAndWellRepo,
+            MongoBaseRepo<IsAliveAndWellResultTimeSeries> isAliveAndWellRepoTimeSeries
             ) : base(logger, hcoptions)
         {
             _bus = bus;
             _configuration = configuration;
             _isAliveAndWelldownloader = isAliveAndWelldownloader;
             _isAliveAndWellRepo = isAliveAndWellRepo;
+            _isAliveAndWellRepoTimeSeries = isAliveAndWellRepoTimeSeries;
+
             if (!string.IsNullOrWhiteSpace(_configuration["timezone"]))
             {
                 timezone = _configuration["timezone"];
@@ -90,6 +94,9 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
                 serviceFound = true;
                 serviceName = healthcheck.RelatedService.NameandNamespace;
                 var results = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService, healthcheck);
+
+                var qq = _isAliveAndWellRepoTimeSeries.Items;
+                var d = qq.Database;
             }
             _logger.LogInformation("HealthCheckSubscriber: Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
             // _ResetEvent.Set();

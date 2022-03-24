@@ -109,6 +109,15 @@ namespace Sentinel.Worker.HealthChecker
                 return ConnectionMultiplexer.Connect(Configuration["RedisConnection"]);
             });
 
+            services.AddMongoTimeSeriesRepo<IsAliveAndWellResultTimeSeries>(
+                Configuration["Mongodb:ConnectionString"],
+                Configuration["Mongodb:DatabaseName"],
+                "HealthCheckResultTimeSeries",
+                p => p.Id,
+                p => p.CheckedAt,
+                p => p.Metadata
+            );
+
             services.AddMongoRepo<IsAliveAndWellResult>(
                 Configuration["Mongodb:ConnectionString"],
                 Configuration["Mongodb:DatabaseName"],

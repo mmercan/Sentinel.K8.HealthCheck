@@ -1,5 +1,5 @@
 kubectl apply -f .\healthcheck.yaml
-
+kubectl apply -f  .\scaler.yaml
 
 $parentFolder = Resolve-Path  .\objects\healthChecks\
 # Set-Location .\objects\healthChecks\

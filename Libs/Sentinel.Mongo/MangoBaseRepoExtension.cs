@@ -28,15 +28,8 @@ namespace Microsoft.Extensions.DependencyInjection
         IConfiguration options,
         string collectionName) where T : new()
         {
-            // options["CollectionName"] = collectionName;
-            // serviceCollection.Configure<MongoBaseRepoSettings<T>>(options);
-            // serviceCollection.AddSingleton<MongoBaseRepo<T>>();
-            // return serviceCollection;
             serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
             {
-                //  var repo = sp.GetService<IDbRepository>();
-                //     var apiKey = repo.GetApiKeyMethodHere();
-                //     return new GlobalRepository(mode, apiKey);
                 var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
                 return new MongoBaseRepo<T>(options["ConnectionString"], options["DatabaseName"], collectionName, logger);
             });
@@ -71,16 +64,10 @@ namespace Microsoft.Extensions.DependencyInjection
             string databaseName,
             string collectionName) where T : new()
         {
-            // serviceCollection.Configure<MongoBaseRepoSettings<T>>(options);
-            // serviceCollection.AddSingleton<MongoBaseRepo<T>>();
             serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
             {
-                //  var repo = sp.GetService<IDbRepository>();
-                //     var apiKey = repo.GetApiKeyMethodHere();
-                //     return new GlobalRepository(mode, apiKey);
                 var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
                 return new MongoBaseRepo<T>(connectionString, databaseName, collectionName, logger);
-                // return RabbitHutch.CreateBus(Configuration["RabbitMQConnection"]);
             });
 
             return serviceCollection;
@@ -99,6 +86,26 @@ namespace Microsoft.Extensions.DependencyInjection
                 var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
                 logger.LogInformation("databasename : " + databaseName + " collectionName : " + collectionName);
                 return new MongoBaseRepo<T>(connectionString, databaseName, collectionName, IdField, logger);
+            });
+            return serviceCollection;
+        }
+
+
+        public static IServiceCollection AddMongoTimeSeriesRepo<T>(
+         this IServiceCollection serviceCollection,
+        string connectionString,
+        string databaseName,
+        string collectionName,
+        Expression<Func<T, object>> IdField,
+        Expression<Func<T, object>> timestampFileld,
+        Expression<Func<T, object>> metaFileld
+        ) where T : new()
+        {
+            serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
+            {
+                var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
+                logger.LogInformation("databasename : " + databaseName + " collectionName : " + collectionName);
+                return new MongoBaseRepo<T>(connectionString, databaseName, collectionName, IdField, timestampFileld, metaFileld, logger);
             });
             return serviceCollection;
         }

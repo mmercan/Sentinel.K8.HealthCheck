@@ -20,8 +20,11 @@ namespace Sentinel.Mongo
         public MongoClient mongoClient { get; private set; }
         public string IdFieldName { get; private set; }
         private string collectionName;
-        readonly ILogger<MongoBaseRepo<T>> logger;
 
+        private string timestampFieldName;
+        private string metaFieldName;
+        readonly ILogger<MongoBaseRepo<T>> logger;
+        private readonly bool isTimeSeries = false;
         public MongoBaseRepo(IOptions<MongoBaseRepoSettings<T>> options, ILogger<MongoBaseRepo<T>> logger, string collectionName) : this(options.Value.ConnectionString, options.Value.DatabaseName, collectionName, logger)
         {
 
@@ -51,6 +54,38 @@ namespace Sentinel.Mongo
             {
                 field = (IdField.Body as MemberExpression).Member.Name;
             }
+            this.init(connectionString, databaseName, collectionName, field);
+        }
+
+        public MongoBaseRepo(string connectionString, string databaseName, string collectionName,
+        Expression<Func<T, object>> IdField,
+        Expression<Func<T, object>> timestampFileld,
+        Expression<Func<T, object>> metaFileld,
+        ILogger<MongoBaseRepo<T>> logger)
+        {
+            this.logger = logger;
+            string? field = null;
+            if (IdField?.Body != null && IdField.Body is MemberExpression)
+            {
+                field = (IdField.Body as MemberExpression).Member.Name;
+            }
+
+            if (timestampFileld?.Body != null && timestampFileld.Body is MemberExpression)
+            {
+                timestampFieldName = (timestampFileld.Body as MemberExpression).Member.Name;
+            }
+            else if (timestampFileld?.Body != null && timestampFileld.Body is UnaryExpression)
+            {
+                timestampFieldName = ((timestampFileld.Body as UnaryExpression).Operand as MemberExpression)?.Member.Name;
+            }
+
+
+            if (metaFileld?.Body != null && metaFileld.Body is MemberExpression)
+            {
+                metaFieldName = (metaFileld.Body as MemberExpression).Member.Name;
+            }
+            this.isTimeSeries = true;
+
             this.init(connectionString, databaseName, collectionName, field);
         }
 
@@ -106,13 +141,33 @@ namespace Sentinel.Mongo
                 Task.WaitAll(check);
                 if (!check.Result)
                 {
-                    MongoDb.CreateCollection(collectionName);
+                    if (isTimeSeries)
+                    {
+                        CreateTimeSeriesCollection(collectionName, timestampFieldName, metaFieldName);
+                    }
+                    else
+                    {
+                        MongoDb.CreateCollection(collectionName);
+                    }
                     var collection = MongoDb.GetCollection<T>(collectionName);
                     InitialDatabase(collection);
                     return collection;
                 }
                 return MongoDb.GetCollection<T>(collectionName);
             }
+        }
+
+        private IMongoCollection<T>? CreateTimeSeriesCollection(string collectionName, string timestamp, string? metaField)
+        {
+            if (string.IsNullOrEmpty(timestamp))
+            {
+                throw new ArgumentNullException(nameof(timestamp));
+            }
+
+            MongoDb.CreateCollection(collectionName,
+                new CreateCollectionOptions { TimeSeriesOptions = new TimeSeriesOptions(timestamp = "timestamp", metaField: metaField) });
+            var collection = MongoDb.GetCollection<T>(collectionName);
+            return collection;
         }
         public IEnumerable<T> GetAll()
         {
