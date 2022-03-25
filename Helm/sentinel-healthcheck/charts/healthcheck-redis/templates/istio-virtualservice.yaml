@@ -1,0 +1,14 @@
+{{- if .Values.istio.enabled -}}
+{{- $host := printf "%s.%s.%s" .Chart.Name .Values.environment .Values.hostdomain -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "healthcheck-redis.name" . }}-vs
+spec:
+  hosts:
+    - {{ include "healthcheck-redis.name" . }}
+  http:
+    - route:
+        - destination:
+            host: {{ include "healthcheck-redis.name" . }}  # Service Name
+{{- end }}

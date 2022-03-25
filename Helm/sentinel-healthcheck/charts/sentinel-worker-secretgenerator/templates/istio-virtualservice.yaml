@@ -1,0 +1,14 @@
+{{- if .Values.istio.enabled -}}
+{{- $host := printf "%s.%s.%s" .Chart.Name .Values.environment .Values.hostdomain -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "sentinel-worker-secretgenerator.name" . }}-vs
+spec:
+  hosts:
+    - {{ include "sentinel-worker-secretgenerator.name" . }}
+  http:
+    - route:
+        - destination:
+            host: {{ include "sentinel-worker-secretgenerator.name" . }}  # Service Name
+{{- end }}
