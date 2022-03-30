@@ -71,6 +71,7 @@ jobs:
       namespace: "sentinel-healthcheck"
       releaseName: "healthcheck-rabbitmq-dev"
       arecord: "rabbitmq-dev"
+      pipelines_pipeline: '"${{ github.WORKFLOW }}"'
 
     steps:
       - name: Checkout repository
