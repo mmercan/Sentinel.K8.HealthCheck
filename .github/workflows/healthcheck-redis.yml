@@ -61,6 +61,7 @@ jobs:
             docker image push --all-tags ${image}
           done
   deploy-dev:
+    environment: Dev
     needs: build
     runs-on: ubuntu-latest
     env:
