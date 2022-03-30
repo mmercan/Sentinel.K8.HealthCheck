@@ -70,19 +70,8 @@ jobs:
       chartName: "healthcheck-redis"
       namespace: "sentinel-healthcheck"
       releaseName: "healthcheck-redis-dev"
-      pipelines_pipeline: '"${{ github.WORKFLOW }}"'
-      pipelines_run: ${{ github.RUN_ID }}
-      pipelines_org: '"${{ github.SERVER_URL }}"'
-      pipelines_repo: ${{ github.repository }}
-      pipelines_gitsha: ${{ github.sha }}
-      pipelines_branch: ${{ github.ref }}
-      pipelines_job: ${{ github.job }}
-      pipelines_runuri: '"${{ GITHUB.SERVER_URL }}/${{ GITHUB.REPOSITORY }}/actions/runs/${{ GITHUB.RUN_ID }}"'
       arecord: "redis-dev"
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -108,6 +97,9 @@ jobs:
       - name: Check Helm Version
         run: |
           helm version
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Helm Package
         run: |
