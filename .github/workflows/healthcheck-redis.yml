@@ -134,7 +134,7 @@ jobs:
           --values ./Helm/values/$chartName/dev-values.yaml \
           --set image.tag=$GITHUB_RUN_ID \
           --set password=$REDIS_PASSWORD \
-          --set RedisExternalConnection=$connectionString
+          --set RedisExternalConnection=$connectionString \
           --set branch=master \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
