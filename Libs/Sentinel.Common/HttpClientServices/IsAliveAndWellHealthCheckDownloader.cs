@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Sentinel.Common.AuthServices;
@@ -93,9 +94,14 @@ namespace Sentinel.Common.HttpClientServices
                 var response = await _client.SendAsync(message);
                 result.Status = response.StatusCode.ToString();
                 result.IsSuccessStatusCode = response.IsSuccessStatusCode;
+                result.Result = await response.Content.ReadAsStringAsync();
                 if ((response.StatusCode == HttpStatusCode.Unauthorized))
                 {
                     _logger.LogInformation($"IsAliveAndWellHealthCheckDownloader : Unauthorized {message.RequestUri}");
+                }
+                else if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
+                {
+                    _logger.LogInformation($"IsAliveAndWellHealthCheckDownloader : ServiceUnavailable {message.RequestUri}");
                 }
                 else
                 {
@@ -105,8 +111,13 @@ namespace Sentinel.Common.HttpClientServices
             }
             catch (Exception ex)
             {
-                result.IsSuccessStatusCode = false;
                 result.Status = HttpStatusCode.InternalServerError.ToString();
+                if (ex.Message.StartsWith("No such host is known."))
+                {
+                    result.Status = "Domain Record Not Found";
+                }
+
+                result.IsSuccessStatusCode = false;
                 result.Exception = ex.Message;
                 _logger.LogError(ex, $"IsAliveAndWellHealthCheckDownloader : Exception {message.RequestUri}");
             }
@@ -116,6 +127,22 @@ namespace Sentinel.Common.HttpClientServices
             result.CheckedUrl = message.RequestUri.AbsoluteUri.ToString();
 
             return await Task.FromResult(result);
+        }
+
+
+        public bool isDomainExist(string address)
+        {
+            System.Net.WebRequest request = System.Net.WebRequest.Create(address);
+            request.Method = "HEAD";
+            try
+            {
+                var r = request.GetResponse();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public List<Uri> ExtractUriFromService(ServiceV1 service)

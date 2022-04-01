@@ -9,7 +9,6 @@
     <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="CrystalQuartz.AspNetCore" Version="6.11.0.3-beta" />
-    <PackageReference Include="EasyNetQ" Version="6.3.1" />
     <PackageReference Include="KubernetesClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
