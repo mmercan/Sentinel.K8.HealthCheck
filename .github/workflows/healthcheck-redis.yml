@@ -94,6 +94,16 @@ jobs:
           cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
           ls /home/runner/work/_temp
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: extract password
+        run: |
+          IP=$(curl "https://api.happi.dev/v1/generate-password?apikey=${{ secrets.HAPPI_APIKEY }}&limit=1&length=24&num=1&upper=1&symbols=0")
+          password=$(jq -n "$IP" | jq .passwords[0] | tr -d '"')
+          echo "::add-mask::$password"
+          echo "REDIS_PASSWORD=$(echo $password)" >> $GITHUB_ENV
+
       - name: Check Helm Version
         run: |
           helm version
@@ -115,6 +125,7 @@ jobs:
           --history-max 1 \
           --values ./Helm/values/$chartName/dev-values.yaml \
           --set image.tag=$GITHUB_RUN_ID \
+          --set secrets.password=$REDIS_PASSWORD \
           --set branch=master \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
@@ -155,6 +166,27 @@ jobs:
                 az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
               fi
             fi
+
+      - name: Concat Redis Connection String
+        run: |
+          server=${{ env.arecord }}".${{ secrets.ENV_DOMAIN }}"
+          username="root"
+          password=${{ env.REDIS_PASSWORD }}
+          connectionString="${server}:6379,defaultDatabase=2,password=${password},connectTimeout=1000,abortConnect=false"
+          // mongodb://${username}:${password}@${server}:27017/admin?readPreference=primary"
+          echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
+
+          # mkdir -p ${{env.ARTIFACT_PATH}}/output
+          # echo "${connectionString}" > ${{env.ARTIFACT_PATH}}/output/file.txt
+
+      - name: save secret
+        uses: mmercan/actions-set-secret@v/4.0.0
+        with:
+          name: "REDISCONNECTION"
+          value: ${{ env.connectionString }}
+          repository: mmercan/Sentinel.K8.HealthCheck
+          environment: dev
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: output env vars
         run: |
