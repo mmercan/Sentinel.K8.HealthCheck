@@ -104,6 +104,14 @@ jobs:
           echo "::add-mask::$password"
           echo "REDIS_PASSWORD=$(echo $password)" >> $GITHUB_ENV
 
+      - name: Concat Redis Connection String
+        run: |
+          server=${{ env.arecord }}".${{ secrets.ENV_DOMAIN }}"
+          username="root"
+          password=${{ env.REDIS_PASSWORD }}
+          connectionString="${server}:6379,defaultDatabase=2,password=${password},connectTimeout=1000,abortConnect=false"
+          echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
+
       - name: Check Helm Version
         run: |
           helm version
@@ -125,7 +133,8 @@ jobs:
           --history-max 1 \
           --values ./Helm/values/$chartName/dev-values.yaml \
           --set image.tag=$GITHUB_RUN_ID \
-          --set secrets.password=$REDIS_PASSWORD \
+          --set password=$REDIS_PASSWORD \
+          --set RedisExternalConnection=$connectionString
           --set branch=master \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
@@ -166,18 +175,6 @@ jobs:
                 az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
               fi
             fi
-
-      - name: Concat Redis Connection String
-        run: |
-          server=${{ env.arecord }}".${{ secrets.ENV_DOMAIN }}"
-          username="root"
-          password=${{ env.REDIS_PASSWORD }}
-          connectionString="${server}:6379,defaultDatabase=2,password=${password},connectTimeout=1000,abortConnect=false"
-          // mongodb://${username}:${password}@${server}:27017/admin?readPreference=primary"
-          echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
-
-          # mkdir -p ${{env.ARTIFACT_PATH}}/output
-          # echo "${connectionString}" > ${{env.ARTIFACT_PATH}}/output/file.txt
 
       - name: save secret
         uses: mmercan/actions-set-secret@v/4.0.0
