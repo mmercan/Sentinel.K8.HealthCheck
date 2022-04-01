@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Sentinel.Models.HealthCheck
 {
@@ -25,12 +26,12 @@ namespace Sentinel.Models.HealthCheck
     public class IsAliveAndWellResultTimeSerie
     {
 
-        [Key]
-        public string Id { get; set; } = default!;
+        [BsonId]
+        public ObjectId Id { get; set; } = default!;
         public IsAliveAndWellResultTimeSerieMetadata Metadata { get; set; } = default!;
         public string Status { get; set; } = default!;
         public bool IsSuccessStatusCode { get; set; } = default!;
-
+        public string ResultDetailId { get; set; } = default!;
         public BsonDateTime CheckedAt { get; set; } = default!;
     }
 

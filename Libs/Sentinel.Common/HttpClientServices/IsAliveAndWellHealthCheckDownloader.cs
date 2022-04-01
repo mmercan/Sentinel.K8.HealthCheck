@@ -77,6 +77,7 @@ namespace Sentinel.Common.HttpClientServices
                 }
 
                 var result = await DownloadAsync(httpRequestMessage);
+
                 results.Add(result);
             }
 
@@ -92,8 +93,6 @@ namespace Sentinel.Common.HttpClientServices
                 var response = await _client.SendAsync(message);
                 result.Status = response.StatusCode.ToString();
                 result.IsSuccessStatusCode = response.IsSuccessStatusCode;
-                result.Result = await response.Content.ReadAsStringAsync();
-
                 if ((response.StatusCode == HttpStatusCode.Unauthorized))
                 {
                     _logger.LogInformation($"IsAliveAndWellHealthCheckDownloader : Unauthorized {message.RequestUri}");
@@ -111,6 +110,11 @@ namespace Sentinel.Common.HttpClientServices
                 result.Exception = ex.Message;
                 _logger.LogError(ex, $"IsAliveAndWellHealthCheckDownloader : Exception {message.RequestUri}");
             }
+
+            result.Id = Guid.NewGuid().ToString();
+            result.CheckedAt = DateTime.UtcNow;
+            result.CheckedUrl = message.RequestUri.AbsoluteUri.ToString();
+
             return await Task.FromResult(result);
         }
 

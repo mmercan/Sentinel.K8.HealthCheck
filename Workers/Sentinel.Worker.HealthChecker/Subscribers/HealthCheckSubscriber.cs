@@ -108,12 +108,12 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             foreach (var item in results)
             {
                 IsAliveAndWellResultTimeSerie timeSerie = new IsAliveAndWellResultTimeSerie();
-                timeSerie.Id = Guid.NewGuid().ToString();
+                // timeSerie.Id = Guid.NewGuid().ToString();
                 timeSerie.Metadata = new IsAliveAndWellResultTimeSerieMetadata();
                 timeSerie.Metadata.Namespace = healthcheck.RelatedService?.Namespace;
                 timeSerie.Metadata.ServiceName = healthcheck.RelatedService?.Name;
                 timeSerie.Metadata.CheckedUrl = item.CheckedUrl;
-
+                timeSerie.ResultDetailId = item.Id;
                 timeSerie.Status = item.Status;
                 timeSerie.IsSuccessStatusCode = item.IsSuccessStatusCode;
                 if (item.CheckedAt == DateTime.MinValue)
@@ -127,7 +127,11 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
 
                 timeSeries.Add(timeSerie);
             }
+            var ids = string.Join(",", results.Select(x => x.Id).ToList());
+            _logger.LogInformation("{resultsCount} IsAliveAndWellResult adding to Mongo. {ids}", results.Count().ToString(), ids);
             items.InsertMany(timeSeries);
+            _isAliveAndWellRepo.Items.InsertMany(results);
+            _logger.LogInformation("{resultsCount} IsAliveAndWellResult added to Mongo.", results.Count().ToString());
         }
 
         private void OnClosed()

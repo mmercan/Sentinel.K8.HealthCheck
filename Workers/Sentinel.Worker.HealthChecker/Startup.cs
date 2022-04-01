@@ -112,7 +112,7 @@ namespace Sentinel.Worker.HealthChecker
             services.AddMongoTimeSeriesRepo<IsAliveAndWellResultTimeSerie>(
                 Configuration["Mongodb:ConnectionString"],
                 Configuration["Mongodb:DatabaseName"],
-                "HealthCheckResultTimeSeries",
+                Configuration["Mongodb:HealthCheckResultTimeSeries"],
                 p => p.Id,
                 p => p.CheckedAt,
                 p => p.Metadata
