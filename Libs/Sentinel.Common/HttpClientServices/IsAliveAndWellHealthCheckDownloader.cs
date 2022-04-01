@@ -102,6 +102,7 @@ namespace Sentinel.Common.HttpClientServices
                 {
                     _logger.LogInformation($"IsAliveAndWellHealthCheckDownloader : {message.RequestUri} {result.Status}");
                 }
+                result.CheckedAt = DateTime.UtcNow;
             }
             catch (Exception ex)
             {

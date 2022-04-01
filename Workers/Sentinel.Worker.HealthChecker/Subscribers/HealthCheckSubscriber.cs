@@ -21,7 +21,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         private readonly IConfiguration _configuration;
         private readonly IsAliveAndWellHealthCheckDownloader _isAliveAndWelldownloader;
         private readonly MongoBaseRepo<IsAliveAndWellResult> _isAliveAndWellRepo;
-        private readonly MongoBaseRepo<IsAliveAndWellResultTimeSeries> _isAliveAndWellRepoTimeSeries;
+        private readonly MongoBaseRepo<IsAliveAndWellResultTimeSerie> _isAliveAndWellRepoTimeSeries;
         private readonly string timezone;
         private ManualResetEventSlim _ResetEvent = new ManualResetEventSlim(false);
 
@@ -32,7 +32,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             IConfiguration configuration,
             IsAliveAndWellHealthCheckDownloader isAliveAndWelldownloader,
             MongoBaseRepo<IsAliveAndWellResult> isAliveAndWellRepo,
-            MongoBaseRepo<IsAliveAndWellResultTimeSeries> isAliveAndWellRepoTimeSeries
+            MongoBaseRepo<IsAliveAndWellResultTimeSerie> isAliveAndWellRepoTimeSeries
             ) : base(logger, hcoptions)
         {
             _bus = bus;
@@ -67,21 +67,21 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
 
         private void SubscribeQueue()
         {
-            try
-            {
-                _logger.LogInformation("HealthCheckSubscriber: Connected to bus");
+            // try
+            // {
+            _logger.LogInformation("HealthCheckSubscriber: Connected to bus");
 
-                _bus.PubSub.SubscribeAsync<HealthCheckResourceV1>(_configuration["queue:healthcheck"], Handler);
+            _bus.PubSub.SubscribeAsync<HealthCheckResourceV1>(_configuration["queue:healthcheck"], Handler);
 
-                _logger.LogInformation("HealthCheckSubscriber: Listening on topic " + _configuration["queue:healthcheck"]);
+            _logger.LogInformation("HealthCheckSubscriber: Listening on topic " + _configuration["queue:healthcheck"]);
 
-                _ResetEvent.Wait();
-            }
-            catch (Exception ex)
-            {
-                this.ReportUnhealthy(ex.Message);
-                _logger.LogError("HealthCheckSubscriber: Exception: " + ex.Message);
-            }
+            _ResetEvent.Wait();
+            // }
+            // catch (Exception ex)
+            // {
+            //     this.ReportUnhealthy(ex.Message);
+            //     _logger.LogError("HealthCheckSubscriber: Exception: " + ex.Message);
+            // }
         }
 
         private async Task Handler(HealthCheckResourceV1 healthcheck)
@@ -94,14 +94,41 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
                 serviceFound = true;
                 serviceName = healthcheck.RelatedService.NameandNamespace;
                 var results = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService, healthcheck);
+                this.saveToMongo(healthcheck, results);
 
-                var qq = _isAliveAndWellRepoTimeSeries.Items;
-                var d = qq.Database;
             }
             _logger.LogInformation("HealthCheckSubscriber: Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
             // _ResetEvent.Set();
         }
 
+        private void saveToMongo(HealthCheckResourceV1 healthcheck, List<IsAliveAndWellResult> results)
+        {
+            List<IsAliveAndWellResultTimeSerie> timeSeries = new List<IsAliveAndWellResultTimeSerie>();
+            var items = _isAliveAndWellRepoTimeSeries.Items;
+            foreach (var item in results)
+            {
+                IsAliveAndWellResultTimeSerie timeSerie = new IsAliveAndWellResultTimeSerie();
+                timeSerie.Id = Guid.NewGuid().ToString();
+                timeSerie.Metadata = new IsAliveAndWellResultTimeSerieMetadata();
+                timeSerie.Metadata.Namespace = healthcheck.RelatedService?.Namespace;
+                timeSerie.Metadata.ServiceName = healthcheck.RelatedService?.Name;
+                timeSerie.Metadata.CheckedUrl = item.CheckedUrl;
+
+                timeSerie.Status = item.Status;
+                timeSerie.IsSuccessStatusCode = item.IsSuccessStatusCode;
+                if (item.CheckedAt == DateTime.MinValue)
+                {
+                    timeSerie.CheckedAt = DateTime.UtcNow;
+                }
+                else
+                {
+                    timeSerie.CheckedAt = item.CheckedAt.ToUniversalTime();
+                }
+
+                timeSeries.Add(timeSerie);
+            }
+            items.InsertMany(timeSeries);
+        }
 
         private void OnClosed()
         {

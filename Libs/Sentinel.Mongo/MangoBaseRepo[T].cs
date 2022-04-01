@@ -87,6 +87,13 @@ namespace Sentinel.Mongo
             this.isTimeSeries = true;
 
             this.init(connectionString, databaseName, collectionName, field);
+
+            var check = CollectionExistsAsync(collectionName);
+            Task.WaitAll(check);
+            if (!check.Result)
+            {
+                CreateTimeSeriesCollection(collectionName, this.timestampFieldName, metaFieldName);
+            }
         }
 
         private void init(string connectionString, string databaseName, string collectionName, string? IdField)
@@ -165,7 +172,7 @@ namespace Sentinel.Mongo
             }
 
             MongoDb.CreateCollection(collectionName,
-                new CreateCollectionOptions { TimeSeriesOptions = new TimeSeriesOptions(timestamp = "timestamp", metaField: metaField) });
+                new CreateCollectionOptions { TimeSeriesOptions = new TimeSeriesOptions(timestamp, metaField) });
             var collection = MongoDb.GetCollection<T>(collectionName);
             return collection;
         }
