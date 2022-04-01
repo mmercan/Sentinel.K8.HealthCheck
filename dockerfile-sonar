@@ -23,6 +23,7 @@ ENV AzureAd__Secret=$buildtime_APPSECRET
 ENV AzureAd__TenantId=$buildtime_ADID
 ENV RabbitMQConnection=$buildtime_RabbitMQConnection
 ENV RedisConnection=$buildtime_RedisConnection
+ENV Mongodb__ConnectionString=$buildtime_Mongodb__ConnectionString
 ENV SONAR_HOST=https://sonarcloud.io
 
 
