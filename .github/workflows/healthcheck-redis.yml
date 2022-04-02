@@ -109,7 +109,7 @@ jobs:
           server=${{ env.arecord }}".${{ secrets.ENV_DOMAIN }}"
           username="root"
           password=${{ env.REDIS_PASSWORD }}
-          connectionString='${server}:6379,defaultDatabase=2,password=${password},connectTimeout=1000,abortConnect=false'
+          connectionString="${server}:6379,defaultDatabase=2,password=${password},connectTimeout=1000,abortConnect=false"
           echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
 
       - name: Check Helm Version
@@ -134,7 +134,7 @@ jobs:
           --values ./Helm/values/$chartName/dev-values.yaml \
           --set image.tag=$GITHUB_RUN_ID \
           --set password=$REDIS_PASSWORD \
-          --set RedisExternalConnection=$connectionString \
+          --set secrets.RedisExternalConnection=$connectionString \
           --set branch=master \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
