@@ -61,9 +61,12 @@ tolerations: []
 
 affinity: {}
 password: pn3FHuee2kxFzQmm
-RedisExternalConnection: ""
+
 configmap:
   databases: "4"
+
+secrets:
+  RedisExternalConnection: ""
 
 pipelines:
   run: "run"
