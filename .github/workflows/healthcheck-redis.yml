@@ -106,7 +106,7 @@ jobs:
 
       - name: Concat Redis Connection String
         run: |
-          connectionString='"${{ env.arecord }}".${{ secrets.ENV_DOMAIN }}":6379,defaultDatabase=2,password=${{ env.REDIS_PASSWORD }},connectTimeout=1000,abortConnect=false"'
+          connectionString='"${{ env.arecord }}.${{ secrets.ENV_DOMAIN }}:6379,defaultDatabase=2,password=${{ env.REDIS_PASSWORD }},connectTimeout=1000,abortConnect=false"'
           echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
 
       - name: Check Helm Version
