@@ -109,7 +109,7 @@ jobs:
           server=${{ env.arecord }}".${{ secrets.ENV_DOMAIN }}"
           username="root"
           password=${{ env.REDIS_PASSWORD }}
-          connectionString='"${server}:6379,defaultDatabase=2,password=${password},connectTimeout=1000,abortConnect=false"'
+          connectionString='"${{ server }}:6379,defaultDatabase=2,password=${{ password }},connectTimeout=1000,abortConnect=false"'
           echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
 
       - name: Check Helm Version
