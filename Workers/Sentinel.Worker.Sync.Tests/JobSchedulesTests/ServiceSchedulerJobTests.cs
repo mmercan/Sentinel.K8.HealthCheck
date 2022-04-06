@@ -8,6 +8,7 @@ using Sentinel.Worker.Sync.JobSchedules;
 using Sentinel.Worker.Sync.TestsHelpers;
 using Xunit;
 using Xunit.Abstractions;
+using Sentinel.K8s.Repos;
 
 namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 {
@@ -26,12 +27,16 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
             _output.WriteLine("ServiceSchedulerJobShouldRun started");
 
-            var client = KubernetesClientTestHelper.GetKubernetesClient();
+
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<ServiceSchedulerJob>();
-            var mapper = GetIMapperExtension.GetIMapper(cfg => { cfg.AddProfile(new K8SMapper()); });
             var rediscon = RedisExtensions.GetRedisMultiplexer();
 
-            ServiceSchedulerJob job = new ServiceSchedulerJob(logger, client, mapper, rediscon);
+            var client = KubernetesClientTestHelper.GetKubernetesClient();
+            var mapper = GetIMapperExtension.GetIMapper(cfg => { cfg.AddProfile(new K8SMapper()); });
+            var loggerRepo = Sentinel.Tests.Helpers.Helpers.GetLogger<ServiceV1K8sRepo>();
+            var serviceV1K8sRepo = new ServiceV1K8sRepo(client, mapper, loggerRepo);
+
+            ServiceSchedulerJob job = new ServiceSchedulerJob(logger, serviceV1K8sRepo, rediscon);
 
             CancellationTokenSource source = new CancellationTokenSource();
             source.CancelAfter(20 * 1000);

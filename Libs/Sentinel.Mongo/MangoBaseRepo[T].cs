@@ -325,8 +325,15 @@ namespace Sentinel.Mongo
             {
                 if (BsonClassMap.IsClassMapRegistered(typeof(T)))
                 {
-                    BsonClassMap.LookupClassMap(typeof(T)).AutoMap();
-                    BsonClassMap.LookupClassMap(typeof(T)).MapIdProperty(IdFieldName);
+                    try
+                    {
+                        BsonClassMap.LookupClassMap(typeof(T)).AutoMap();
+                        BsonClassMap.LookupClassMap(typeof(T)).MapIdProperty(IdFieldName);
+                    }
+                    catch
+                    {
+                        logger.LogError("Error in CreateIdMap");
+                    }
                 }
                 else
                 {

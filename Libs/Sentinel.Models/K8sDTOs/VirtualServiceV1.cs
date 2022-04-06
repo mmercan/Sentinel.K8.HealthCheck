@@ -28,5 +28,22 @@ namespace Sentinel.Models.K8sDTOs
             return virtualService;
 
         }
+
+        public static List<VirtualServiceV1> ConvertFromJTokenToVirtualServiceV1List(List<JToken> jitemlist)
+        {
+            List<VirtualServiceV1> virtualServiceList = new List<VirtualServiceV1>();
+            if (jitemlist != null)
+            {
+                foreach (var item in jitemlist)
+                {
+                    if (item != null)
+                    {
+                        var virtualService = VirtualServiceV1.ConvertFromJTokenToVirtualServiceV1(item);
+                        virtualServiceList.Add(virtualService);
+                    }
+                }
+            }
+            return virtualServiceList;
+        }
     }
 }

@@ -58,30 +58,24 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             executingTask = Task.Factory.StartNew(new Action(SubscribeQueue), TaskCreationOptions.LongRunning);
-            if (executingTask.IsCompleted)
-            {
-                return executingTask;
-            }
+            if (executingTask.IsCompleted) { return executingTask; }
             return Task.CompletedTask;
         }
 
         private void SubscribeQueue()
         {
-            // try
-            // {
-            _logger.LogInformation("HealthCheckSubscriber: Connected to bus");
-
-            _bus.PubSub.SubscribeAsync<HealthCheckResourceV1>(_configuration["queue:healthcheck"], Handler);
-
-            _logger.LogInformation("HealthCheckSubscriber: Listening on topic " + _configuration["queue:healthcheck"]);
-
-            _ResetEvent.Wait();
-            // }
-            // catch (Exception ex)
-            // {
-            //     this.ReportUnhealthy(ex.Message);
-            //     _logger.LogError("HealthCheckSubscriber: Exception: " + ex.Message);
-            // }
+            try
+            {
+                _logger.LogInformation("HealthCheckSubscriber: Connected to bus");
+                _bus.PubSub.SubscribeAsync<HealthCheckResourceV1>(_configuration["queue:healthcheck"], Handler);
+                _logger.LogInformation("HealthCheckSubscriber: Listening on topic " + _configuration["queue:healthcheck"]);
+                _ResetEvent.Wait();
+            }
+            catch (Exception ex)
+            {
+                this.ReportUnhealthy(ex.Message);
+                _logger.LogError("HealthCheckSubscriber: Exception: " + ex.Message);
+            }
         }
 
         private async Task Handler(HealthCheckResourceV1 healthcheck)
@@ -94,8 +88,8 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
                 serviceFound = true;
                 serviceName = healthcheck.RelatedService.NameandNamespace;
                 var results = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService, healthcheck);
+                this.QueueHealthCheckK8sUpdate(healthcheck, results);
                 this.saveToMongo(healthcheck, results);
-
             }
             _logger.LogInformation("HealthCheckSubscriber: Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
             // _ResetEvent.Set();
@@ -107,24 +101,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             var items = _isAliveAndWellRepoTimeSeries.Items;
             foreach (var item in results)
             {
-                IsAliveAndWellResultTimeSerie timeSerie = new IsAliveAndWellResultTimeSerie();
-                // timeSerie.Id = Guid.NewGuid().ToString();
-                timeSerie.Metadata = new IsAliveAndWellResultTimeSerieMetadata();
-                timeSerie.Metadata.Namespace = healthcheck.RelatedService?.Namespace;
-                timeSerie.Metadata.ServiceName = healthcheck.RelatedService?.Name;
-                timeSerie.Metadata.CheckedUrl = item.CheckedUrl;
-                timeSerie.ResultDetailId = item.Id;
-                timeSerie.Status = item.Status;
-                timeSerie.IsSuccessStatusCode = item.IsSuccessStatusCode;
-                if (item.CheckedAt == DateTime.MinValue)
-                {
-                    timeSerie.CheckedAt = DateTime.UtcNow;
-                }
-                else
-                {
-                    timeSerie.CheckedAt = item.CheckedAt.ToUniversalTime();
-                }
-
+                var timeSerie = IsAliveAndWellResultTimeSerie.FromIsAliveAndWellResult(healthcheck, item);
                 timeSeries.Add(timeSerie);
             }
             var ids = string.Join(",", results.Select(x => x.Id).ToList());
@@ -132,6 +109,27 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             items.InsertMany(timeSeries);
             _isAliveAndWellRepo.Items.InsertMany(results);
             _logger.LogInformation("{resultsCount} IsAliveAndWellResult added to Mongo.", results.Count().ToString());
+        }
+
+
+        private void QueueHealthCheckK8sUpdate(HealthCheckResourceV1 healthcheck, List<IsAliveAndWellResult> results)
+        {
+            IsAliveAndWellResultListWithHealthCheck check = new IsAliveAndWellResultListWithHealthCheck();
+            check.HealthCheck = healthcheck;
+            check.IsAliveAndWellResults = results;
+            _bus.PubSub.PublishAsync(check, _configuration["queue:healthcheckStatusUpdate"]).ContinueWith(task =>
+             {
+                 if (task.IsCompleted && !task.IsFaulted)
+                 {
+                     _logger.LogInformation("Task Added to RabbitMQ {healthcheckStatusUpdate} {Key} ", _configuration["queue:healthcheckStatusUpdate"], check.HealthCheck.Key);
+                 }
+                 if (task.IsFaulted)
+                 {
+                     _logger.LogError("BusScheduler Failed : {Exception} ", task.Exception.MessageWithInnerException());
+                     var constring = _configuration["RabbitMQConnection"];
+                     _logger.LogDebug("RabbitMQConnection {RabbitMQConnection}", constring);
+                 }
+             });
         }
 
         private void OnClosed()

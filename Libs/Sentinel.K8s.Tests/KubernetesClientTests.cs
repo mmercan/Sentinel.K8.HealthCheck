@@ -76,7 +76,7 @@ namespace Sentinel.K8s.Tests
 
 
         [Theory]
-        [InlineData("kubernetes-dashboard", "kube-system")]
+        [InlineData("kubernetes-dashboard", "kubernetes-dashboard")]
         public void Should_KubernetesClient_Returns_A_Resource_From_Get(string serviceName, string @namespace)
         {
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();

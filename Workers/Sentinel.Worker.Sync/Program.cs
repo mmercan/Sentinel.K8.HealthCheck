@@ -15,6 +15,7 @@ using Sentinel.Common.CustomFeatureFilter;
 using Sentinel.Common.HttpClientHelpers;
 using Sentinel.Common.Middlewares;
 using Sentinel.K8s;
+using Sentinel.K8s.Repos;
 using Sentinel.Scheduler.Extensions;
 using Sentinel.Worker.Sync.JobSchedules;
 using Sentinel.Worker.Sync.Watchers;
@@ -52,6 +53,7 @@ namespace Sentinel.Worker.Sync
             builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
+            builder.Services.AddSingleton<ServiceV1K8sRepo>();
 
 
             builder.Services.AddHttpContextAccessor();

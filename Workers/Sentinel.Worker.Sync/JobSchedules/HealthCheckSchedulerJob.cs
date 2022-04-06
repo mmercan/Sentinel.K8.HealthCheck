@@ -32,6 +32,15 @@ namespace Sentinel.Worker.Sync.JobSchedules
         public async Task Execute(IJobExecutionContext context)
         {
             var checks = await _k8sclient.List<HealthCheckResource>();
+            checks.ForEach(async check =>
+            {
+                if (string.IsNullOrEmpty(check.Status?.Phase))
+                {
+                    check.Status = new HealthCheckResource.HealthCheckResourceStatus { Phase = "Added to Redis" };
+                    await _k8sclient.UpdateStatus(check);
+                    _logger.LogDebug("K8s HealthCheckResource {name} status updated", check.Metadata.Name);
+                }
+            });
             var dtoitems = _mapper.Map<IList<HealthCheckResourceV1>>(checks);
 
             var syncTime = DateTime.UtcNow;
