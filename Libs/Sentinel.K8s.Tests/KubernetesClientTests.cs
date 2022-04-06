@@ -180,7 +180,7 @@ namespace Sentinel.K8s.Tests
 
         }
 
-        [Fact]
+        // [Fact]
         public async Task Should_KubernetesClient_Retreive_Wait()
         {
 
