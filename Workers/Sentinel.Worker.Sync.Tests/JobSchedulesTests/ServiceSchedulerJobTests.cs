@@ -8,7 +8,7 @@ using Sentinel.Worker.Sync.JobSchedules;
 using Sentinel.Worker.Sync.TestsHelpers;
 using Xunit;
 using Xunit.Abstractions;
-using Sentinel.K8s.Repos;
+using Sentinel.K8s.K8sClients;
 
 namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 {
@@ -33,10 +33,11 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
             var client = KubernetesClientTestHelper.GetKubernetesClient();
             var mapper = GetIMapperExtension.GetIMapper(cfg => { cfg.AddProfile(new K8SMapper()); });
-            var loggerRepo = Sentinel.Tests.Helpers.Helpers.GetLogger<ServiceV1K8sRepo>();
-            var serviceV1K8sRepo = new ServiceV1K8sRepo(client, mapper, loggerRepo);
+            var loggerRepo = Sentinel.Tests.Helpers.Helpers.GetLogger<K8sGeneralService>();
 
-            ServiceSchedulerJob job = new ServiceSchedulerJob(logger, serviceV1K8sRepo, rediscon);
+            var k8sGeneralService = new K8sGeneralService(client, mapper, loggerRepo);
+
+            ServiceSchedulerJob job = new ServiceSchedulerJob(logger, k8sGeneralService, rediscon);
 
             CancellationTokenSource source = new CancellationTokenSource();
             source.CancelAfter(20 * 1000);

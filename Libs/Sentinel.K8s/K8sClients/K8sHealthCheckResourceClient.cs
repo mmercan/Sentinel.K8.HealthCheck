@@ -7,15 +7,15 @@ using Microsoft.Extensions.Logging;
 using Sentinel.Models.CRDs;
 using Sentinel.Models.K8sDTOs;
 
-namespace Sentinel.K8s.Repos
+namespace Sentinel.K8s.K8sClients
 {
-    public class HealthCheckResourceV1K8sRepo
+    public class K8sHealthCheckResourceClient
     {
         private readonly IKubernetesClient _k8sclient;
         private readonly IMapper _mapper;
-        private readonly ILogger<HealthCheckResourceV1K8sRepo> _logger;
+        private readonly ILogger<K8sGeneralService> _logger;
 
-        public HealthCheckResourceV1K8sRepo(IKubernetesClient k8sclient, IMapper mapper, ILogger<HealthCheckResourceV1K8sRepo> logger)
+        public K8sHealthCheckResourceClient(IKubernetesClient k8sclient, IMapper mapper, ILogger<K8sGeneralService> logger)
         {
             _k8sclient = k8sclient;
             _mapper = mapper;

@@ -6,15 +6,15 @@ using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Sentinel.Models.K8sDTOs;
 
-namespace Sentinel.K8s.Repos
+namespace Sentinel.K8s.K8sClients
 {
-    public class ServiceV1K8sRepo
+    public class K8sServiceClient
     {
         private readonly IKubernetesClient _k8sclient;
         private readonly IMapper _mapper;
-        private readonly ILogger<ServiceV1K8sRepo> _logger;
+        private readonly ILogger<K8sGeneralService> _logger;
 
-        public ServiceV1K8sRepo(IKubernetesClient k8sclient, IMapper mapper, ILogger<ServiceV1K8sRepo> logger)
+        public K8sServiceClient(IKubernetesClient k8sclient, IMapper mapper, ILogger<K8sGeneralService> logger)
         {
             _k8sclient = k8sclient;
             _mapper = mapper;
