@@ -23,9 +23,35 @@ jobs:
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
+      APPID: ${{ secrets.buildtime_APPID }}
+      APPSECRET: ${{ secrets.buildtime_APPSECRET }}
+      ADID: ${{ secrets.buildtime_ADID }}
+      SONARKEY: ${{ secrets.buildtime_SONARKEY }}
+      RabbitMQConnection: ${{ secrets.RABBITMQCONNECTION }}
+      Mongodb__ConnectionString: ${{ secrets.MONGODB__CONNECTIONSTRING }}
+      RedisConnection: ${{ secrets.REDISCONNECTION }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Kubernetes set context
+        uses: Azure/k8s-set-context@v1.1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          context: matt-aks
+
+      - name: add KUBECONFIG To env file
+        run: |
+          cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
+          ls /home/runner/work/_temp
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -38,7 +64,7 @@ jobs:
       - name: Build
         run: dotnet build -c Release --no-restore
 
-      - name: Build
+      - name: Test
         run: dotnet test
 
       - name: "Upload Artifact"
