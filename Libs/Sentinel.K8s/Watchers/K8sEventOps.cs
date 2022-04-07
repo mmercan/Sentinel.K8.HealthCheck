@@ -48,7 +48,7 @@ namespace Sentinel.K8s.Watchers
 
         public async Task<Corev1Event?> FindEventAsync(string @namespace, string resourceUid, string message)
         {
-            var events = await _client.List<Corev1Event>(@namespace);
+            var events = await _client.ListAsync<Corev1Event>(@namespace);
             var res = events.FirstOrDefault(p => p.InvolvedObject.Uid == resourceUid && p.Message == message);
             return res;
         }

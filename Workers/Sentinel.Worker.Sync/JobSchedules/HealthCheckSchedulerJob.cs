@@ -8,6 +8,7 @@ using k8s.Models;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Sentinel.K8s;
+using Sentinel.K8s.Repos;
 using Sentinel.Models.CRDs;
 using Sentinel.Models.K8sDTOs;
 using Sentinel.Redis;
@@ -18,27 +19,25 @@ namespace Sentinel.Worker.Sync.JobSchedules
     public class HealthCheckSchedulerJob : IJob
     {
         private readonly ILogger<HealthCheckSchedulerJob> _logger;
-        private readonly IKubernetesClient _k8sclient;
+        private readonly HealthCheckResourceV1K8sRepo _healthCheckRepo;
         private readonly IMapper _mapper;
         private readonly RedisDictionary<HealthCheckResourceV1> redisDic;
 
-        public HealthCheckSchedulerJob(ILogger<HealthCheckSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
+        public HealthCheckSchedulerJob(ILogger<HealthCheckSchedulerJob> logger, HealthCheckResourceV1K8sRepo healthCheckRepo, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
             _logger = logger;
-            _k8sclient = k8sclient;
+            _healthCheckRepo = healthCheckRepo;
             _mapper = mapper;
             redisDic = new RedisDictionary<HealthCheckResourceV1>(redisMultiplexer, _logger, "HealthChecks");
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            var checks = await _k8sclient.List<HealthCheckResource>();
+            var checks = await _healthCheckRepo.GetAllHealthCheckResourcesAsync();
             checks.ForEach(async check =>
             {
                 if (string.IsNullOrEmpty(check.Status?.Phase))
                 {
-                    check.Status = new HealthCheckResource.HealthCheckResourceStatus { Phase = "Added to Redis" };
-                    await _k8sclient.UpdateStatus(check);
-                    _logger.LogDebug("K8s HealthCheckResource {name} status updated", check.Metadata.Name);
+                    await _healthCheckRepo.UpdateStartusAsync(check, HealthCheckResource.HealthCheckResourceStatusPhase.AddedtoRedis);
                 }
             });
             var dtoitems = _mapper.Map<IList<HealthCheckResourceV1>>(checks);

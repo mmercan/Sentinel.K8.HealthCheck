@@ -31,7 +31,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
         }
         public async Task Execute(IJobExecutionContext context)
         {
-            var checks = await _k8sclient.List<DeploymentScalerResource>();
+            var checks = await _k8sclient.ListAsync<DeploymentScalerResource>();
             var dtoitems = _mapper.Map<IList<DeploymentScalerResourceV1>>(checks);
 
             var syncTime = DateTime.UtcNow;

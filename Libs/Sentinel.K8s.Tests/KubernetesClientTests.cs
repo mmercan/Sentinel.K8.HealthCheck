@@ -55,7 +55,7 @@ namespace Sentinel.K8s.Tests
         {
 
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var nssTask = k8Client.GetCurrentNamespace();
+            var nssTask = k8Client.GetCurrentNamespaceAsync();
             nssTask.Wait();
             _output.WriteLine("GetCurrentNamespace : " + nssTask.Result);
             Assert.NotNull(nssTask.Result);
@@ -67,7 +67,7 @@ namespace Sentinel.K8s.Tests
         {
 
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var nssTask = k8Client.GetServerVersion();
+            var nssTask = k8Client.GetServerVersionAsync();
             nssTask.Wait();
             _output.WriteLine("Server Version : " + nssTask.Result.Major + "." + nssTask.Result.Minor);
             Assert.NotNull(nssTask.Result);
@@ -80,7 +80,7 @@ namespace Sentinel.K8s.Tests
         public void Should_KubernetesClient_Returns_A_Resource_From_Get(string serviceName, string @namespace)
         {
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var nssTask = k8Client.Get<k8s.Models.V1Service>(name: serviceName, @namespace: @namespace);
+            var nssTask = k8Client.GetAsync<k8s.Models.V1Service>(name: serviceName, @namespace: @namespace);
             nssTask.Wait();
             _output.WriteLine("Get a Single Resource : " + nssTask?.Result?.Metadata.Name);
             Assert.NotNull(nssTask?.Result);
@@ -92,7 +92,7 @@ namespace Sentinel.K8s.Tests
         {
 
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var nssTask = k8Client.List<k8s.Models.V1Namespace>();
+            var nssTask = k8Client.ListAsync<k8s.Models.V1Namespace>();
             nssTask.Wait();
             string namespaces = string.Join(",", nssTask.Result.Select(p => p.Metadata.Name));
             _output.WriteLine("namespaces : " + namespaces);
@@ -107,7 +107,7 @@ namespace Sentinel.K8s.Tests
         {
 
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var nssTask = k8Client.List<k8s.Models.V1Service>("kube-system");
+            var nssTask = k8Client.ListAsync<k8s.Models.V1Service>("kube-system");
             nssTask.Wait();
             string namespaces = string.Join(",", nssTask.Result.Select(p => p.Metadata.Name));
             _output.WriteLine("services : " + namespaces);
@@ -137,7 +137,7 @@ namespace Sentinel.K8s.Tests
             // config.BinaryData = new Dictionary<string, byte[]> { { "signature", Encoding.ASCII.GetBytes("config text") }};
 
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var nssTask = k8Client.Save<V1ConfigMap>(config);
+            var nssTask = k8Client.SaveAsync<V1ConfigMap>(config);
             nssTask.Wait();
             // string resource = string.Join(",", nssTask.Result.Select(p => p.Metadata.Name));
             _output.WriteLine("Saved ConfigMap : " + nssTask.Result.Name());
@@ -164,12 +164,12 @@ namespace Sentinel.K8s.Tests
             Task.Delay(3000);
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
 
-            var nssTask = k8Client.Get<k8s.Models.V1ConfigMap>(name: "testconfigmap", @namespace: "default");
+            var nssTask = k8Client.GetAsync<k8s.Models.V1ConfigMap>(name: "testconfigmap", @namespace: "default");
             nssTask.Wait();
             _output.WriteLine("Get a Single Resource : " + nssTask.Result?.Metadata.Name);
             if (nssTask.Result != null)
             {
-                var deletetask = k8Client.Delete(nssTask.Result);
+                var deletetask = k8Client.DeleteAsync(nssTask.Result);
                 deletetask.Wait();
             }
             else
@@ -189,7 +189,7 @@ namespace Sentinel.K8s.Tests
             //var taskwatch = watchClient.StartAsync(source.Token);
 
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            await k8Client.Watch<k8s.Models.V1ConfigMap>(TimeSpan.FromMinutes(2),
+            await k8Client.WatchAsync<k8s.Models.V1ConfigMap>(TimeSpan.FromMinutes(2),
              onEvent: (action, p) =>
              {
                  _output.WriteLine("Watch has new event " + action.ToString() + " : " + p.Metadata.Name);
@@ -218,7 +218,7 @@ namespace Sentinel.K8s.Tests
             source.CancelAfter(60 * 1000);
 
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var statusresobj = await k8Client.Get<HealthCheckResource>(name: name, @namespace: @namespace);
+            var statusresobj = await k8Client.GetAsync<HealthCheckResource>(name: name, @namespace: @namespace);
             if (statusresobj != null)
             {
 
@@ -238,7 +238,7 @@ namespace Sentinel.K8s.Tests
                 statusresobj.Status.Message = "Message added";
 
                 _output.WriteLine("Status will be saved " + statusresobj.ToString() + " " + statusresobj.Status.Phase);
-                await k8Client.UpdateStatus<HealthCheckResource>(statusresobj);
+                await k8Client.UpdateStatusAsync<HealthCheckResource>(statusresobj);
             }
             else
             {
@@ -250,7 +250,7 @@ namespace Sentinel.K8s.Tests
         public async Task Should_KubernetesClient_Returns_List_of_Custom_Resources()
         {
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var healthchecks = await k8Client.List<HealthCheckResource>(@namespace: "default");
+            var healthchecks = await k8Client.ListAsync<HealthCheckResource>(@namespace: "default");
             _output.WriteLine("healthchecks listed");
             foreach (var item in healthchecks)
             {

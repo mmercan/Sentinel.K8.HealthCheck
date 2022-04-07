@@ -4,6 +4,7 @@ using AutoMapper;
 using Moq;
 using Quartz;
 using Sentinel.K8s;
+using Sentinel.K8s.Repos;
 using Sentinel.Tests.Helpers;
 using Sentinel.Worker.Sync.JobSchedules;
 using Sentinel.Worker.Sync.TestsHelpers;
@@ -27,22 +28,25 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
             _output.WriteLine("HealthCheckSchedulerJobShouldRun started");
 
-            var client = KubernetesClientTestHelper.GetKubernetesClient();
+
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<HealthCheckSchedulerJob>();
 
             var config = new MapperConfiguration(cfg =>
               {
                   cfg.AddProfile(new K8SMapper());
               });
-            var mapper = config.CreateMapper();
+
 
             IConnectionMultiplexer rediscon = RedisExtensions.GetRedisMultiplexer();
 
-
+            var client = KubernetesClientTestHelper.GetKubernetesClient();
+            var mapper = GetIMapperExtension.GetIMapper(cfg => { cfg.AddProfile(new K8SMapper()); });
+            var loggerRepo = Sentinel.Tests.Helpers.Helpers.GetLogger<HealthCheckResourceV1K8sRepo>();
+            var healthCheckResourceV1K8sRepo = new HealthCheckResourceV1K8sRepo(client, mapper, loggerRepo);
 
             HealthCheckSchedulerJob job = new HealthCheckSchedulerJob(
                 logger: logger,
-                k8sclient: client,
+                healthCheckResourceV1K8sRepo,
                 mapper: mapper,
                 redisMultiplexer: rediscon
             );

@@ -43,13 +43,13 @@ namespace Sentinel.K8s
         /// </summary>
         /// <param name="downwardApiEnvName">Customizable name of the env var to check for the namespace.</param>
         /// <returns>A string containing the current namespace (or a fallback of it).</returns>
-        Task<string> GetCurrentNamespace(string downwardApiEnvName = "POD_NAMESPACE");
+        Task<string> GetCurrentNamespaceAsync(string downwardApiEnvName = "POD_NAMESPACE");
 
         /// <summary>
         /// Fetch and return the actual kubernetes <see cref="VersionInfo"/> (aka. Server Version).
         /// </summary>
         /// <returns>The <see cref="VersionInfo"/> of the current server.</returns>
-        Task<VersionInfo> GetServerVersion();
+        Task<VersionInfo> GetServerVersionAsync();
 
         /// <summary>
         /// Fetch and return a resource from the Kubernetes api.
@@ -61,7 +61,7 @@ namespace Sentinel.K8s
         /// </param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>The found resource of the given type, or null otherwise.</returns>
-        Task<TResource?> Get<TResource>(string name, string? @namespace = null)
+        Task<TResource?> GetAsync<TResource>(string name, string? @namespace = null)
             where TResource : class, IKubernetesObject<V1ObjectMeta>;
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Sentinel.K8s
         /// <param name="labelSelector">A string, representing an optional label selector for filtering fetched objects.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>A list of Kubernetes resources.</returns>
-        Task<IList<TResource>> List<TResource>(
+        Task<IList<TResource>> ListAsync<TResource>(
             string? @namespace = null,
             string? labelSelector = null)
             where TResource : IKubernetesObject<V1ObjectMeta>;
@@ -85,7 +85,7 @@ namespace Sentinel.K8s
         /// <param name="labelSelectors">A list of label-selectors to apply to the search.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>A list of Kubernetes resources.</returns>
-        Task<IList<TResource>> List<TResource>(
+        Task<IList<TResource>> ListAsync<TResource>(
             string? @namespace = null,
             params ILabelSelector[] labelSelectors)
             where TResource : IKubernetesObject<V1ObjectMeta>;
@@ -101,7 +101,7 @@ namespace Sentinel.K8s
 
 
         Task<List<JToken>> ListClusterCustomObjectAsync(string Group, string Version, string Plural);
-        Task<TResource> Save<TResource>(TResource resource)
+        Task<TResource> SaveAsync<TResource>(TResource resource)
             where TResource : class, IKubernetesObject<V1ObjectMeta>;
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Sentinel.K8s
         /// <param name="resource">The resource instance.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>The created instance of the resource.</returns>
-        Task<TResource> Create<TResource>(TResource resource)
+        Task<TResource> CreateAsync<TResource>(TResource resource)
             where TResource : IKubernetesObject<V1ObjectMeta>;
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Sentinel.K8s
         /// <param name="resource">The resource instance.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>The updated instance of the resource.</returns>
-        Task<TResource> Update<TResource>(TResource resource)
+        Task<TResource> UpdateAsync<TResource>(TResource resource)
             where TResource : IKubernetesObject<V1ObjectMeta>;
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Sentinel.K8s
         /// <param name="resource">The resource that contains a status object.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>A task that completes when the call was made.</returns>
-        public Task UpdateStatus<TResource>(TResource resource)
+        public Task UpdateStatusAsync<TResource>(TResource resource)
             where TResource : IKubernetesObject<V1ObjectMeta>;
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Sentinel.K8s
         /// <param name="resource">The resource in question.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>A task that completes when the call was made.</returns>
-        Task Delete<TResource>(TResource resource)
+        Task DeleteAsync<TResource>(TResource resource)
             where TResource : IKubernetesObject<V1ObjectMeta>;
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Sentinel.K8s
         /// <param name="resources">The resources in question.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>A task that completes when the calls were made.</returns>
-        Task Delete<TResource>(IEnumerable<TResource> resources)
+        Task DeleteAsync<TResource>(IEnumerable<TResource> resources)
             where TResource : IKubernetesObject<V1ObjectMeta>;
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Sentinel.K8s
         /// <param name="resources">The resources in question.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>A task that completes when the calls were made.</returns>
-        Task Delete<TResource>(params TResource[] resources)
+        Task DeleteAsync<TResource>(params TResource[] resources)
             where TResource : IKubernetesObject<V1ObjectMeta>;
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Sentinel.K8s
         /// <param name="namespace">The optional namespace of the resource.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>A task that completes when the call was made.</returns>
-        Task Delete<TResource>(string name, string? @namespace = null)
+        Task DeleteAsync<TResource>(string name, string? @namespace = null)
             where TResource : IKubernetesObject<V1ObjectMeta>;
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace Sentinel.K8s
         /// <param name="labelSelectors">A list of label-selectors to apply to the search.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>A resource watcher for the given resource.</returns>
-        Task<Watcher<TResource>> Watch<TResource>(
+        Task<Watcher<TResource>> WatchAsync<TResource>(
             TimeSpan timeout,
             Action<WatchEventType, TResource> onEvent,
             Action<Exception>? onError = null,
@@ -212,7 +212,7 @@ namespace Sentinel.K8s
         /// <param name="labelSelector">A string, representing an optional label selector for filtering watched objects.</param>
         /// <typeparam name="TResource">The concrete type of the resource.</typeparam>
         /// <returns>A resource watcher for the given resource.</returns>
-        Task<Watcher<TResource>> Watch<TResource>(
+        Task<Watcher<TResource>> WatchAsync<TResource>(
             TimeSpan timeout,
             Action<WatchEventType, TResource> onEvent,
             Action<Exception>? onError = null,

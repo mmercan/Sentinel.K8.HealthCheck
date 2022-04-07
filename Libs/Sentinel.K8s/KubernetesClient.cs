@@ -94,7 +94,7 @@ namespace Sentinel.K8s
         }
 
         /// <inheritdoc />
-        public Task<string> GetCurrentNamespace(string downwardApiEnvName = "POD_NAMESPACE")
+        public Task<string> GetCurrentNamespaceAsync(string downwardApiEnvName = "POD_NAMESPACE")
         {
             string result = DefaultNamespace;
 
@@ -117,11 +117,11 @@ namespace Sentinel.K8s
         }
 
         /// <inheritdoc />
-        public Task<VersionInfo> GetServerVersion() => ApiClient.GetCodeAsync();
+        public Task<VersionInfo> GetServerVersionAsync() => ApiClient.GetCodeAsync();
 
 
         /// <inheritdoc />
-        public async Task<TResource?> Get<TResource>(string name, string? @namespace = null) where TResource : class, IKubernetesObject<V1ObjectMeta>
+        public async Task<TResource?> GetAsync<TResource>(string name, string? @namespace = null) where TResource : class, IKubernetesObject<V1ObjectMeta>
         {
             var crd = CustomEntityDefinitionExtensions.CreateResourceDefinition<TResource>();
             try
@@ -138,7 +138,7 @@ namespace Sentinel.K8s
         }
 
         /// <inheritdoc />
-        public async Task<IList<TResource>> List<TResource>(string? @namespace = null, string? labelSelector = null) where TResource : IKubernetesObject<V1ObjectMeta>
+        public async Task<IList<TResource>> ListAsync<TResource>(string? @namespace = null, string? labelSelector = null) where TResource : IKubernetesObject<V1ObjectMeta>
         {
             var crd = CustomEntityDefinitionExtensions.CreateResourceDefinition<TResource>();
             var result = await (string.IsNullOrWhiteSpace(@namespace)
@@ -167,28 +167,28 @@ namespace Sentinel.K8s
         }
 
         /// <inheritdoc />
-        public Task<IList<TResource>> List<TResource>(string? @namespace = null, params ILabelSelector[] labelSelectors)
+        public Task<IList<TResource>> ListAsync<TResource>(string? @namespace = null, params ILabelSelector[] labelSelectors)
             where TResource : IKubernetesObject<V1ObjectMeta> =>
-            List<TResource>(@namespace, string.Join(",", labelSelectors.Select(l => l.ToExpression())));
+            ListAsync<TResource>(@namespace, string.Join(",", labelSelectors.Select(l => l.ToExpression())));
 
 
         /// <inheritdoc />
-        public async Task<TResource> Save<TResource>(TResource resource) where TResource : class, IKubernetesObject<V1ObjectMeta>
+        public async Task<TResource> SaveAsync<TResource>(TResource resource) where TResource : class, IKubernetesObject<V1ObjectMeta>
         {
-            var serverResource = await Get<TResource>(resource.Metadata.Name, resource.Metadata.NamespaceProperty);
+            var serverResource = await GetAsync<TResource>(resource.Metadata.Name, resource.Metadata.NamespaceProperty);
             if (serverResource == null)
             {
-                return await Create(resource);
+                return await CreateAsync(resource);
             }
 
             resource.Metadata.Uid = serverResource.Metadata.Uid;
             resource.Metadata.ResourceVersion = serverResource.Metadata.ResourceVersion;
 
-            return await Update(resource);
+            return await UpdateAsync(resource);
         }
 
         /// <inheritdoc />
-        public async Task<TResource> Create<TResource>(TResource resource) where TResource : IKubernetesObject<V1ObjectMeta>
+        public async Task<TResource> CreateAsync<TResource>(TResource resource) where TResource : IKubernetesObject<V1ObjectMeta>
         {
             var crd = resource.CreateResourceDefinition();
             var result = await (string.IsNullOrWhiteSpace(resource.Metadata.NamespaceProperty)
@@ -204,7 +204,7 @@ namespace Sentinel.K8s
         }
 
         /// <inheritdoc />
-        public async Task<TResource> Update<TResource>(TResource resource) where TResource : IKubernetesObject<V1ObjectMeta>
+        public async Task<TResource> UpdateAsync<TResource>(TResource resource) where TResource : IKubernetesObject<V1ObjectMeta>
         {
             var crd = resource.CreateResourceDefinition();
             var result = await (string.IsNullOrWhiteSpace(resource.Metadata.NamespaceProperty)
@@ -221,7 +221,7 @@ namespace Sentinel.K8s
         }
 
         /// <inheritdoc />
-        public async Task UpdateStatus<TResource>(TResource resource) where TResource : IKubernetesObject<V1ObjectMeta> //, IStatus<object>
+        public async Task UpdateStatusAsync<TResource>(TResource resource) where TResource : IKubernetesObject<V1ObjectMeta> //, IStatus<object>
         {
             var crd = resource.CreateResourceDefinition();
             var result = await (string.IsNullOrWhiteSpace(resource.Metadata.NamespaceProperty)
@@ -237,19 +237,19 @@ namespace Sentinel.K8s
         }
 
         /// <inheritdoc />
-        public Task Delete<TResource>(TResource resource) where TResource : IKubernetesObject<V1ObjectMeta> =>
-            Delete<TResource>(resource.Metadata.Name, resource.Metadata.NamespaceProperty);
+        public Task DeleteAsync<TResource>(TResource resource) where TResource : IKubernetesObject<V1ObjectMeta> =>
+            DeleteAsync<TResource>(resource.Metadata.Name, resource.Metadata.NamespaceProperty);
 
         /// <inheritdoc />
-        public Task Delete<TResource>(IEnumerable<TResource> resources)
-            where TResource : IKubernetesObject<V1ObjectMeta> => Task.WhenAll(resources.Select(Delete));
+        public Task DeleteAsync<TResource>(IEnumerable<TResource> resources)
+            where TResource : IKubernetesObject<V1ObjectMeta> => Task.WhenAll(resources.Select(DeleteAsync));
 
         /// <inheritdoc />
-        public Task Delete<TResource>(params TResource[] resources)
-            where TResource : IKubernetesObject<V1ObjectMeta> => Task.WhenAll(resources.Select(Delete));
+        public Task DeleteAsync<TResource>(params TResource[] resources)
+            where TResource : IKubernetesObject<V1ObjectMeta> => Task.WhenAll(resources.Select(DeleteAsync));
 
         /// <inheritdoc />
-        public async Task Delete<TResource>(string name, string? @namespace = null) where TResource : IKubernetesObject<V1ObjectMeta>
+        public async Task DeleteAsync<TResource>(string name, string? @namespace = null) where TResource : IKubernetesObject<V1ObjectMeta>
         {
             var crd = CustomEntityDefinitionExtensions.CreateResourceDefinition<TResource>();
             try
@@ -265,14 +265,14 @@ namespace Sentinel.K8s
         }
 
         /// <inheritdoc />
-        public Task<Watcher<TResource>> Watch<TResource>(
+        public Task<Watcher<TResource>> WatchAsync<TResource>(
             TimeSpan timeout, Action<WatchEventType, TResource> onEvent, Action<Exception>? onError = null, Action? onClose = null,
             string? @namespace = null, CancellationToken cancellationToken = default, params ILabelSelector[] labelSelectors)
             where TResource : IKubernetesObject<V1ObjectMeta>
-            => Watch<TResource>(timeout, onEvent, onError, onClose, @namespace, string.Join(",", labelSelectors.Select(l => l.ToExpression())), cancellationToken);
+            => WatchAsync<TResource>(timeout, onEvent, onError, onClose, @namespace, string.Join(",", labelSelectors.Select(l => l.ToExpression())), cancellationToken);
 
         /// <inheritdoc />
-        public Task<Watcher<TResource>> Watch<TResource>(
+        public Task<Watcher<TResource>> WatchAsync<TResource>(
             TimeSpan timeout, Action<WatchEventType, TResource> onEvent, Action<Exception>? onError = null, Action? onClose = null,
             string? @namespace = null, string? labelSelector = null, CancellationToken cancellationToken = default)
             where TResource : IKubernetesObject<V1ObjectMeta>

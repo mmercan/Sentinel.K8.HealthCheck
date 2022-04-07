@@ -53,7 +53,7 @@ namespace Sentinel.Worker.Sync.Watchers
             _logger.LogInformation("Consume Scoped Service Hosted Service is working.");
             this.ReportHealthy();
 
-            using (_k8sService.Watch<k8s.Models.V1Namespace>(timeout: TimeSpan.FromMinutes(60),
+            using (_k8sService.WatchAsync<k8s.Models.V1Namespace>(timeout: TimeSpan.FromMinutes(60),
             onEvent: OnEvent,
             onError: OnError,
             onClose: OnClosed,

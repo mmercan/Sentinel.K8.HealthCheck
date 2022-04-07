@@ -59,7 +59,7 @@ namespace Sentinel.Worker.Sync.Watchers
             this.ReportHealthy();
             this._logger.LogCritical("Watch Started");
 
-            using (_k8sService.Watch<V1Deployment>(timeout: TimeSpan.FromMinutes(60),
+            using (_k8sService.WatchAsync<V1Deployment>(timeout: TimeSpan.FromMinutes(60),
                 onEvent: watcher,
                 onError: OnError,
                 onClose: OnClosed,

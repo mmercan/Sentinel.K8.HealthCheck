@@ -23,7 +23,7 @@ namespace Sentinel.K8s.Tests
 
             var message_1 = message + DateTime.Now.ToString();
             var k8Client = KubernetesClientTestHelper.GetKubernetesClient();
-            var healthobj = await k8Client.Get<HealthCheckResource>(name: name, @namespace: @namespace);
+            var healthobj = await k8Client.GetAsync<HealthCheckResource>(name: name, @namespace: @namespace);
 
             if (healthobj != null)
             {

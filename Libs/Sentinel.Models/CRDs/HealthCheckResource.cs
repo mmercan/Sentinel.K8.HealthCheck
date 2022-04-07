@@ -78,7 +78,15 @@ namespace Sentinel.Models.CRDs
 
             [JsonProperty(PropertyName = "labelSelector")]
             public string LabelSelector { get; set; } = default!;
+        }
 
+        public enum HealthCheckResourceStatusPhase
+        {
+            Pending,
+            AddedtoRedis,
+            Healthy,
+            UnHealthy,
+            Unknown,
         }
     }
 }

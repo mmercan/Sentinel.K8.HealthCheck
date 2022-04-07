@@ -106,7 +106,7 @@ namespace Sentinel.K8s.Watchers
 
             _cancellation = new CancellationTokenSource();
 
-            _watcher = await _client.Watch<TEntity>(
+            _watcher = await _client.WatchAsync<TEntity>(
                 TimeSpan.FromSeconds(_settings.WatcherHttpTimeout),
                 OnWatcherEvent,
                 OnException,
