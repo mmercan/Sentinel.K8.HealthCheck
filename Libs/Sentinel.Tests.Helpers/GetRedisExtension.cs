@@ -12,6 +12,10 @@ namespace Sentinel.Tests.Helpers
             .Build();
 
             var redisconstring = config["RedisConnection"];
+            if (string.IsNullOrWhiteSpace(redisconstring))
+            {
+                throw new Exception("RedisConnection is not set in the environment variables");
+            }
             IConnectionMultiplexer rediscon = ConnectionMultiplexer.Connect(redisconstring);
 
             return rediscon;
