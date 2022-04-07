@@ -35,22 +35,6 @@ namespace Sentinel.K8s.Repos
         }
 
 
-        public async Task<HealthCheckResource> UpdateStartusAsync(string Name, string Namespace, HealthCheckResource.HealthCheckResourceStatus status)
-        {
-            var healthChecks = await GetHealthCheckResourceAsync(Name, Namespace);
-            healthChecks.Status = status;
-            await _k8sclient.UpdateStatusAsync(healthChecks);
-            return healthChecks;
-        }
-
-
-        public async Task<HealthCheckResource> UpdateStartusAsync(HealthCheckResource healthCheck, HealthCheckResource.HealthCheckResourceStatus status)
-        {
-
-            healthCheck.Status = status;
-            await _k8sclient.UpdateStatusAsync(healthCheck);
-            return healthCheck;
-        }
 
         public async Task<HealthCheckResource> UpdateStartusAsync(HealthCheckResource healthCheck, HealthCheckResource.HealthCheckResourceStatusPhase phase, DateTime? lastCheckTime = null)
         {
@@ -69,6 +53,15 @@ namespace Sentinel.K8s.Repos
             return healthCheck;
         }
 
+        public async Task<HealthCheckResource> UpdateStartusAsync(string Name, string Namespace, HealthCheckResource.HealthCheckResourceStatusPhase phase, DateTime? lastCheckTime = null)
+        {
+            var healthCheck = await GetHealthCheckResourceAsync(Name, Namespace);
+            if (healthCheck == null)
+            {
+                throw new Exception($"HealthCheckResource {Name} not found");
+            }
+            return await UpdateStartusAsync(healthCheck, phase, lastCheckTime);
+        }
         // public async Task<HealthCheckResourceV1> GetHealthCheckResource(string name, string namespaceName)
         // {
         //     var healthCheckResource = await _k8sclient.ReadNamespacedCustomObjectAsync<HealthCheckResourceV1, HealthCheckResourceV1List>(

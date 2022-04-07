@@ -1,0 +1,48 @@
+name: Sentinel Test Direct
+
+on:
+  push:
+    branches: ["*"]
+    paths:
+      - Workers/**
+      - Libs/**
+  pull_request:
+    branches: [master]
+
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: Dev
+    env:
+      ARTIFACT_PATH: ${{ github.workspace }}
+      IMAGE_NAME: ${{ github.repository }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Build
+        run: dotnet test
+
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: TestResults
