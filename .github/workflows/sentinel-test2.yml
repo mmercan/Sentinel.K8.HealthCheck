@@ -51,8 +51,9 @@ jobs:
 
       - name: add KUBECONFIG To env file
         run: |
+          mkdir -p /home/runner/.kube
           cp ${{ env.KUBECONFIG }} /home/runner/.kube/config
-          ls /home/runner/.kube/config
+          ls /home/runner/.kube
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
