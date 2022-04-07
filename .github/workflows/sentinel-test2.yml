@@ -66,6 +66,10 @@ jobs:
 
       - name: Test
         run: dotnet test
+        env:
+          RabbitMQConnection: ${{ secrets.RABBITMQCONNECTION }}
+          Mongodb__ConnectionString: ${{ secrets.MONGODB__CONNECTIONSTRING }}
+          RedisConnection: ${{ secrets.REDISCONNECTION }}
 
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v2
