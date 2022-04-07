@@ -29,6 +29,7 @@ jobs:
       SONARKEY: ${{ secrets.buildtime_SONARKEY }}
       RabbitMQConnection: ${{ secrets.RABBITMQCONNECTION }}
       Mongodb__ConnectionString: ${{ secrets.MONGODB__CONNECTIONSTRING }}
+      Mongodb:ConnectionString: ${{ secrets.MONGODB__CONNECTIONSTRING }}
       RedisConnection: ${{ secrets.REDISCONNECTION }}
 
     steps:
@@ -50,8 +51,8 @@ jobs:
 
       - name: add KUBECONFIG To env file
         run: |
-          cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
-          ls /home/runner/work/_temp
+          cp ${{ env.KUBECONFIG }} /home/runner/.kube/config
+          ls /home/runner/.kube/config
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
@@ -68,6 +69,7 @@ jobs:
         run: dotnet test
         env:
           RabbitMQConnection: ${{ secrets.RABBITMQCONNECTION }}
+          Mongodb:ConnectionString: ${{ secrets.MONGODB__CONNECTIONSTRING }}
           Mongodb__ConnectionString: ${{ secrets.MONGODB__CONNECTIONSTRING }}
           RedisConnection: ${{ secrets.REDISCONNECTION }}
 
