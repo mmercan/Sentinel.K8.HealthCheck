@@ -38,22 +38,18 @@ namespace Sentinel.K8s.K8sClients
 
         public async Task<HealthCheckResource> UpdateStartusAsync(HealthCheckResource healthCheck, HealthCheckResource.HealthCheckResourceStatusPhase phase, DateTime? lastCheckTime = null)
         {
+            return await UpdateStartusAsync(healthCheck, phase.ToString(), lastCheckTime);
 
-            if (healthCheck.Status == null)
-            {
-                healthCheck.Status = new HealthCheckResource.HealthCheckResourceStatus();
-            }
-            healthCheck.Status.Phase = phase.ToString();
-            if (lastCheckTime != null)
-            {
-                healthCheck.Status.LastCheckTime = lastCheckTime.Value.ToLongDateString();
-            }
-            await _k8sclient.UpdateStatusAsync(healthCheck);
-            _logger.LogDebug("K8s HealthCheckResource {name} status updated to {status}", healthCheck.Metadata.Name, healthCheck.Status.Phase);
-            return healthCheck;
         }
 
+
+
         public async Task<HealthCheckResource> UpdateStartusAsync(string Name, string Namespace, HealthCheckResource.HealthCheckResourceStatusPhase phase, DateTime? lastCheckTime = null)
+        {
+            return await UpdateStartusAsync(Name, Namespace, phase.ToString(), lastCheckTime);
+        }
+
+        public async Task<HealthCheckResource> UpdateStartusAsync(string Name, string Namespace, string phase, DateTime? lastCheckTime = null)
         {
             var healthCheck = await GetHealthCheckResourceAsync(Name, Namespace);
             if (healthCheck == null)
@@ -61,6 +57,22 @@ namespace Sentinel.K8s.K8sClients
                 throw new Exception($"HealthCheckResource {Name} not found");
             }
             return await UpdateStartusAsync(healthCheck, phase, lastCheckTime);
+        }
+
+        public async Task<HealthCheckResource> UpdateStartusAsync(HealthCheckResource healthCheck, string status, DateTime? lastCheckTime = null)
+        {
+            if (healthCheck.Status == null)
+            {
+                healthCheck.Status = new HealthCheckResource.HealthCheckResourceStatus();
+            }
+            healthCheck.Status.Phase = status;
+            if (lastCheckTime != null)
+            {
+                healthCheck.Status.LastCheckTime = lastCheckTime.Value.ToLongDateString();
+            }
+            await _k8sclient.UpdateStatusAsync(healthCheck);
+            _logger.LogDebug("K8s HealthCheckResource {name} status updated to {status}", healthCheck.Metadata.Name, healthCheck.Status.Phase);
+            return healthCheck;
         }
         // public async Task<HealthCheckResourceV1> GetHealthCheckResource(string name, string namespaceName)
         // {

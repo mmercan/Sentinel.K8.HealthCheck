@@ -78,8 +78,12 @@ namespace Sentinel.Common.HttpClientServices
                 }
 
                 var result = await DownloadAsync(httpRequestMessage);
-
                 results.Add(result);
+
+                if (result.Status != "Domain Record Not Found")
+                {
+                    break;
+                }
             }
 
             return results;
@@ -93,6 +97,7 @@ namespace Sentinel.Common.HttpClientServices
             {
                 var response = await _client.SendAsync(message);
                 result.Status = response.StatusCode.ToString();
+                result.StatusCode = (int)response.StatusCode;
                 result.IsSuccessStatusCode = response.IsSuccessStatusCode;
                 result.Result = await response.Content.ReadAsStringAsync();
                 if ((response.StatusCode == HttpStatusCode.Unauthorized))

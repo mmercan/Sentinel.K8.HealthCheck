@@ -91,7 +91,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
                 this.QueueHealthCheckK8sUpdate(healthcheck, results);
                 this.saveToMongo(healthcheck, results);
             }
-            _logger.LogInformation("HealthCheckSubscriber: Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
+            _logger.LogInformation("HealthCheckSubscriber: Handler Received an item : " + healthcheck.Key + " Service Found: " + serviceFound + " service name: " + serviceName);
             // _ResetEvent.Set();
         }
 

@@ -17,6 +17,7 @@ namespace Sentinel.Models.HealthCheck
         public string Id { get; set; } = default!;
         public string Result { get; set; } = default!;
         public string Status { get; set; } = default!;
+        public int StatusCode { get; set; }
         public bool IsSuccessStatusCode { get; set; } = default!;
         public string CheckedUrl { get; set; } = default!;
         public string Exception { get; set; } = default!;
@@ -27,10 +28,6 @@ namespace Sentinel.Models.HealthCheck
 
     public class IsAliveAndWellResultListWithHealthCheck
     {
-        public IsAliveAndWellResultListWithHealthCheck()
-        {
-            // IsAliveAndWellResults = new List<IsAliveAndWellResult>();
-        }
         public List<IsAliveAndWellResult> IsAliveAndWellResults { get; set; } = default!;
         public HealthCheckResourceV1 HealthCheck { get; set; } = default!;
     }

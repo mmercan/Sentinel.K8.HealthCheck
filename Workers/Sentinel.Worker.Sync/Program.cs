@@ -4,6 +4,7 @@
 using System.Net.Http.Headers;
 using CrystalQuartz.Application;
 using CrystalQuartz.AspNetCore;
+using EasyNetQ;
 using k8s;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -18,6 +19,7 @@ using Sentinel.K8s;
 using Sentinel.K8s.K8sClients;
 using Sentinel.Scheduler.Extensions;
 using Sentinel.Worker.Sync.JobSchedules;
+using Sentinel.Worker.Sync.Subscribers;
 using Sentinel.Worker.Sync.Watchers;
 using Serilog;
 using Serilog.Events;
@@ -43,8 +45,15 @@ namespace Sentinel.Worker.Sync
             if (builder.Configuration["RunOnCluster"] == "true") { builder.Services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.InClusterConfig()); }
             else { builder.Services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.BuildConfigFromConfigFile()); }
 
+
             builder.Services.AddSingleton<IKubernetesClient, KubernetesClient>();
             builder.Services.AddSingleton<KubernetesClient>();
+
+            builder.Services.AddSingleton<EasyNetQ.IBus>((ctx) =>
+            {
+                return RabbitHutch.CreateBus(builder.Configuration["RabbitMQConnection"]);
+            });
+
 
             builder.Services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             builder.Services.Configure<IISServerOptions>(options => { options.AllowSynchronousIO = true; });
@@ -128,6 +137,7 @@ namespace Sentinel.Worker.Sync
                 builder.Services.AddHostedService<DeploymentWatcherJob>();
             }
 
+            builder.Services.AddHostedService<HealthCheckStatusUpdateSubscriber>();
 
             // Configure
             // ##################################
