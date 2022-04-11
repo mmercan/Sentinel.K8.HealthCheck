@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-domain
+spec:
+  secretName: sentinel-wildcard-tls
+  dnsNames:
+    - '*.sentinel.myrcan.com' 
+  commonName: '*.sentinel.myrcan.com'
+  issuerRef:
+    name: myrcan-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+
