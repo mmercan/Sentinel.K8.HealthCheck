@@ -11,6 +11,8 @@ namespace Sentinel.Models.K8sDTOs
 
         [Key]
         public string Key { get { return Name + "." + Namespace; } }
+
+        public MetadataV1 Metadata { get; set; } = default!;
         public List<Label> Annotations { get; set; } = default!;
         public List<Label> Labels { get; set; } = default!;
         public DateTime CreationTime { get; set; }
@@ -27,6 +29,13 @@ namespace Sentinel.Models.K8sDTOs
         public HealthCheckResourceStatusV1 Status { get; set; } = default!;
 
         public ServiceV1 RelatedService { get; set; } = default!;
+
+        public static string Group = "sentinel.mercan.io";
+        public static string Kind = "HealthCheck";
+        public static string ApiVersion = "v1";
+        public static string PluralName = "healthchecks";
+
+
     }
 
     public class HealthCheckResourceSpecV1 : HealthCheckResource.HealthCheckResourceSpec

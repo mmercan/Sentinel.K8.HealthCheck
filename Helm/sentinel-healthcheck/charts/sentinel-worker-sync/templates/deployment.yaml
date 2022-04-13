@@ -57,6 +57,8 @@ spec:
            {{- end }}
             - secretRef:
                 name: "healthcheck-redis-secret"
+            - secretRef:
+                name: "healthcheck-rabbitmq-secret"
           env:
             - name: buildnumber
               value: {{ .Values.buildnumber | quote }}

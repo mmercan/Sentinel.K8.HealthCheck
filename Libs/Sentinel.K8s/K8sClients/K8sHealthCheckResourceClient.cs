@@ -25,6 +25,7 @@ namespace Sentinel.K8s.K8sClients
         public async Task<HealthCheckResource?> GetHealthCheckResourceAsync(string Name, string Namespace)
         {
             var healthCheck = await _k8sclient.GetAsync<HealthCheckResource>(Name, Namespace);
+            //healthCheck.Metadata.ResourceVersion
             return healthCheck;
         }
 

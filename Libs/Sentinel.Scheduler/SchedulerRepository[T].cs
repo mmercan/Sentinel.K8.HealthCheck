@@ -56,7 +56,7 @@ namespace Sentinel.Scheduler
             };
 
             ScheduledTasks.Add(scheduledTask);
-            _logger.LogInformation("SchedulerRepository Added" + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
+            _logger.LogInformation("SchedulerRepository Added " + genericTypeName + " Key : " + scheduledTask.Task.Key + " : " + scheduledTask.Schedule.ToString() + " ===> " + scheduledTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
         }
 
         public void UpdateItem(T item)

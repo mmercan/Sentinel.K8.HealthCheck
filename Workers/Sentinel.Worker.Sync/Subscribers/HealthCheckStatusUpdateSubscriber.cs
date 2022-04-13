@@ -62,11 +62,18 @@ namespace Sentinel.Worker.Sync.Subscribers
         {
             var Name = healthcheck.HealthCheck.Name;
             var Namespace = healthcheck.HealthCheck.Namespace;
+            var HealthCheckUid = healthcheck.HealthCheck.Uid;
+
 
             if (healthcheck.IsAliveAndWellResults.Count == 1)
             {
                 var status = healthcheck.IsAliveAndWellResults.FirstOrDefault().Status;
-               // await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(Name, Namespace, status);
+                await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(Name, Namespace, status);
+
+                // await _k8sGeneralService.EventClient.CountUpOrCreateEvent(
+                //      Namespace, Name, HealthCheckUid,  HealthCheckResourceV1.ApiVersion,
+                //               serviceResourceVersion, message, type: "Normal");
+                _logger.LogInformation("HealthCheckSubscriber: Received status update for " + Name + " in namespace " + Namespace + " with status " + status + ". Check Url : " + healthcheck.IsAliveAndWellResults.FirstOrDefault().CheckedUrl);
             }
             if (healthcheck.IsAliveAndWellResults.Count > 1)
             {
@@ -75,8 +82,6 @@ namespace Sentinel.Worker.Sync.Subscribers
                 {
 
                 }
-
-
                 this.ReportHealthy();
                 bool serviceFound = false;
                 string serviceName = "";

@@ -17,6 +17,8 @@ namespace Sentinel.K8s.K8sClients
         public K8sServiceClient ServiceClient { get; }
         public K8sHealthCheckResourceClient HealthCheckResourceClient { get; }
 
+        public K8sEventClient EventClient { get; }
+
         public K8sGeneralService(IKubernetesClient k8sclient, IMapper mapper, ILogger<K8sGeneralService> logger)
         {
             _k8sclient = k8sclient;
@@ -25,6 +27,7 @@ namespace Sentinel.K8s.K8sClients
 
             ServiceClient = new K8sServiceClient(_k8sclient, mapper, logger);
             HealthCheckResourceClient = new K8sHealthCheckResourceClient(_k8sclient, mapper, logger);
+            EventClient = new K8sEventClient(_k8sclient, mapper, logger);
         }
 
     }
