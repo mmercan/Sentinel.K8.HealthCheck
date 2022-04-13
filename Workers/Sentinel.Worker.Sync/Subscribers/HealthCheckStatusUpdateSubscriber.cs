@@ -68,7 +68,7 @@ namespace Sentinel.Worker.Sync.Subscribers
             if (healthcheck.IsAliveAndWellResults.Count == 1)
             {
                 var status = healthcheck.IsAliveAndWellResults.FirstOrDefault().Status;
-                await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(Name, Namespace, status);
+                await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(Name, Namespace, status, DateTime.UtcNow);
 
                 // await _k8sGeneralService.EventClient.CountUpOrCreateEvent(
                 //      Namespace, Name, HealthCheckUid,  HealthCheckResourceV1.ApiVersion,

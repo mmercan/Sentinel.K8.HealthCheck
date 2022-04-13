@@ -69,7 +69,7 @@ namespace Sentinel.K8s.K8sClients
             healthCheck.Status.Phase = status;
             if (lastCheckTime != null)
             {
-                healthCheck.Status.LastCheckTime = lastCheckTime.Value.ToLongDateString();
+                healthCheck.Status.LastCheckTime = lastCheckTime.Value.ToString();
             }
             await _k8sclient.UpdateStatusAsync(healthCheck);
             _logger.LogDebug("K8s HealthCheckResource {name} status updated to {status}", healthCheck.Metadata.Name, healthCheck.Status.Phase);
