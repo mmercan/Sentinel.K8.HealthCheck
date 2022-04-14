@@ -177,9 +177,9 @@ jobs:
         uses: mmercan/actions-set-secret@v/4.0.0
         with:
           name: "REDISCONNECTION"
-          value: ${{ env.connectionString }}
+          value: $connectionString
           repository: mmercan/Sentinel.K8.HealthCheck
-          environment: dev
+          environment: Dev
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: save to a file
