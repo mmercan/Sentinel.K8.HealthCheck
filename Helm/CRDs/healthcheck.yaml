@@ -31,6 +31,9 @@ spec:
         - name: Status
           type: string
           jsonPath: .status.phase
+        - name: LastCheck
+          type: date
+          jsonPath: .status.lastCheckTime
       schema:
         openAPIV3Schema:
           type: object
@@ -66,6 +69,7 @@ spec:
               properties:
                 lastCheckTime:
                   type: string
+                  format: date-time
                 lastFailureTime:
                   description: LastFailureTime is the time as recorded by the Certificate controller of the most recent failure to complete a CertificateRequest for this Certificate resource. If set, cert-manager will not re-request another Certificate until 1 hour has elapsed from this time.
                   type: string
