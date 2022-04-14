@@ -25,7 +25,7 @@ namespace Sentinel.Common.HttpClientServices
         }
 
 
-        public async Task<List<IsAliveAndWellResult>> DownloadAsync(ServiceV1 service, HealthCheckResourceV1 healthcheck)
+        public async Task<IsAliveAndWellResult> DownloadAsync(ServiceV1 service, HealthCheckResourceV1 healthcheck)
         {
             var results = new List<IsAliveAndWellResult>();
             var headers = new Dictionary<string, string>();
@@ -85,8 +85,10 @@ namespace Sentinel.Common.HttpClientServices
                     break;
                 }
             }
-
-            return results;
+            if (results.Count == 1) return results[0];
+            var successResult = results.FirstOrDefault(x => x.IsSuccessStatusCode);
+            if (successResult is not null) return successResult;
+            return results.FirstOrDefault();
         }
 
         public async Task<IsAliveAndWellResult> DownloadAsync(HttpRequestMessage message)

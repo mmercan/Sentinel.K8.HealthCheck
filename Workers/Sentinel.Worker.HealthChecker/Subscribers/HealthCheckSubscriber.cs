@@ -87,36 +87,35 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             {
                 serviceFound = true;
                 serviceName = healthcheck.RelatedService.NameandNamespace;
-                var results = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService, healthcheck);
-                this.QueueHealthCheckK8sUpdate(healthcheck, results);
-                this.saveToMongo(healthcheck, results);
+                var result = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService, healthcheck);
+                this.QueueHealthCheckK8sUpdate(healthcheck, result);
+                await this.saveToMongo(healthcheck, result);
             }
             _logger.LogInformation("HealthCheckSubscriber: Handler Received an item : " + healthcheck.Key + " Service Found: " + serviceFound + " service name: " + serviceName);
             // _ResetEvent.Set();
         }
 
-        private void saveToMongo(HealthCheckResourceV1 healthcheck, List<IsAliveAndWellResult> results)
+        private async Task saveToMongo(HealthCheckResourceV1 healthcheck, IsAliveAndWellResult result)
         {
-            List<IsAliveAndWellResultTimeSerie> timeSeries = new List<IsAliveAndWellResultTimeSerie>();
+
             var items = _isAliveAndWellRepoTimeSeries.Items;
-            foreach (var item in results)
-            {
-                var timeSerie = IsAliveAndWellResultTimeSerie.FromIsAliveAndWellResult(healthcheck, item);
-                timeSeries.Add(timeSerie);
-            }
-            var ids = string.Join(",", results.Select(x => x.Id).ToList());
-            _logger.LogInformation("{resultsCount} IsAliveAndWellResult adding to Mongo. {ids}", results.Count().ToString(), ids);
-            items.InsertMany(timeSeries);
-            _isAliveAndWellRepo.Items.InsertMany(results);
-            _logger.LogInformation("{resultsCount} IsAliveAndWellResult added to Mongo.", results.Count().ToString());
+
+            var timeSerie = IsAliveAndWellResultTimeSerie.FromIsAliveAndWellResult(healthcheck, result);
+
+
+            var ids = result.Id;
+            _logger.LogInformation(" IsAliveAndWellResult adding to Mongo. {ids}", ids);
+            await _isAliveAndWellRepoTimeSeries.AddAsync(timeSerie);
+            await _isAliveAndWellRepo.AddAsync(result);
+            _logger.LogInformation("{resultsCount} IsAliveAndWellResult added to Mongo. {ids}", ids);
         }
 
 
-        private void QueueHealthCheckK8sUpdate(HealthCheckResourceV1 healthcheck, List<IsAliveAndWellResult> results)
+        private void QueueHealthCheckK8sUpdate(HealthCheckResourceV1 healthcheck, IsAliveAndWellResult result)
         {
             IsAliveAndWellResultListWithHealthCheck check = new IsAliveAndWellResultListWithHealthCheck();
             check.HealthCheck = healthcheck;
-            check.IsAliveAndWellResults = results;
+            check.IsAliveAndWellResult = result;
             _bus.PubSub.PublishAsync(check, _configuration["queue:healthcheckStatusUpdate"]).ContinueWith(task =>
              {
                  if (task.IsCompleted && !task.IsFaulted)

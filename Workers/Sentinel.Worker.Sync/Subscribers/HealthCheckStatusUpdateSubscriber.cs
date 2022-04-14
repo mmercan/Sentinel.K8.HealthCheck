@@ -64,38 +64,14 @@ namespace Sentinel.Worker.Sync.Subscribers
             var Namespace = healthcheck.HealthCheck.Namespace;
             var HealthCheckUid = healthcheck.HealthCheck.Uid;
 
+            var status = healthcheck.IsAliveAndWellResult.Status;
+            await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(Name, Namespace, status, DateTime.UtcNow);
 
-            if (healthcheck.IsAliveAndWellResults.Count == 1)
-            {
-                var status = healthcheck.IsAliveAndWellResults.FirstOrDefault().Status;
-                await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(Name, Namespace, status, DateTime.UtcNow);
-
-                // await _k8sGeneralService.EventClient.CountUpOrCreateEvent(
-                //      Namespace, Name, HealthCheckUid,  HealthCheckResourceV1.ApiVersion,
-                //               serviceResourceVersion, message, type: "Normal");
-                _logger.LogInformation("HealthCheckSubscriber: Received status update for " + Name + " in namespace " + Namespace + " with status " + status + ". Check Url : " + healthcheck.IsAliveAndWellResults.FirstOrDefault().CheckedUrl);
-            }
-            if (healthcheck.IsAliveAndWellResults.Count > 1)
-            {
-                var success = healthcheck.IsAliveAndWellResults.Where(p => p.IsSuccessStatusCode == true).SingleOrDefault();
-                if (success is null)
-                {
-
-                }
-                this.ReportHealthy();
-                bool serviceFound = false;
-                string serviceName = "";
-                // if (healthcheck.RelatedService != null)
-                // {
-                //     serviceFound = true;
-                //     serviceName = healthcheck.RelatedService.NameandNamespace;
-                //     //  var results = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService, healthcheck);
-                //     //  this.QueueHealthCheckK8sUpdate(healthcheck, results);
-                //     //  this.saveToMongo(healthcheck, results);
-                // }
-                // _logger.LogInformation("HealthCheckSubscriber: Handler Received an item : " + healthcheck.Key + " Serevice Found: " + serviceFound + " service name: " + serviceName);
-                // _ResetEvent.Set();
-            }
+            // await _k8sGeneralService.EventClient.CountUpOrCreateEvent(
+            //      Namespace, Name, HealthCheckUid,  HealthCheckResourceV1.ApiVersion,
+            //               serviceResourceVersion, message, type: "Normal");
+            _logger.LogInformation("HealthCheckSubscriber: Received status update for " + Name + " in namespace " + Namespace + " with status " + status + ". Check Url : " + healthcheck.IsAliveAndWellResult.CheckedUrl);
+            this.ReportHealthy();
         }
 
         private void FindStatus(IsAliveAndWellResult result)

@@ -28,7 +28,7 @@ namespace Sentinel.Models.HealthCheck
 
     public class IsAliveAndWellResultListWithHealthCheck
     {
-        public List<IsAliveAndWellResult> IsAliveAndWellResults { get; set; } = default!;
+        public IsAliveAndWellResult IsAliveAndWellResult { get; set; } = default!;
         public HealthCheckResourceV1 HealthCheck { get; set; } = default!;
     }
 

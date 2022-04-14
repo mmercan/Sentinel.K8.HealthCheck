@@ -15,6 +15,7 @@ using Sentinel.Tests.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 using FluentAssertions;
+using System.Net;
 
 namespace Sentinel.Common.Tests.HttpClientServices
 {
@@ -125,7 +126,9 @@ namespace Sentinel.Common.Tests.HttpClientServices
             {
                 var downTask = downloader.DownloadAsync(serv, hc);
                 downTask.Wait(TimeSpan.FromSeconds(50));
-                downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+
+                //downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+                downTask.Result.IsSuccessStatusCode.Should().BeTrue();
 
             }).Wait(TimeSpan.FromSeconds(60));
 
@@ -162,8 +165,8 @@ namespace Sentinel.Common.Tests.HttpClientServices
             {
                 var downTask = downloader.DownloadAsync(serv, hc);
                 downTask.Wait(TimeSpan.FromSeconds(50));
-                downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
-
+                //downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+                downTask.Result.IsSuccessStatusCode.Should().BeTrue();
             }).Wait(TimeSpan.FromSeconds(60));
 
             Assert.NotNull(serv);
@@ -197,7 +200,7 @@ namespace Sentinel.Common.Tests.HttpClientServices
             {
                 var downTask = downloader.DownloadAsync(serv, hc);
                 downTask.Wait(TimeSpan.FromSeconds(50));
-                downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+                // downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
 
             }).Wait(TimeSpan.FromSeconds(60));
 
@@ -236,7 +239,8 @@ namespace Sentinel.Common.Tests.HttpClientServices
                 //  downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().NotBeEmpty();
 
 
-                downTask.Result.Where(x => x.Status == "Unauthorized").Should().NotBeEmpty();
+                // downTask.Result.Where(x => x.Status == "Unauthorized").Should().NotBeEmpty();
+                downTask.Result.IsSuccessStatusCode.Should().BeTrue();
 
             }).Wait(TimeSpan.FromSeconds(60));
 
@@ -276,7 +280,8 @@ namespace Sentinel.Common.Tests.HttpClientServices
             {
                 var downTask = downloader.DownloadAsync(serv, hc);
                 downTask.Wait(TimeSpan.FromSeconds(50));
-                downTask.Result.Where(x => x.Status == "InternalServerError").Should().NotBeEmpty();
+                // downTask.Result.Where(x => x.Status == "InternalServerError").Should().NotBeEmpty();
+                downTask.Result.Status.Should().Be("InternalServerError");
 
             }).Wait(TimeSpan.FromSeconds(60));
 
@@ -312,7 +317,8 @@ namespace Sentinel.Common.Tests.HttpClientServices
             {
                 var downTask = downloader.DownloadAsync(serv, hc);
                 downTask.Wait(TimeSpan.FromSeconds(50));
-                downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+                // downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
+                downTask.Result.IsSuccessStatusCode.Should().BeTrue();
 
             }).Wait(TimeSpan.FromSeconds(60));
 
