@@ -174,13 +174,10 @@ jobs:
             fi
 
       - name: save secret
-        uses: mmercan/actions-set-secret@v/4.0.0
-        with:
-          name: "REDISCONNECTION"
-          value: $connectionString
-          repository: mmercan/Sentinel.K8.HealthCheck
-          environment: Dev
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        run: |
+          gh secret set REDISCONNECTION --body "$connectionString" --env Dev
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: save to a file
         run: |
