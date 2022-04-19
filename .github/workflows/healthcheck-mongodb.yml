@@ -182,10 +182,7 @@ jobs:
             fi
 
       - name: save secret
-        uses: mmercan/actions-set-secret@v/4.0.0
-        with:
-          name: "Mongodb__ConnectionString"
-          value: ${{ env.connectionString }}
-          repository: mmercan/Sentinel.K8.HealthCheck
-          environment: dev
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+        run: |
+          gh secret set Mongodb__ConnectionString --body "$connectionString" --env Dev
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
