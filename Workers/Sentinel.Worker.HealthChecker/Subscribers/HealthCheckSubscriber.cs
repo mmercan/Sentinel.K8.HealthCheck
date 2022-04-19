@@ -112,7 +112,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             _logger.LogInformation(" IsAliveAndWellResult adding to Mongo. {ids}", ids);
             await _isAliveAndWellRepoTimeSeries.AddAsync(timeSerie);
             await _isAliveAndWellRepo.AddAsync(result);
-            _logger.LogInformation("{resultsCount} IsAliveAndWellResult added to Mongo. {ids}", ids);
+            _logger.LogInformation("IsAliveAndWellResult added to Mongo. {ids}", ids);
         }
 
 
