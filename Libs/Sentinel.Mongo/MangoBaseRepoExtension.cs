@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Sentinel.Mongo;
 
 
@@ -31,6 +32,11 @@ namespace Microsoft.Extensions.DependencyInjection
             serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
             {
                 var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
+                if (logger == null)
+                {
+                    //TODO :should throw exception or use NullLogger when logger is null
+                    logger = new NullLogger<MongoBaseRepo<T>>();
+                }
                 return new MongoBaseRepo<T>(options["ConnectionString"], options["DatabaseName"], collectionName, logger);
             });
 
@@ -67,6 +73,11 @@ namespace Microsoft.Extensions.DependencyInjection
             serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
             {
                 var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
+                if (logger == null)
+                {
+                    //TODO :should throw exception or use NullLogger when logger is null
+                    logger = new NullLogger<MongoBaseRepo<T>>();
+                }
                 return new MongoBaseRepo<T>(connectionString, databaseName, collectionName, logger);
             });
 
@@ -84,6 +95,11 @@ namespace Microsoft.Extensions.DependencyInjection
             serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
             {
                 var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
+                if (logger == null)
+                {
+                    //TODO :should throw exception or use NullLogger when logger is null
+                    logger = new NullLogger<MongoBaseRepo<T>>();
+                }
                 logger.LogInformation("databasename : " + databaseName + " collectionName : " + collectionName);
                 return new MongoBaseRepo<T>(connectionString, databaseName, collectionName, IdField, logger);
             });
@@ -104,6 +120,11 @@ namespace Microsoft.Extensions.DependencyInjection
             serviceCollection.AddSingleton<MongoBaseRepo<T>>((ctx) =>
             {
                 var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
+                if (logger == null)
+                {
+                    //TODO :should throw exception or use NullLogger when logger is null
+                    logger = new NullLogger<MongoBaseRepo<T>>();
+                }
                 logger.LogInformation("databasename : " + databaseName + " collectionName : " + collectionName);
                 return new MongoBaseRepo<T>(connectionString, databaseName, collectionName, IdField, timestampFileld, metaFileld, logger);
             });

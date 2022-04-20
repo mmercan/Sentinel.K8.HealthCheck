@@ -83,8 +83,17 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
                 serviceFound = true;
                 serviceName = healthcheck.RelatedService.NameandNamespace;
                 var result = await _isAliveAndWelldownloader.DownloadAsync(healthcheck.RelatedService, healthcheck);
-                this.QueueHealthCheckK8sUpdate(healthcheck, result);
-                await this.saveToMongo(healthcheck, result);
+                if (result != null)
+                {
+                    this.QueueHealthCheckK8sUpdate(healthcheck, result);
+                    await this.saveToMongo(healthcheck, result);
+                }
+                else
+                {
+                    _logger.LogInformation("HealthCheckSubscriber: Handler Received an item but AliveAndWelldownloader result is null");
+                }
+
+
             }
             else
             {

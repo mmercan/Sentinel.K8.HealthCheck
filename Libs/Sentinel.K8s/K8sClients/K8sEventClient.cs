@@ -44,7 +44,7 @@ namespace Sentinel.K8s.K8sClients
             return events.Items;
         }
 
-        public async Task<Corev1Event> FindEventAsync(string namespaceParam, string Uid, string message)
+        public async Task<Corev1Event?> FindEventAsync(string namespaceParam, string Uid, string message)
         {
             var events = await _k8sclient.ApiClient.ListNamespacedEventAsync(namespaceParam);
             var res = events.Items.FirstOrDefault(p => p.InvolvedObject.Uid == Uid && p.Message == message);
@@ -111,7 +111,7 @@ namespace Sentinel.K8s.K8sClients
             string type = "Warning"
             )
         {
-            Corev1Event v1event = null;
+            Corev1Event? v1event = null;
             v1event = await FindEventAsync(Namespace, Uid, message);
             if (v1event != null)
             {

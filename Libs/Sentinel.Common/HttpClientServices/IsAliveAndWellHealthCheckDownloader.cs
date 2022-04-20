@@ -25,7 +25,7 @@ namespace Sentinel.Common.HttpClientServices
         }
 
 
-        public async Task<IsAliveAndWellResult> DownloadAsync(ServiceV1 service, HealthCheckResourceV1 healthcheck)
+        public async Task<IsAliveAndWellResult?> DownloadAsync(ServiceV1 service, HealthCheckResourceV1 healthcheck)
         {
             var results = new List<IsAliveAndWellResult>();
             var headers = new Dictionary<string, string>();
@@ -131,22 +131,23 @@ namespace Sentinel.Common.HttpClientServices
 
             result.Id = Guid.NewGuid().ToString();
             result.CheckedAt = DateTime.UtcNow;
-            result.CheckedUrl = message.RequestUri.AbsoluteUri.ToString();
-
+            if (!string.IsNullOrEmpty(message?.RequestUri?.AbsoluteUri.ToString()))
+            {
+                result.CheckedUrl = message.RequestUri.AbsoluteUri.ToString();
+            }
             return await Task.FromResult(result);
         }
 
 
         public bool isDomainExist(string address)
         {
-            System.Net.WebRequest request = System.Net.WebRequest.Create(address);
-            request.Method = "HEAD";
+            HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Head, address);
             try
             {
-                var r = request.GetResponse();
+                _client.SendAsync(message).Wait();
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }

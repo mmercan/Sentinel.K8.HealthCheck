@@ -17,7 +17,7 @@ namespace Sentinel.Mongo.Tests
 
         private readonly ITestOutputHelper output;
         private readonly IConfiguration config;
-        private readonly HttpClient client;
+
         private readonly IOptions<MongoBaseRepoSettings<IsAliveAndWellResult>> settingsOptions;
 
         private readonly MongoBaseRepo<IsAliveAndWellResult> repo;

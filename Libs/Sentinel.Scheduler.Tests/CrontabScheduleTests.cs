@@ -22,7 +22,7 @@ namespace Sentinel.Scheduler.Tests
             var when = schedule.GetNextOccurrence(DateTime.Now);
             var whentime = when.ToShortTimeString();
             var whendate = when.ToShortDateString();
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 
@@ -33,7 +33,7 @@ namespace Sentinel.Scheduler.Tests
             var when = schedule.GetNextOccurrence(DateTime.Now);
             var whentime = when.ToShortTimeString();
             var whendate = when.ToShortDateString();
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 
@@ -44,7 +44,7 @@ namespace Sentinel.Scheduler.Tests
             var when = schedule.GetNextOccurrence(DateTime.Now);
             var whentime = when.ToShortTimeString();
             var whendate = when.ToShortDateString();
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 
@@ -56,7 +56,7 @@ namespace Sentinel.Scheduler.Tests
             var when = schedule.GetNextOccurrence(DateTime.Now);
             var whentime = when.ToShortTimeString();
             var whendate = when.ToShortDateString();
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 
@@ -67,7 +67,7 @@ namespace Sentinel.Scheduler.Tests
             var when = schedule.GetNextOccurrence(DateTime.Now);
             var whentime = when.ToShortTimeString();
             var whendate = when.ToShortDateString();
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 
@@ -95,7 +95,7 @@ namespace Sentinel.Scheduler.Tests
             var when = schedule.GetNextOccurrence(DateTime.Now);
             var whentime = when.ToShortTimeString();
             var whendate = when.ToShortDateString();
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 
@@ -106,7 +106,7 @@ namespace Sentinel.Scheduler.Tests
             var when = schedule.GetNextOccurrence(DateTime.Now, DateTime.Now.AddHours(2));
             var whentime = when.ToShortTimeString();
             var whendate = when.ToShortDateString();
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
         [Fact]
@@ -116,7 +116,7 @@ namespace Sentinel.Scheduler.Tests
             var when = schedule.GetNextOccurrence(DateTime.Now, DateTime.Now.AddHours(-2));
             var whentime = when.ToShortTimeString();
             var whendate = when.ToShortDateString();
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 
@@ -131,7 +131,7 @@ namespace Sentinel.Scheduler.Tests
 
             schedule.ToString();
 
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 
@@ -145,7 +145,7 @@ namespace Sentinel.Scheduler.Tests
             var whendate = when.ToShortDateString();
 
             var nextOccurrences = schedule.GetNextOccurrences(DateTime.Now, DateTime.Now.AddHours(3));
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 
@@ -160,7 +160,7 @@ namespace Sentinel.Scheduler.Tests
             var whendate = when.ToShortDateString();
 
             var nextOccurrences = schedule.GetNextOccurrences(dt, dt.AddHours(3));
-            Assert.NotNull(when);
+            Assert.NotEqual(when, DateTime.MinValue);
         }
 
 

@@ -286,7 +286,7 @@ namespace Sentinel.Worker.Sync.Tests
             dic.AddMultiple(list1);
             dic.Sync(list2);
 
-            Assert.Equal(dic.Count, 2);
+            Assert.Equal(2, dic.Count);
 
         }
 
@@ -308,7 +308,7 @@ namespace Sentinel.Worker.Sync.Tests
             dic.AddMultiple(list1);
             dic.Sync(list2, p => p.Id);
 
-            Assert.Equal(dic.Count, 2);
+            Assert.Equal(2, dic.Count);
         }
     }
 }

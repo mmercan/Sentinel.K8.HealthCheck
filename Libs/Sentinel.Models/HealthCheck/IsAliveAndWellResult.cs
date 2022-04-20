@@ -49,8 +49,8 @@ namespace Sentinel.Models.HealthCheck
             IsAliveAndWellResultTimeSerie timeSerie = new IsAliveAndWellResultTimeSerie();
             timeSerie.Id = ObjectId.GenerateNewId();
             timeSerie.Metadata = new IsAliveAndWellResultTimeSerieMetadata();
-            timeSerie.Metadata.Namespace = healthcheck.RelatedService?.Namespace;
-            timeSerie.Metadata.ServiceName = healthcheck.RelatedService?.Name;
+            timeSerie.Metadata.Namespace = healthcheck.RelatedService.Namespace;
+            timeSerie.Metadata.ServiceName = healthcheck.RelatedService.Name;
             timeSerie.Metadata.CheckedUrl = result.CheckedUrl;
 
             // timeSerie.ResultDetailId = result.ResultDetailId;

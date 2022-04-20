@@ -21,93 +21,73 @@ namespace Sentinel.Mongo
         public string IdFieldName { get; private set; }
         private string collectionName;
 
-        private string timestampFieldName;
-        private string metaFieldName;
+        private string? timestampFieldName;
+        private string? metaFieldName;
         readonly ILogger<MongoBaseRepo<T>> logger;
         private readonly bool isTimeSeries = false;
-        public MongoBaseRepo(IOptions<MongoBaseRepoSettings<T>> options, ILogger<MongoBaseRepo<T>> logger, string collectionName) : this(options.Value.ConnectionString, options.Value.DatabaseName, collectionName, logger)
+        public MongoBaseRepo(IOptions<MongoBaseRepoSettings<T>> options, ILogger<MongoBaseRepo<T>> logger, string collectionName)
+        : this(options.Value.ConnectionString, options.Value.DatabaseName, collectionName, logger)
         {
 
         }
 
-        public MongoBaseRepo(IOptions<MongoBaseRepoSettings<T>> options, ILogger<MongoBaseRepo<T>> logger) : this(options.Value.ConnectionString, options.Value.DatabaseName, options.Value.CollectionName, logger)
+        public MongoBaseRepo(IOptions<MongoBaseRepoSettings<T>> options, ILogger<MongoBaseRepo<T>> logger)
+        : this(options.Value.ConnectionString, options.Value.DatabaseName, options.Value.CollectionName, logger)
         {
 
         }
 
-        public MongoBaseRepo(string connectionString, string databaseName, string collectionName, string IdField, ILogger<MongoBaseRepo<T>> logger)
-        {
-            this.logger = logger;
-            init(connectionString, databaseName, collectionName, IdField);
-        }
-
-        public MongoBaseRepo(string connectionString, string databaseName, string collectionName, ILogger<MongoBaseRepo<T>> logger) : this(connectionString, databaseName, collectionName, null as Expression<Func<T, object>>, logger)
+        public MongoBaseRepo(string connectionString, string databaseName, string collectionName, ILogger<MongoBaseRepo<T>> logger)
+        : this(connectionString, databaseName, collectionName, null as string, logger)
         {
 
         }
 
         public MongoBaseRepo(string connectionString, string databaseName, string collectionName, Expression<Func<T, object>> IdField, ILogger<MongoBaseRepo<T>> logger)
+        : this(connectionString, databaseName, collectionName, ExtractPropertyNameFromExpression(IdField), logger)
         {
-            this.logger = logger;
-            string? field = null;
-            if (IdField?.Body != null && IdField.Body is MemberExpression)
-            {
-                field = (IdField.Body as MemberExpression).Member.Name;
-            }
-            this.init(connectionString, databaseName, collectionName, field);
+
         }
 
         public MongoBaseRepo(string connectionString, string databaseName, string collectionName,
-        Expression<Func<T, object>> IdField,
+        Expression<Func<T, object>> idField,
         Expression<Func<T, object>> timestampFileld,
         Expression<Func<T, object>> metaFileld,
         ILogger<MongoBaseRepo<T>> logger)
+        : this(connectionString, databaseName, collectionName, ExtractPropertyNameFromExpression(idField), logger)
         {
-            this.logger = logger;
-            string? field = null;
-            if (IdField?.Body != null && IdField.Body is MemberExpression)
-            {
-                field = (IdField.Body as MemberExpression).Member.Name;
-            }
-
-            if (timestampFileld?.Body != null && timestampFileld.Body is MemberExpression)
-            {
-                timestampFieldName = (timestampFileld.Body as MemberExpression).Member.Name;
-            }
-            else if (timestampFileld?.Body != null && timestampFileld.Body is UnaryExpression)
-            {
-                timestampFieldName = ((timestampFileld.Body as UnaryExpression).Operand as MemberExpression)?.Member.Name;
-            }
-
-
-            if (metaFileld?.Body != null && metaFileld.Body is MemberExpression)
-            {
-                metaFieldName = (metaFileld.Body as MemberExpression).Member.Name;
-            }
+            timestampFieldName = ExtractPropertyNameFromExpression(timestampFileld);
+            metaFieldName = ExtractPropertyNameFromExpression(metaFileld);
             this.isTimeSeries = true;
 
-            this.init(connectionString, databaseName, collectionName, field);
-
             var check = CollectionExistsAsync(collectionName);
-            Task.WaitAll(check);
+            check.Wait();
+
             if (!check.Result)
             {
                 CreateTimeSeriesCollection(collectionName, this.timestampFieldName, metaFieldName);
             }
         }
 
-        private void init(string connectionString, string databaseName, string collectionName, string? IdField)
+        public MongoBaseRepo(string connectionString, string databaseName, string collectionName, string? idField, ILogger<MongoBaseRepo<T>> logger)
         {
-            if (IdField != null)
+            this.logger = logger;
+            //init(connectionString, databaseName, collectionName, idField);
+            if (idField != null)
             {
-                this.IdFieldName = IdField;
+                this.IdFieldName = idField;
                 CreateIdMap();
             }
             else
             {
                 if (BsonClassMap.IsClassMapRegistered(typeof(T)))
                 {
-                    this.IdFieldName = BsonClassMap.LookupClassMap(typeof(T))?.IdMemberMap?.MemberInfo?.Name;
+                    var field = BsonClassMap.LookupClassMap(typeof(T))?.IdMemberMap?.MemberInfo?.Name;
+                    if (field != null)
+                    {
+                        this.IdFieldName = field;
+
+                    }
                 }
                 if (IdFieldName == null)
                 {
@@ -130,6 +110,10 @@ namespace Sentinel.Mongo
                     {
                         this.IdFieldName = item.Name;
                     }
+                    if (this.IdFieldName == null)
+                    {
+                        throw new Exception("No Id field found");
+                    }
                 }
             }
 
@@ -140,6 +124,41 @@ namespace Sentinel.Mongo
             mongoClient = new MongoClient(connectionString);
             MongoDb = mongoClient.GetDatabase(databaseName);
         }
+
+
+
+        private static string? ExtractPropertyNameFromExpression(Expression<Func<T, object>> IdField)
+        {
+            string? field = null;
+            if (IdField?.Body != null && IdField.Body is MemberExpression)
+            {
+                var memberExpression = IdField.Body as MemberExpression;
+                if (memberExpression != null)
+                {
+                    field = memberExpression.Member.Name;
+                }
+                else
+                {
+                    //  field = IdField.Body.ToString();
+                }
+            }
+            else if (IdField?.Body != null && IdField.Body is UnaryExpression)
+            {
+                var unaryExpression = IdField.Body as UnaryExpression;
+                if (unaryExpression != null)
+                {
+                    var memberExpression = unaryExpression.Operand as MemberExpression;
+                    if (memberExpression != null)
+                    {
+                        field = memberExpression.Member.Name;
+                    }
+                }
+                //field = ((IdField.Body as UnaryExpression).Operand as MemberExpression)?.Member.Name;
+            }
+            return field;
+        }
+
+
         public IMongoCollection<T> Items
         {
             get
@@ -164,7 +183,7 @@ namespace Sentinel.Mongo
             }
         }
 
-        private IMongoCollection<T>? CreateTimeSeriesCollection(string collectionName, string timestamp, string? metaField)
+        private IMongoCollection<T>? CreateTimeSeriesCollection(string collectionName, string? timestamp, string? metaField)
         {
             if (string.IsNullOrEmpty(timestamp))
             {
@@ -255,17 +274,14 @@ namespace Sentinel.Mongo
         }
         public async Task<ReplaceOneResult> UpdateAsync(T item)
         {
-            if (IdFieldName != null)
-            {
-                var id = item.GetType().GetRuntimeProperty(IdFieldName).GetValue(item);
-                var filter = Builders<T>.Filter.Eq(IdFieldName, id);
-                var result = await Items.ReplaceOneAsync(filter, item);
-                return result;
-            }
-            else
-            {
-                throw new MissingFieldException("ID field not Defined, use Key or BsonId Attribute in your Model or define on the constructor");
-            }
+            if (IdFieldName == null) { throw new MissingFieldException("ID field not Defined, use Key or BsonId Attribute in your Model or define on the constructor"); }
+            if (item == null) { throw new ArgumentNullException("item Field can not be Null"); }
+
+            var id = item.GetType().GetRuntimeProperty(IdFieldName)?.GetValue(item);
+            var filter = Builders<T>.Filter.Eq(IdFieldName, id);
+            var result = await Items.ReplaceOneAsync(filter, item);
+            return result;
+
         }
         public async Task RemoveAsync(object id)
         {
@@ -279,31 +295,35 @@ namespace Sentinel.Mongo
             if (IdFieldName == null) { throw new MissingFieldException("ID field not Defined, use Key or BsonId Attribute in your Model or define on the constructor"); }
             if (item == null) { throw new ArgumentNullException("item can not be Null"); }
 
-            var id = item.GetType().GetRuntimeProperty(IdFieldName).GetValue(item);
+            var id = item.GetType().GetRuntimeProperty(IdFieldName)?.GetValue(item);
             var filter = Builders<T>.Filter.Eq(IdFieldName, id);
             await Items.DeleteOneAsync(filter);
         }
 
-        public async Task Upsert(T item, Expression<Func<T, bool>> filter)
+        public Task Upsert(T item, Expression<Func<T, bool>> filter)
         {
-            await Items.ReplaceOneAsync(
+            return Items.ReplaceOneAsync(
                 filter: filter,
                 replacement: item,
-                options: new UpdateOptions { IsUpsert = true }
+                options: new ReplaceOptions { IsUpsert = true }
              );
         }
 
-        public async Task<T> GetAsync<TProperty>(Expression<Func<T, TProperty>> property, object value)
+        public async Task<T?> GetAsync<TProperty>(Expression<Func<T, TProperty>> property, object value)
         {
             if (property.Body is System.Linq.Expressions.MemberExpression)
             {
-                var pro = (property.Body as MemberExpression).Member;
-                var propertyName = nameof(pro.Name);
+                var memberExpression = property.Body as MemberExpression;
+                if (memberExpression != null)
+                {
+                    var pro = memberExpression.Member;
+                    var propertyName = nameof(pro.Name);
 
-                var filter = Builders<T>.Filter.Eq(propertyName, value);
-                return await Get(filter);
+                    var filter = Builders<T>.Filter.Eq(propertyName, value);
+                    return await Get(filter);
+                }
             }
-            else { return default(T); }
+            return default(T);
         }
         public async Task<bool> CollectionExistsAsync(string collectionName)
         {
