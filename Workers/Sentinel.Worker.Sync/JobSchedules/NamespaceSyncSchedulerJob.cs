@@ -1,27 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AutoMapper;
 using k8s;
-using Microsoft.Extensions.Logging;
 using Quartz;
 using Sentinel.K8s;
-using Sentinel.K8s.Watchers;
 using Sentinel.Models.K8sDTOs;
 using StackExchange.Redis;
-using System.Linq;
 using Sentinel.Redis;
 
 namespace Sentinel.Worker.Sync.JobSchedules
 {
-    public class NamespaceSchedulerJob : IJob
+    public class NamespaceSyncSchedulerJob : IJob
     {
         private readonly IKubernetesClient _k8sclient;
-        private readonly ILogger<NamespaceSchedulerJob> _logger;
+        private readonly ILogger<NamespaceSyncSchedulerJob> _logger;
         private readonly IMapper _mapper;
         private readonly RedisDictionary<NamespaceV1> redisDic;
 
-        public NamespaceSchedulerJob(ILogger<NamespaceSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
+        public NamespaceSyncSchedulerJob(ILogger<NamespaceSyncSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
             _k8sclient = k8sclient;
             _logger = logger;
@@ -38,7 +32,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             dtoitems.ForEach(p => p.LatestSyncDateUTC = syncTime);
             redisDic.UpSert(dtoitems);
 
-            _logger.LogInformation(dtoitems.Count.ToString() + " Namespaces have been synced");
+            _logger.LogInformation("{NamespaceCount} Namespaces have been synced", dtoitems.Count.ToString());
         }
     }
 }

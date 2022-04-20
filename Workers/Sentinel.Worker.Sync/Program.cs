@@ -97,20 +97,20 @@ namespace Sentinel.Worker.Sync
                 q.UseInMemoryStore();
                 q.UseDefaultThreadPool(tp => { tp.MaxConcurrency = 10; });
 
-                q.AddSchedulerJob<NamespaceSchedulerJob>(
-                    builder.Configuration.GetSection("Schedules:NamespaceScheduler"), 5);
+                q.AddSchedulerJob<NamespaceSyncSchedulerJob>(
+                    builder.Configuration.GetSection("Schedules:NamespaceSyncScheduler"), 5);
 
-                q.AddSchedulerJob<ServiceSchedulerJob>(
-                    builder.Configuration.GetSection("Schedules:ServiceScheduler"), 10);
+                q.AddSchedulerJob<ServiceSyncSchedulerJob>(
+                    builder.Configuration.GetSection("Schedules:ServicesSynccheduler"), 10);
 
-                q.AddSchedulerJob<DeploymentSchedulerJob>(
-                    builder.Configuration.GetSection("Schedules:DeploymentScheduler"), 15);
+                q.AddSchedulerJob<DeploymentSyncSchedulerJob>(
+                    builder.Configuration.GetSection("Schedules:DeploymentSyncScheduler"), 15);
 
-                q.AddSchedulerJob<HealthCheckSchedulerJob>(
-                    builder.Configuration.GetSection("Schedules:HealthCheckScheduler"), 20);
+                q.AddSchedulerJob<HealthCheckSyncSchedulerJob>(
+                    builder.Configuration.GetSection("Schedules:HealthCheckSyncScheduler"), 20);
 
-                q.AddSchedulerJob<DeploymentScalersShedulerJob>(
-                    builder.Configuration.GetSection("Schedules:DeploymentScalerScheduler"), 25);
+                q.AddSchedulerJob<DeploymentScalersSyncShedulerJob>(
+                    builder.Configuration.GetSection("Schedules:DeploymentScalerSyncScheduler"), 25);
             });
 
             builder.Services.AddQuartzServer(options =>

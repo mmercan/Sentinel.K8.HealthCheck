@@ -28,7 +28,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             _output.WriteLine("ServiceSchedulerJobShouldRun started");
 
 
-            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<ServiceSchedulerJob>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<ServiceSyncSchedulerJob>();
             var rediscon = RedisExtensions.GetRedisMultiplexer();
 
             var client = KubernetesClientTestHelper.GetKubernetesClient();
@@ -37,7 +37,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
             var k8sGeneralService = new K8sGeneralService(client, mapper, loggerRepo);
 
-            ServiceSchedulerJob job = new ServiceSchedulerJob(logger, k8sGeneralService, rediscon);
+            ServiceSyncSchedulerJob job = new ServiceSyncSchedulerJob(logger, k8sGeneralService, rediscon);
 
             CancellationTokenSource source = new CancellationTokenSource();
             source.CancelAfter(20 * 1000);

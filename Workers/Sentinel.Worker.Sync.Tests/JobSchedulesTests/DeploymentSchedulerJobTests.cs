@@ -26,7 +26,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             _output.WriteLine("DeploymentSchedulerJobShouldRun started");
 
             var client = KubernetesClientTestHelper.GetKubernetesClient();
-            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<DeploymentSchedulerJob>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<DeploymentSyncSchedulerJob>();
 
             var config = new MapperConfiguration(cfg =>
               {
@@ -36,7 +36,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
             IConnectionMultiplexer rediscon = RedisExtensions.GetRedisMultiplexer();
 
-            DeploymentSchedulerJob job = new DeploymentSchedulerJob(
+            DeploymentSyncSchedulerJob job = new DeploymentSyncSchedulerJob(
                 logger: logger,
                 k8sclient: client,
                 mapper: mapper,

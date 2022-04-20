@@ -29,7 +29,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             _output.WriteLine("HealthCheckSchedulerJobShouldRun started");
 
 
-            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<HealthCheckSchedulerJob>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<HealthCheckSyncSchedulerJob>();
 
             var config = new MapperConfiguration(cfg =>
               {
@@ -46,7 +46,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
             var k8sGeneralService = new K8sGeneralService(client, mapper, loggerRepo);
 
-            HealthCheckSchedulerJob job = new HealthCheckSchedulerJob(
+            HealthCheckSyncSchedulerJob job = new HealthCheckSyncSchedulerJob(
                 logger: logger,
                 k8sGeneralService,
                 mapper: mapper,

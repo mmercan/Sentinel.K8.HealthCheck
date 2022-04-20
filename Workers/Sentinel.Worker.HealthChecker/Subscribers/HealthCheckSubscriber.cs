@@ -1,10 +1,5 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using EasyNetQ;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sentinel.Common;
 using Sentinel.Common.HttpClientServices;

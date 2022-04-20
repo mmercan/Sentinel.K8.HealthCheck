@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using k8s;
-using k8s.Models;
-using Microsoft.Extensions.Logging;
 using Quartz;
 using Sentinel.K8s;
 using Sentinel.Models.CRDs;
@@ -15,14 +8,14 @@ using StackExchange.Redis;
 
 namespace Sentinel.Worker.Sync.JobSchedules
 {
-    public class DeploymentScalersShedulerJob : IJob
+    public class DeploymentScalersSyncShedulerJob : IJob
     {
-        private readonly ILogger<DeploymentScalersShedulerJob> _logger;
+        private readonly ILogger<DeploymentScalersSyncShedulerJob> _logger;
         private readonly IKubernetesClient _k8sclient;
         private readonly IMapper _mapper;
         private readonly RedisDictionary<DeploymentScalerResourceV1> redisDic;
 
-        public DeploymentScalersShedulerJob(ILogger<DeploymentScalersShedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
+        public DeploymentScalersSyncShedulerJob(ILogger<DeploymentScalersSyncShedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
             _logger = logger;
             _k8sclient = k8sclient;

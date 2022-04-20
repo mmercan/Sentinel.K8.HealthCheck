@@ -28,11 +28,11 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             _output.WriteLine("NamespaceSchedulerJobShouldRun started");
 
             var client = KubernetesClientTestHelper.GetKubernetesClient();
-            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<NamespaceSchedulerJob>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<NamespaceSyncSchedulerJob>();
             var mapper = GetIMapperExtension.GetIMapper(cfg => { cfg.AddProfile(new K8SMapper()); });
             var rediscon = RedisExtensions.GetRedisMultiplexer();
 
-            NamespaceSchedulerJob job = new NamespaceSchedulerJob(logger, client, mapper, rediscon);
+            NamespaceSyncSchedulerJob job = new NamespaceSyncSchedulerJob(logger, client, mapper, rediscon);
 
             // CancellationTokenSource source = new CancellationTokenSource();
             // source.CancelAfter(3 * 1000);

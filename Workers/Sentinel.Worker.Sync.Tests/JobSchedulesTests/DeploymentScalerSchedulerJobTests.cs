@@ -27,7 +27,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
             _output.WriteLine("DeploymentScalerSchedulerJobShouldRun Started");
 
             var client = KubernetesClientTestHelper.GetKubernetesClient();
-            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<DeploymentScalersShedulerJob>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<DeploymentScalersSyncShedulerJob>();
 
             var config = new MapperConfiguration(cfg =>
               {
@@ -39,7 +39,7 @@ namespace Sentinel.Worker.Sync.Tests.JobSchedulesTests
 
 
 
-            DeploymentScalersShedulerJob job = new DeploymentScalersShedulerJob(
+            DeploymentScalersSyncShedulerJob job = new DeploymentScalersSyncShedulerJob(
                 logger: logger,
                 k8sclient: client,
                 mapper: mapper,

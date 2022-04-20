@@ -1,28 +1,21 @@
-using System.Threading.Tasks;
 using k8s;
-using k8s.Models;
-using Microsoft.Extensions.Logging;
 using Quartz;
 using Sentinel.K8s;
-using Sentinel.Models.CRDs;
 using StackExchange.Redis;
-using System.Linq;
-using System;
 using AutoMapper;
-using System.Collections.Generic;
 using Sentinel.Models.K8sDTOs;
 using Sentinel.Redis;
 
 namespace Sentinel.Worker.Sync.JobSchedules
 {
-    public class DeploymentSchedulerJob : IJob
+    public class DeploymentSyncSchedulerJob : IJob
     {
-        private readonly ILogger<DeploymentSchedulerJob> _logger;
+        private readonly ILogger<DeploymentSyncSchedulerJob> _logger;
         private readonly IKubernetesClient _k8sclient;
         private readonly IMapper _mapper;
         private readonly RedisDictionary<DeploymentV1> redisDic;
 
-        public DeploymentSchedulerJob(ILogger<DeploymentSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
+        public DeploymentSyncSchedulerJob(ILogger<DeploymentSyncSchedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
             _logger = logger;
             _k8sclient = k8sclient;
