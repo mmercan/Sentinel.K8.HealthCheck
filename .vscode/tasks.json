@@ -63,5 +63,14 @@
             "${workspaceFolder}/Workers/Sentinel.Worker.Sync/Sentinel.Worker.Sync.csproj"
         ],
         "problemMatcher": "$msCompile"
+    },{
+        "label": "Sentinel.Worker.Core.build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/Workers/Sentinel.Worker.Core/Sentinel.Worker.Core.csproj"
+        ],
+        "problemMatcher": "$msCompile"
     }]
 }

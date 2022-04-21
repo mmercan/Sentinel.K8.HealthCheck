@@ -137,6 +137,25 @@
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             }
+        }, {
+            "name": "Sentinel.Worker.Core Launch",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "Sentinel.Worker.Core.build",
+            "program": "${workspaceFolder}/Workers/Sentinel.Worker.Core/bin/Debug/net6.0/Sentinel.Worker.Core.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Workers/Sentinel.Worker.Core",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
         }
         
 
