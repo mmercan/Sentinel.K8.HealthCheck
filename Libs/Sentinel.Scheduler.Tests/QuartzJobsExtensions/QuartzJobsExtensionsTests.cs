@@ -71,7 +71,10 @@ namespace Sentinel.Scheduler.Tests.QuartzJobsExtensions
                     var trigger = await schedulers.GetTrigger(new TriggerKey(name + "Trigger", jobDetail.Key.Group));
                     if (trigger == null) return;
                     var time = trigger.GetNextFireTimeUtc();
-                    var timestr = time.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+                    if (time.HasValue)
+                    {
+                        var timestr = time.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+                    }
                 }
             }
             var jobs = schedulers.Context;

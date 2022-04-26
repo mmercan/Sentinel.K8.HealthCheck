@@ -37,7 +37,7 @@ namespace Sentinel.Common.Middlewares
 
         public static void UseEndpointDefinitions(this WebApplication app)
         {
-            ILogger logger = app.Services.GetService<ILoggerFactory>()?.CreateLogger("EndpointDefinitionExtensions");
+            ILogger? logger = app.Services.GetService<ILoggerFactory>()?.CreateLogger("EndpointDefinitionExtensions");
 
 
             var definitions = app.Services.GetService<IReadOnlyCollection<IEndpointDefinition>>();
