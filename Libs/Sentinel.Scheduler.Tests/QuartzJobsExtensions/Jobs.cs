@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Quartz;
 
-namespace Libs.Sentinel.Scheduler.Tests.QuartzJobsExtensions
+namespace Sentinel.Scheduler.Tests.QuartzJobsExtensions
 {
     [QuartzJob(Description = "Job1 description", Group = "Job1Group", CronExpression = "0/5 * * * * ?")]
-    public class Job1 : IJob
+    public class TestJob1 : IJob
     {
         public Task Execute(IJobExecutionContext context)
         {
@@ -17,7 +17,7 @@ namespace Libs.Sentinel.Scheduler.Tests.QuartzJobsExtensions
 
 
     [QuartzJob(ConfigurationSection = "Schedules:NamespaceSyncScheduler")]
-    public class Job2 : IJob
+    public class TestJob2 : IJob
     {
         public Task Execute(IJobExecutionContext context)
         {

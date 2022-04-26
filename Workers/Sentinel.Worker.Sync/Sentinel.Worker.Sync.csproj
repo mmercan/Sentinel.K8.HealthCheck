@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-    <ItemGroup>
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="CrystalQuartz.AspNetCore" Version="6.11.0.3-beta" />
     <PackageReference Include="KubernetesClient" Version="6.0.1" />

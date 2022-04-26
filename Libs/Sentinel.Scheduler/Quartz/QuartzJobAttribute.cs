@@ -12,26 +12,26 @@ namespace Quartz
         /// <summary>
         ///     Configration section for the Job
         /// </summary>
-        public string ConfigurationSection { get; set; }
+        public string ConfigurationSection { get; set; } = default!;
         /// <summary>
         /// The name element for the Job's JobKey. default is the class name
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         /// <summary>
         /// The group element for the Job's JobKey.
         /// </summary>
-        public string Group { get; set; }
+        public string Group { get; set; } = default!;
 
         /// <summary>
         /// The given (human-meaningful) description of the Job.
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = default!;
 
         /// <summary>
         /// The CRON expression that defines when the Trigger is fired.
         /// </summary>
-        public string CronExpression { get; set; }
+        public string CronExpression { get; set; } = default!;
 
         /// <summary>
         /// The Trigger's priority. When more than one Trigger have the same fire time, the scheduler will fire the one with the highest priority first.
@@ -46,7 +46,7 @@ namespace Quartz
         /// <summary>
         /// Instructs the <see cref="Quartz.IScheduler"/> whether or not the job should be re-executed if a 'recovery' or 'fail-over' situation is encountered. (default: false)
         /// </summary>
-        public bool RequestRecovery { get; set; }
+        public bool RequestRecovery { get; set; } = default!;
 
         /// <summary>
         /// Is Job Enabled or not. (default: true)

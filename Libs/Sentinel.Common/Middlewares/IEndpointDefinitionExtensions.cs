@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Sentinel.Common.Middlewares
 {
@@ -36,10 +37,18 @@ namespace Sentinel.Common.Middlewares
 
         public static void UseEndpointDefinitions(this WebApplication app)
         {
+            ILogger logger = app.Services.GetService<ILoggerFactory>()?.CreateLogger("EndpointDefinitionExtensions");
+
+
             var definitions = app.Services.GetService<IReadOnlyCollection<IEndpointDefinition>>();
             if (definitions == null) return;
             foreach (var endpointDefinition in definitions)
             {
+                if (logger != null)
+                {
+                    logger.LogInformation($"Defining endpoint {endpointDefinition.GetType().Name}");
+                }
+
                 endpointDefinition.DefineEndpoints(app);
             }
 

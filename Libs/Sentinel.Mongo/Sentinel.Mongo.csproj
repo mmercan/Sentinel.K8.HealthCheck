@@ -14,4 +14,8 @@
     <PackageReference Include="MongoDB.Driver" Version="2.14.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Sentinel.Common\Sentinel.Common.csproj" />
+  </ItemGroup>
+
 </Project>

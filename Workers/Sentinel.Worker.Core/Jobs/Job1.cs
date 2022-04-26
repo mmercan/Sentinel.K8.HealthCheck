@@ -6,7 +6,7 @@ using Quartz;
 
 namespace Workers.Sentinel.Worker.Core.Jobs
 {
-    [QuartzJob(Name = "Job1", Description = "Job1 description", Group = "Job1Group", CronExpression = "0/5 * * * * ?")]
+    [QuartzJob(Name = "Job1", Description = "Job1 description", Group = "Job1Group", CronExpression = "0 */1 * * * ?")]
     public class Job1 : IJob
     {
         private readonly IConfiguration _config;

@@ -1,10 +1,15 @@
 using CrystalQuartz.Application;
 using CrystalQuartz.AspNetCore;
 using Quartz;
+using Sentinel.Common;
 using Sentinel.Common.Middlewares;
 using Sentinel.K8s;
+using Sentinel.PubSub;
+using Sentinel.Redis;
 using Sentinel.Scheduler;
 using Sentinel.Scheduler.Quartz;
+using Serilog;
+using Serilog.Events;
 
 namespace Sentinel.Worker.Core
 {
@@ -17,14 +22,22 @@ namespace Sentinel.Worker.Core
             var appname = System.AppDomain.CurrentDomain.FriendlyName;
 
             var builder = WebApplication.CreateBuilder(args);
+            builder.Host.UseSerilogAuto(appname, environment, LogEventLevel.Debug);
+            builder.Logging.AddSerilog();
 
             // Add services to the container.
             builder.Services.AddServiceDefinitions(
-                builder.Configuration, typeof(IK8sLibAssemblyMarker),
+                builder.Configuration,
+                typeof(ICommonLibAssemblyMarker),
+                typeof(IK8sLibAssemblyMarker),
+                typeof(IRedisLibAssemblyMarker),
+                typeof(ISchedulerLibAssemblyMarker),
+                typeof(IPubSubLibAssemblyMarker),
                 typeof(Sentinel.Worker.Core.Program)
-                );
-            builder.Services.AddAuthentication();
-            builder.Services.AddAuthorization();
+            );
+
+            // builder.Services.AddAuthentication();
+            // builder.Services.AddAuthorization();
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
             builder.Services.AddQuartzJobs(builder.Configuration, typeof(Program));
@@ -39,31 +52,8 @@ namespace Sentinel.Worker.Core
             //     app.UseHsts();
             // }
 
-            app.UseEndpointDefinitions();
-
             app.UseRouting();
-
-            app.UseAuthorization();
-
-            var options = new CrystalQuartzOptions
-            {
-                ErrorDetectionOptions = new CrystalQuartz.Application.ErrorDetectionOptions
-                { VerbosityLevel = ErrorVerbosityLevel.Detailed }
-            };
-
-            var schedulerFactory = app.Services.GetService<ISchedulerFactory>();
-            var scheduler = schedulerFactory?.GetScheduler().GetAwaiter().GetResult();
-            app.UseCrystalQuartz(() => scheduler, options);
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    context.Response.ContentType = "application/json";
-                    await context.Response.WriteAsync("{\"IsAlive\":true}");
-                });
-            });
-
+            app.UseEndpointDefinitions();
             app.Run();
         }
     }

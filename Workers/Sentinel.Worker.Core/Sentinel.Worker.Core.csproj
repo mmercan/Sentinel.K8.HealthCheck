@@ -11,6 +11,7 @@
     <ProjectReference Include="..\..\Libs\Sentinel.K8s\Sentinel.K8s.csproj" />
     <ProjectReference Include="..\..\Libs\Sentinel.Redis\Sentinel.Redis.csproj" />
     <ProjectReference Include="..\..\Libs\Sentinel.Scheduler\Sentinel.Scheduler.csproj" />
+    <ProjectReference Include="..\..\Libs\Sentinel.PubSub\Sentinel.PubSub.csproj" />
   </ItemGroup>
 
     <ItemGroup>
@@ -19,6 +20,8 @@
     <PackageReference Include="StackExchange.Redis" Version="2.2.50" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="Turquoise.HealthChecks.Common" Version="2.2.1-ci-20211110.4" />
+    <PackageReference Include="Turquoise.HealthChecks.RabbitMQ" Version="2.2.1-ci-20211110.4" />
+    <PackageReference Include="Turquoise.HealthChecks.Redis" Version="2.2.1-ci-20200720.14" />
   </ItemGroup>
 
 </Project>

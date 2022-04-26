@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Quartz.AspNetCore" Version="3.3.3" />
+    <PackageReference Include="CrystalQuartz.AspNetCore" Version="6.11.0.3-beta" />
   </ItemGroup>
 
   <ItemGroup>

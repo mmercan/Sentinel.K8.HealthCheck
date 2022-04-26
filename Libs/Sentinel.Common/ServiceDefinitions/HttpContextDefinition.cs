@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sentinel.Common.Middlewares;
-using Microsoft.AspNetCore.Builder;
-namespace Sentinel.Mongo.ServiceDefinitions
+
+namespace Libs.Sentinel.Common.ServiceDefinitions
 {
-    public class MongoServiceDefinition : IEndpointDefinition
+    public class HttpContextDefinition : IEndpointDefinition
     {
         public void DefineEndpoints(WebApplication app)
         {
@@ -17,7 +18,7 @@ namespace Sentinel.Mongo.ServiceDefinitions
 
         public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
         {
-
+            services.AddHttpContextAccessor();
         }
     }
 }
