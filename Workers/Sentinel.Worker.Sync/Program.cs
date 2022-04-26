@@ -40,7 +40,7 @@ namespace Sentinel.Worker.Sync
 
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Host.UseSerilogAuto(appname, environment, LogEventLevel.Debug);
+            builder.Host.UseSerilogAuto(appname, environment, LogEventLevel.Information);
 
             if (builder.Configuration["RunOnCluster"] == "true") { builder.Services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.InClusterConfig()); }
             else { builder.Services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.BuildConfigFromConfigFile()); }
