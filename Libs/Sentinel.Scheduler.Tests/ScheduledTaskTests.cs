@@ -25,8 +25,10 @@ namespace Sentinel.Scheduler.Tests
 
             var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<GeneralScheduler.ScheduledTask<HealthCheckResourceV1>>();
 
-            ScheduledTask<HealthCheckResourceV1> wrapper = new GeneralScheduler.ScheduledTask<HealthCheckResourceV1>(logger);
-            wrapper.Schedule = CrontabSchedule.Parse("*/3 * * * *");
+            HealthCheckResourceV1 item = new HealthCheckResourceV1 { Schedule = "*/3 * * * *" };
+
+            ScheduledTask<HealthCheckResourceV1> wrapper = new GeneralScheduler.ScheduledTask<HealthCheckResourceV1>(logger, item);
+           // wrapper.Schedule = CrontabSchedule.Parse("*/3 * * * *");
             wrapper.Increment();
             wrapper.ShouldRun(System.DateTime.Now, tzi);
             //CrontabSchedule schedule 

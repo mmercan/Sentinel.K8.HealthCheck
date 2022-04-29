@@ -5,6 +5,7 @@ using Quartz;
 using Sentinel.Models.Redis;
 using Sentinel.Models.Scheduler;
 using Sentinel.Redis;
+using Sentinel.Scheduler.GeneralScheduler;
 using StackExchange.Redis;
 
 namespace Sentinel.Scheduler
@@ -34,32 +35,32 @@ namespace Sentinel.Scheduler
 
         public void Sync()
         {
-            var ItemsInRedisButNotinRepo = redisDictionary.Keys.Where(redisKey => !_schedulerRepository.Items.Any(repo => repo.Key == redisKey));
-            var ItemsInRepoButNotinRedis = _schedulerRepository.Items.Where(repo => !redisDictionary.Keys.Any(redisKey => redisKey == repo.Key));
+            var ItemsInRedisButNotinRepo = redisDictionary.Keys.Where(redisKey => !_schedulerRepository.ScheduledTasks.Any(repo => repo.Task.Key == redisKey));
+            var ItemsInRepoButNotinRedis = _schedulerRepository.ScheduledTasks.Where(repo => !redisDictionary.Keys.Any(redisKey => redisKey == repo.Task.Key));
 
             //Add items To Repo
             foreach (var itemKey in ItemsInRedisButNotinRepo)
             {
                 var itm = redisDictionary[itemKey];
-                _schedulerRepository.Items.Add(itm);
+                _schedulerRepository.Add(itm);
             }
 
             //Remove removed items from Repo
             foreach (var item in ItemsInRepoButNotinRedis)
             {
-                _schedulerRepository.Items.Remove(item);
-                _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {item.Key} Removed ");
+                _schedulerRepository.ScheduledTasks.Remove(item);
+                _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {item.Task.Key} Removed ");
             }
 
             foreach (var pair in redisDictionary)
             {
-                if (pair.Value.Schedule != _schedulerRepository.Items.FirstOrDefault(x => x.Key == pair.Key)?.Schedule)
+                if (pair.Value.Schedule != _schedulerRepository.ScheduledTasks.FirstOrDefault(x => x.Task.Key == pair.Key)?.Task.Schedule)
                 {
                     _schedulerRepository.UpdateItem(pair.Value);
                     _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {pair.Key} updated  new Schedule {pair.Value.Schedule}");
                 }
             }
-            _logger.LogDebug("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.Items.Count.ToString() + " items");
+            _logger.LogDebug("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.ScheduledTasks.Count.ToString() + " items");
         }
     }
 }

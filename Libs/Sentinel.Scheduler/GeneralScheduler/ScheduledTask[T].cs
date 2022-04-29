@@ -9,9 +9,15 @@ namespace Sentinel.Scheduler.GeneralScheduler
     {
         private readonly ILogger _logger;
 
-        public ScheduledTask(ILogger logger)
+        public ScheduledTask(ILogger logger, T task, DateTime? referenceTime = null)
         {
+            if (referenceTime == null) referenceTime = DateTime.UtcNow;
+
             _logger = logger;
+            Uid = task.Uid;
+            Schedule = CrontabSchedule.Parse(task.Schedule);
+            Task = task;
+            NextRunTime = referenceTime.Value;
         }
 
         public string Uid { get; set; } = default!;
@@ -38,6 +44,6 @@ namespace Sentinel.Scheduler.GeneralScheduler
 
             return localNextRunTime < localCurrentTime && localLastRunTime != localNextRunTime;
         }
-        
+
     }
 }

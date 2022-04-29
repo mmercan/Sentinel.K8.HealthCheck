@@ -25,11 +25,11 @@ namespace Sentinel.Scheduler.Benchmark
             hc.Name = "test";
             hc.Namespace = "default";
 
-            repo.Items.Add(hc);
+            repo.Add(hc);
 
             repo.UpdateItem(hc);
 
-            repo.Items.Remove(hc);
+            repo.Remove(hc);
 
 
         }

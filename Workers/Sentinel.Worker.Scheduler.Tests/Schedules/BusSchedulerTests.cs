@@ -83,7 +83,7 @@ namespace Sentinel.Worker.Scheduler.Tests.Schedules
             hc.Namespace = "default";
             hc.Spec = new HealthCheckResourceSpecV1 { Service = "kubernetes" };
 
-            repo.Items.Add(hc);
+            repo.Add(hc);
 
             repo.UpdateItem(hc);
 
