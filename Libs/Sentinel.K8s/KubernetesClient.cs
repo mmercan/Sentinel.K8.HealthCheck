@@ -116,6 +116,12 @@ namespace Sentinel.K8s
             return Task.FromResult(result);
         }
 
+        public async Task<IList<V1Namespace>> ListNamespaceAsync()
+        {
+            var ns = await ApiClient.ListNamespaceAsync();
+            return ns.Items;
+        }
+
         /// <inheritdoc />
         public Task<VersionInfo> GetServerVersionAsync() => ApiClient.GetCodeAsync();
 

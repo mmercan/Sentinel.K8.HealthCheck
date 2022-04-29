@@ -9,17 +9,17 @@ using StackExchange.Redis;
 
 namespace Sentinel.Scheduler
 {
-    public class SchedulerRepositoryFeeder<T> where T : IScheduledTask, new()
+    public class SchedulerRedisRepositoryFeeder<T> where T : IScheduledTask, new()
     {
-        protected readonly ILogger<SchedulerRepositoryFeeder<T>> _logger;
+        protected readonly ILogger<SchedulerRedisRepositoryFeeder<T>> _logger;
         protected readonly SchedulerRepository<T> _schedulerRepository;
         private readonly IConnectionMultiplexer _multiplexer;
         private RedisDictionary<T> redisDictionary = default!;
         private readonly string genericTypeName = typeof(T).Name;
 
-        public SchedulerRepositoryFeeder(
+        public SchedulerRedisRepositoryFeeder(
             SchedulerRepository<T> schedulerRepository,
-            ILogger<SchedulerRepositoryFeeder<T>> logger,
+            ILogger<SchedulerRedisRepositoryFeeder<T>> logger,
             IConnectionMultiplexer multiplexer)
         {
             _logger = logger;

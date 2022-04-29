@@ -9,7 +9,7 @@ namespace Sentinel.K8s.K8sClients
 {
     public class K8sGeneralService
     {
-        private readonly IKubernetesClient _k8sclient;
+        public readonly IKubernetesClient Client;
         private readonly IMapper _mapper;
         private readonly ILogger<K8sGeneralService> _logger;
 
@@ -21,13 +21,13 @@ namespace Sentinel.K8s.K8sClients
 
         public K8sGeneralService(IKubernetesClient k8sclient, IMapper mapper, ILogger<K8sGeneralService> logger)
         {
-            _k8sclient = k8sclient;
+            Client = k8sclient;
             _mapper = mapper;
             _logger = logger;
 
-            ServiceClient = new K8sServiceClient(_k8sclient, mapper, logger);
-            HealthCheckResourceClient = new K8sHealthCheckResourceClient(_k8sclient, mapper, logger);
-            EventClient = new K8sEventClient(_k8sclient, mapper, logger);
+            ServiceClient = new K8sServiceClient(Client, mapper, logger);
+            HealthCheckResourceClient = new K8sHealthCheckResourceClient(Client, mapper, logger);
+            EventClient = new K8sEventClient(Client, mapper, logger);
         }
 
     }

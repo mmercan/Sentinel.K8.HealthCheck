@@ -5,30 +5,26 @@ using Sentinel.Scheduler.GeneralScheduler.Cron;
 
 namespace Sentinel.Scheduler.GeneralScheduler
 {
-    public class SchedulerTaskWrapper<T> where T : new()
+    public class ScheduledTask<T> where T : IScheduledTask, new()
     {
         private readonly ILogger _logger;
 
-        public SchedulerTaskWrapper(ILogger logger)
+        public ScheduledTask(ILogger logger)
         {
             _logger = logger;
         }
 
         public string Uid { get; set; } = default!;
         public CrontabSchedule Schedule { get; set; } = default!;
-        public IScheduledTask Task { get; set; } = default!;
+        public T Task { get; set; } = default!;
 
         public DateTime LastRunTime { get; set; }
         public DateTime NextRunTime { get; set; }
-
-        public T Item { get; set; } = default!;
 
         public void Increment()
         {
             LastRunTime = NextRunTime;
             NextRunTime = Schedule.GetNextOccurrence(NextRunTime);
-
-            string nxt = NextRunTime.ToString();
         }
 
         public bool ShouldRun(DateTime currentTime, TimeZoneInfo timeZone)
@@ -38,9 +34,10 @@ namespace Sentinel.Scheduler.GeneralScheduler
             var localCurrentTime = TimeZoneInfo.ConvertTime(currentTime, timeZone);
             var localLastRunTime = TimeZoneInfo.ConvertTime(LastRunTime, timeZone);
 
-            _logger.LogDebug($"SchedulerTaskWrapper: ShouldRun: localNextRunTime : {localNextRunTime.ToString()} localCurrentTime: {localCurrentTime.ToString()} localLastRunTime: {localLastRunTime.ToString()}");
+            _logger.LogDebug($"ScheduledTask: ShouldRun: localNextRunTime : {localNextRunTime.ToString()} localCurrentTime: {localCurrentTime.ToString()} localLastRunTime: {localLastRunTime.ToString()}");
 
             return localNextRunTime < localCurrentTime && localLastRunTime != localNextRunTime;
         }
+        
     }
 }

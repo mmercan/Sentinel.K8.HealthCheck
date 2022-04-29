@@ -6,11 +6,11 @@ using Xunit.Abstractions;
 
 namespace Sentinel.Scheduler.Tests
 {
-    public class SchedulerRepositoryFeederTests
+    public class SchedulerRedisRepositoryFeederTests
     {
         private readonly ITestOutputHelper _output;
 
-        public SchedulerRepositoryFeederTests(ITestOutputHelper output)
+        public SchedulerRedisRepositoryFeederTests(ITestOutputHelper output)
         {
             _output = output;
         }
@@ -23,7 +23,7 @@ namespace Sentinel.Scheduler.Tests
 
             var loggerrepo = Sentinel.Tests.Helpers.Helpers.GetLogger<SchedulerRepository<HealthCheckResourceV1>>();
 
-            var loggerfeeder = Sentinel.Tests.Helpers.Helpers.GetLogger<SchedulerRepositoryFeeder<HealthCheckResourceV1>>();
+            var loggerfeeder = Sentinel.Tests.Helpers.Helpers.GetLogger<SchedulerRedisRepositoryFeeder<HealthCheckResourceV1>>();
             var repo = new SchedulerRepository<HealthCheckResourceV1>(loggerrepo);
             IConnectionMultiplexer rediscon = RedisExtensions.GetRedisMultiplexer();
 
@@ -32,7 +32,7 @@ namespace Sentinel.Scheduler.Tests
             // hc.Name = "test";
             // hc.Namespace = "default";
 
-            var feeder = new SchedulerRepositoryFeeder<HealthCheckResourceV1>(repo, loggerfeeder, rediscon);
+            var feeder = new SchedulerRedisRepositoryFeeder<HealthCheckResourceV1>(repo, loggerfeeder, rediscon);
             feeder.Initiate("HealthChecks");
             feeder.Sync();
 

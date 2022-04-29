@@ -1,14 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
 using k8s;
 using Quartz;
 using Sentinel.K8s;
-using StackExchange.Redis;
-using AutoMapper;
 using Sentinel.Models.K8sDTOs;
-using Sentinel.Redis;
 using Sentinel.Models.Redis;
+using Sentinel.Redis;
+using StackExchange.Redis;
 
-namespace Sentinel.Worker.Sync.JobSchedules
+namespace Workers.Sentinel.Worker.Core.SyncJobs
 {
+    [QuartzJob(ConfigurationSection = "Schedules:DeploymentSyncScheduler")]
     public class DeploymentSyncSchedulerJob : IJob
     {
         private readonly ILogger<DeploymentSyncSchedulerJob> _logger;
@@ -22,7 +27,6 @@ namespace Sentinel.Worker.Sync.JobSchedules
             _k8sclient = k8sclient;
             _mapper = mapper;
             redisDic = new RedisDictionary<DeploymentV1>(redisMultiplexer, _logger, "Deployment");
-
         }
 
         public async Task Execute(IJobExecutionContext context)
@@ -33,7 +37,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             var syncTime = DateTime.UtcNow;
             dtoitems.ForEach(p => p.SyncDate = syncTime);
             redisDic.Sync(dtoitems);
-            _logger.LogInformation("{DeploymentsCount} Deployments have been synced", dtoitems.Count.ToString());
+            _logger.LogInformation(dtoitems.Count.ToString() + " Deployments have been synced");
         }
     }
 }

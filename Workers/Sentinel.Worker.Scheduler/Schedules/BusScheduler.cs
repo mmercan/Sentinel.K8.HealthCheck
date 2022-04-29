@@ -102,12 +102,12 @@ namespace Sentinel.Worker.Scheduler.Schedules
                 {
                     policy.Execute(() =>
                     {
-                        var service = taskThatShouldRun.Item.FindServiceRelatedtoHealthCheckResourceV1(redisServiceDictionary);
-                        taskThatShouldRun.Item.RelatedService = service;
+                        var service = taskThatShouldRun.Task.FindServiceRelatedtoHealthCheckResourceV1(redisServiceDictionary);
+                        taskThatShouldRun.Task.RelatedService = service;
                         if (service == null)
                         {
                             _logger.LogCritical("BusScheduler : Error Finding Service Related to HealthCheckResourceV1 Logged in RedisHealCheckServiceNotFoundDictionary");
-                            redisHealCheckServiceNotFoundDictionary.Add(taskThatShouldRun.Item);
+                            redisHealCheckServiceNotFoundDictionary.Add(taskThatShouldRun.Task);
                         }
                     });
                 }
@@ -117,7 +117,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
                 }
 
                 // TODO: Add a check to see if the service added to object before sending the message
-                _bus.PubSub.PublishAsync(taskThatShouldRun.Item, _configuration["queue:healthcheck"], stoppingToken).ContinueWith(task =>
+                _bus.PubSub.PublishAsync(taskThatShouldRun.Task, _configuration["queue:healthcheck"], stoppingToken).ContinueWith(task =>
                  {
                      if (task.IsCompleted && !task.IsFaulted)
                      {

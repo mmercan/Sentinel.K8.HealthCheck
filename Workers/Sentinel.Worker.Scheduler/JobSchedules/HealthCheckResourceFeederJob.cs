@@ -7,10 +7,10 @@ namespace Sentinel.Worker.Scheduler.JobSchedules
 {
     public class HealthCheckResourceFeederJob : IJob
     {
-        private readonly SchedulerRepositoryFeeder<HealthCheckResourceV1> _healthCheckResourceFeeder;
+        private readonly SchedulerRedisRepositoryFeeder<HealthCheckResourceV1> _healthCheckResourceFeeder;
 
         public HealthCheckResourceFeederJob(
-            SchedulerRepositoryFeeder<HealthCheckResourceV1> healthCheckResourceFeeder,
+            SchedulerRedisRepositoryFeeder<HealthCheckResourceV1> healthCheckResourceFeeder,
             IConfiguration configuration)
         {
             _healthCheckResourceFeeder = healthCheckResourceFeeder;

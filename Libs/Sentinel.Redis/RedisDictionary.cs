@@ -224,32 +224,39 @@ namespace Sentinel.Redis
         }
 
 
-        public void UpSert(IEnumerable<TValue> items)
-        {
-            foreach (var item in items)
-            {
-                Add(item);
-            }
+// overrideExisting param added tp Sync
+        // public void UpSert(IEnumerable<TValue> items)
+        // {
+        //     foreach (var item in items)
+        //     {
+        //         Add(item);
+        //     }
 
-            foreach (var key in Keys)
-            {
-                if (!items.Any(p => PropertyInfoHelpers.GetKeyValue<string, TValue>(p) == key))
-                {
-                    Remove(key);
-                }
-            }
+        //     foreach (var key in Keys)
+        //     {
+        //         if (!items.Any(p => PropertyInfoHelpers.GetKeyValue<string, TValue>(p) == key))
+        //         {
+        //             Remove(key);
+        //         }
+        //     }
+        // }
 
-        }
-
-        public void Sync(IEnumerable<TValue> items)
+        public void Sync(IEnumerable<TValue> items, bool overrideExisting = true)
         {
             var keys = Keys;
             foreach (var item in items)
             {
-                string? itemKey = PropertyInfoHelpers.GetKeyValue<string, TValue>(item);
-                if (!keys.Any(p => p == itemKey))
+                if (overrideExisting)
                 {
                     Add(item);
+                }
+                else
+                {
+                    string? itemKey = PropertyInfoHelpers.GetKeyValue<string, TValue>(item);
+                    if (!keys.Any(p => p == itemKey))
+                    {
+                        Add(item);
+                    }
                 }
             }
 

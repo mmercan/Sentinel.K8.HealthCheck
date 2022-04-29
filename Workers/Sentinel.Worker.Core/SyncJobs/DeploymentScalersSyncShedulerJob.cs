@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Quartz;
 using Sentinel.K8s;
@@ -6,8 +10,9 @@ using Sentinel.Models.K8sDTOs;
 using Sentinel.Redis;
 using StackExchange.Redis;
 
-namespace Sentinel.Worker.Sync.JobSchedules
+namespace Workers.Sentinel.Worker.Core.SyncJobs
 {
+    [QuartzJob(ConfigurationSection = "Schedules:DeploymentScalerSyncScheduler")]
     public class DeploymentScalersSyncShedulerJob : IJob
     {
         private readonly ILogger<DeploymentScalersSyncShedulerJob> _logger;
@@ -15,7 +20,8 @@ namespace Sentinel.Worker.Sync.JobSchedules
         private readonly IMapper _mapper;
         private readonly RedisDictionary<DeploymentScalerResourceV1> redisDic;
 
-        public DeploymentScalersSyncShedulerJob(ILogger<DeploymentScalersSyncShedulerJob> logger, IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
+        public DeploymentScalersSyncShedulerJob(ILogger<DeploymentScalersSyncShedulerJob> logger,
+        IKubernetesClient k8sclient, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
             _logger = logger;
             _k8sclient = k8sclient;
@@ -31,7 +37,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             dtoitems.ForEach(p => p.LatestSyncDateUTC = syncTime);
 
             redisDic.Sync(dtoitems);
-            _logger.LogInformation("{DeploymentScalerCount} DeploymentScalerResource have been synced", checks.Count.ToString());
+            _logger.LogInformation(checks.Count.ToString() + " DeploymentScalerResource have been synced");
         }
     }
 }

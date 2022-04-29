@@ -1,14 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
-using k8s;
 using Quartz;
 using Sentinel.K8s;
 using Sentinel.Models.K8sDTOs;
-using StackExchange.Redis;
-using Sentinel.Redis;
 using Sentinel.Models.Redis;
+using Sentinel.Redis;
+using StackExchange.Redis;
 
-namespace Sentinel.Worker.Sync.JobSchedules
+namespace Workers.Sentinel.Worker.Core.SyncJobs
 {
+    [QuartzJob(ConfigurationSection = "Schedules:NamespaceSyncScheduler")]
     public class NamespaceSyncSchedulerJob : IJob
     {
         private readonly IKubernetesClient _k8sclient;

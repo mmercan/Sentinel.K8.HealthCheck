@@ -14,7 +14,8 @@ namespace Sentinel.Models.Redis
         Task AddAsync(TValue value);
         void AddMultiple(IEnumerable<TValue> items);
         void AddMultiple(IEnumerable<KeyValuePair<string, TValue>> items);
-        void Sync(IEnumerable<TValue> items);
+        void Sync(IEnumerable<TValue> items, bool overrideExisting = true);
         void Sync(IEnumerable<TValue> items, Func<TValue, string> keyFunc);
+
     }
 }

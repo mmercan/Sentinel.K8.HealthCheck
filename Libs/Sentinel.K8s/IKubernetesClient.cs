@@ -45,6 +45,12 @@ namespace Sentinel.K8s
         /// <returns>A string containing the current namespace (or a fallback of it).</returns>
         Task<string> GetCurrentNamespaceAsync(string downwardApiEnvName = "POD_NAMESPACE");
 
+
+        /// <summary>
+        /// Fetch and return List of Namespaces.
+        /// </summary>
+        /// <returns>Task<IList<V1Namespace>> </returns>
+        Task<IList<V1Namespace>> ListNamespaceAsync();
         /// <summary>
         /// Fetch and return the actual kubernetes <see cref="VersionInfo"/> (aka. Server Version).
         /// </summary>

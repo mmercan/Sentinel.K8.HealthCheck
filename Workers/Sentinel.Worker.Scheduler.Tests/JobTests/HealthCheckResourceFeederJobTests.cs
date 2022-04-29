@@ -41,14 +41,14 @@ namespace Sentinel.Worker.Scheduler.Tests.JobTests
 
             var loggerrepo = Sentinel.Tests.Helpers.Helpers.GetLogger<SchedulerRepository<HealthCheckResourceV1>>();
 
-            var loggerfeeder = Sentinel.Tests.Helpers.Helpers.GetLogger<SchedulerRepositoryFeeder<HealthCheckResourceV1>>();
+            var loggerfeeder = Sentinel.Tests.Helpers.Helpers.GetLogger<SchedulerRedisRepositoryFeeder<HealthCheckResourceV1>>();
 
             var repo = new SchedulerRepository<HealthCheckResourceV1>(loggerrepo);
             IConnectionMultiplexer rediscon = RedisExtensions.GetRedisMultiplexer();
 
 
 
-            var feeder = new SchedulerRepositoryFeeder<HealthCheckResourceV1>(repo, loggerfeeder, rediscon);
+            var feeder = new SchedulerRedisRepositoryFeeder<HealthCheckResourceV1>(repo, loggerfeeder, rediscon);
             feeder.Initiate("HealthChecks");
             feeder.Sync();
 

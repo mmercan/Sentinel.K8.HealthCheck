@@ -8,24 +8,24 @@ using Xunit.Abstractions;
 
 namespace Sentinel.Scheduler.Tests
 {
-    public class SchedulerTaskWrapperTests
+    public class ScheduledTaskTests
     {
 
         private readonly ITestOutputHelper _output;
 
-        public SchedulerTaskWrapperTests(ITestOutputHelper output)
+        public ScheduledTaskTests(ITestOutputHelper output)
         {
             this._output = output;
         }
 
         [Fact]
-        public void SchedulerTaskWrapperShouldCreateaNewInstance()
+        public void ScheduledTaskShouldCreateaNewInstance()
         {
             TimeZoneInfo tzi = TZConvert.GetTimeZoneInfo("Australia/Melbourne");
 
-            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<GeneralScheduler.SchedulerTaskWrapper<HealthCheckResourceV1>>();
+            var logger = Sentinel.Tests.Helpers.Helpers.GetLogger<GeneralScheduler.ScheduledTask<HealthCheckResourceV1>>();
 
-            SchedulerTaskWrapper<HealthCheckResourceV1> wrapper = new GeneralScheduler.SchedulerTaskWrapper<HealthCheckResourceV1>(logger);
+            ScheduledTask<HealthCheckResourceV1> wrapper = new GeneralScheduler.ScheduledTask<HealthCheckResourceV1>(logger);
             wrapper.Schedule = CrontabSchedule.Parse("*/3 * * * *");
             wrapper.Increment();
             wrapper.ShouldRun(System.DateTime.Now, tzi);

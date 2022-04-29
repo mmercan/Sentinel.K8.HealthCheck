@@ -1,19 +1,25 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Quartz;
 using Sentinel.K8s.K8sClients;
 using Sentinel.Models.CRDs;
 using Sentinel.Models.K8sDTOs;
+using Sentinel.Models.Redis;
 using Sentinel.Redis;
 using StackExchange.Redis;
 
-namespace Sentinel.Worker.Sync.JobSchedules
+namespace Workers.Sentinel.Worker.Core.SyncJobs
 {
+    [QuartzJob(ConfigurationSection = "Schedules:HealthCheckSyncScheduler")]
     public class HealthCheckSyncSchedulerJob : IJob
     {
         private readonly ILogger<HealthCheckSyncSchedulerJob> _logger;
         private readonly K8sGeneralService _k8sGeneralService;
         private readonly IMapper _mapper;
-        private readonly RedisDictionary<HealthCheckResourceV1> redisDic;
+        private readonly IRedisDictionary<HealthCheckResourceV1> redisDic;
 
         public HealthCheckSyncSchedulerJob(ILogger<HealthCheckSyncSchedulerJob> logger, K8sGeneralService k8sGeneralService, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
         {
@@ -38,7 +44,7 @@ namespace Sentinel.Worker.Sync.JobSchedules
             dtoitems.ForEach(p => p.LatestSyncDateUTC = syncTime);
 
             redisDic.Sync(dtoitems);
-            _logger.LogInformation("{HealthChecksCount} HealthChecks have been synced", checks.Count.ToString());
+            _logger.LogInformation(checks.Count.ToString() + " HealthChecks have been synced");
         }
     }
 }

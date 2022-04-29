@@ -52,7 +52,7 @@ namespace Sentinel.Worker.Scheduler
             services.AddAutoMapper(typeof(Startup).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
             services.AddSingleton<SchedulerRepository<HealthCheckResourceV1>>();
-            services.AddSingleton<SchedulerRepositoryFeeder<HealthCheckResourceV1>>();
+            services.AddSingleton<SchedulerRedisRepositoryFeeder<HealthCheckResourceV1>>();
 
             services.AddHttpContextAccessor();
 
