@@ -12,8 +12,23 @@ namespace Sentinel.Scheduler
 {
     public class SchedulerRepository<T> : ISchedulerRepository where T : IScheduledTaskItem
     {
+
+        // public IScheduledTaskItem getitem(T value)
+        // {
+        //     return value;
+        // }
+
+        // public IList<IScheduledTaskItem> getitems(IList<T> values)
+        // {
+        //     return values;
+        // }
+        // public IScheduledTaskItem[] getitems(T[] values)
+        // {
+        //     return values;
+        // }
+
         public List<ScheduledTask<T>> ScheduledTasks { get; }
-        public List<IScheduledTask> ScheduledTaskCopy
+        public List<IScheduledTask> IScheduledTasks
         {
             get
             {

@@ -10,7 +10,7 @@ namespace Sentinel.Scheduler
 {
     public interface ISchedulerRepository
     {
-        List<IScheduledTask> ScheduledTaskCopy { get; }
+        List<IScheduledTask> IScheduledTasks { get; }
         // object ScheduledTasks { get; }
 
         //List<IScheduledTask> ScheduledTasks { get; }

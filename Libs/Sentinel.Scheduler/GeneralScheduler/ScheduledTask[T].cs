@@ -22,7 +22,9 @@ namespace Sentinel.Scheduler.GeneralScheduler
 
         public string Uid { get; set; } = default!;
         public CrontabSchedule Schedule { get; set; } = default!;
+
         public T Task { get; set; } = default!;
+        public IScheduledTaskItem IScheduledTaskItem { get { return Task; } }
 
         public DateTime LastRunTime { get; set; }
         public DateTime NextRunTime { get; set; }
