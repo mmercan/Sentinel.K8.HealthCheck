@@ -1,25 +1,39 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Quartz;
 using Sentinel.Models.K8sDTOs;
 using Sentinel.Scheduler;
 
-namespace Sentinel.Worker.Scheduler.JobSchedules
+
+namespace Workers.Sentinel.Worker.Core.SchedulerJobs
 {
-    public class HealthCheckResourceFeederJob : IJob
+    [QuartzJob(ConfigurationSection = "Schedules:SchedulerRepositoryFeederJob", Group = "SchedulerFeederJobs")]
+    public class SchedulerRepositoryFeederJob : IJob
     {
         private readonly List<ISchedulerRepositoryFeeder> repositories;
         private readonly SchedulerRedisRepositoryFeeder<HealthCheckResourceV1> _healthCheckResourceFeeder;
-        private readonly ILogger<HealthCheckResourceFeederJob> _logger;
+        private readonly ILogger<SchedulerRepositoryFeederJob> _logger;
 
-        public HealthCheckResourceFeederJob(
-            SchedulerRedisRepositoryFeeder<HealthCheckResourceV1> healthCheckResourceFeeder,
-            IConfiguration configuration, ILogger<HealthCheckResourceFeederJob> logger)
+        public SchedulerRepositoryFeederJob(
+            IConfiguration configuration, ILogger<SchedulerRepositoryFeederJob> logger,
+            IServiceProvider serviceProvider, IServiceCollection services)
         {
             repositories = new List<ISchedulerRepositoryFeeder>();
-            _healthCheckResourceFeeder = healthCheckResourceFeeder;
-            //  _healthCheckResourceFeeder.Initiate(configuration["Rediskey:HealthChecks"]);
+
+            var feederTypes = services.Where(x => x.ServiceType.GetInterfaces().Contains(typeof(ISchedulerRepositoryFeeder))).ToList();
+
+            foreach (var feederType in feederTypes)
+            {
+                var feed = serviceProvider.GetService(feederType.ServiceType) as ISchedulerRepositoryFeeder;
+                if (feed != null)
+                {
+                    repositories.Add(feed);
+                }
+            }
             _logger = logger;
-            repositories.Add(_healthCheckResourceFeeder);
+
         }
 
         public Task Execute(IJobExecutionContext context)

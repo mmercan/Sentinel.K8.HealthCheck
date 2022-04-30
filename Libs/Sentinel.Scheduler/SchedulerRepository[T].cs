@@ -20,42 +20,14 @@ namespace Sentinel.Scheduler
         {
             genericTypeName = typeof(T).Name;
             _logger = logger;
-            // Items = new ObservableCollection<T>();
             ScheduledTasks = new List<ScheduledTask<T>>();
-            // Items.ForEach(p => addItem(p));
-            // Items.CollectionChanged += new NotifyCollectionChangedEventHandler(collectionChanged);
         }
-
-        // private void collectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        // {
-        //     if (e.NewItems != null)
-        //     {
-        //         foreach (T x in e.NewItems) { addItem(x); }
-        //     }
-        //     if (e.OldItems != null)
-        //     {
-        //         foreach (T y in e.OldItems) { deleteItem(y); }
-        //     }
-        //     // if (e.Action == NotifyCollectionChangedAction.Move) { }
-        // }
-
         public void UpdateItem(T item)
         {
             if (item == null) { throw new ArgumentNullException("item"); }
 
             var referenceTime = DateTime.UtcNow;
             var scheduledTask = new ScheduledTask<T>(_logger, item, referenceTime = DateTime.UtcNow);
-
-            // var selecteditem = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
-            // if (selecteditem != null)
-            // {
-            //     var itemIndex = ScheduledTasks.IndexOf(selecteditem);
-            //     if (itemIndex > -1)
-            //     {
-            //         ScheduledTasks[itemIndex] = new ScheduledTask<T>(_logger, item);
-            //     }
-            // }
-            // else { _logger.LogCritical("SchedulerRepository <{genericTypeName}>  Item  not Found in ScheduledTasks UID : {Uid} ", genericTypeName, item.Uid); }
 
             var scheduledSelectedTask = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
             if (scheduledSelectedTask != null)
@@ -69,7 +41,6 @@ namespace Sentinel.Scheduler
             }
             else { _logger.LogCritical("SchedulerRepository <" + genericTypeName + " >  Item  not Found in ScheduledTasks UID : " + item.Uid); }
         }
-
         public void Add(T item)
         {
             var referenceTime = DateTime.UtcNow;

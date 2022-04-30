@@ -96,13 +96,8 @@ namespace Sentinel.Scheduler.Quartz
                              config.WithCronSchedule(jobAttr.CronExpression, builder => builder.InTimeZone(TimeZoneInfo.Local));
                              config.StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.Now.AddSeconds(jobAttr.DelaySecond)));
                          });
-
-
-
                     }
                 }
-
-
             });
         }
     }

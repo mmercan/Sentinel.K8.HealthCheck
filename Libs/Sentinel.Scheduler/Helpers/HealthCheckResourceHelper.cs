@@ -7,7 +7,7 @@ namespace Sentinel.Scheduler.Helpers
     {
         public static ServiceV1 FindServiceRelatedtoHealthCheckResourceV1(
            this HealthCheckResourceV1 healthCheckResource,
-            RedisDictionary<ServiceV1> ServiceRedisDic
+            IDictionary<string,ServiceV1> ServiceRedisDic
             )
         {
             if (!string.IsNullOrWhiteSpace(healthCheckResource?.Spec?.Service))

@@ -22,7 +22,7 @@ namespace Sentinel.Worker.Core
             var appname = System.AppDomain.CurrentDomain.FriendlyName;
 
             var builder = WebApplication.CreateBuilder(args);
-            builder.Host.UseSerilogAuto(appname, environment, LogEventLevel.Debug);
+            builder.Host.UseSerilogAuto(appname, environment, LogEventLevel.Information, LogEventLevel.Warning);
             builder.Logging.AddSerilog();
 
             // Add services to the container.
@@ -36,21 +36,11 @@ namespace Sentinel.Worker.Core
                 typeof(Sentinel.Worker.Core.Program)
             );
 
-            // builder.Services.AddAuthentication();
-            // builder.Services.AddAuthorization();
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
             builder.Services.AddQuartzJobs(builder.Configuration, typeof(Program));
 
             var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            // if (!app.Environment.IsDevelopment())
-            // {
-            //     app.UseExceptionHandler("/Error");
-            //     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //     app.UseHsts();
-            // }
 
             app.UseRouting();
             app.UseEndpointDefinitions();

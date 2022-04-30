@@ -32,9 +32,9 @@ namespace Sentinel.Scheduler.Tests
             // hc.Name = "test";
             // hc.Namespace = "default";
 
-            var feeder = new SchedulerRedisRepositoryFeeder<HealthCheckResourceV1>(repo, loggerfeeder, rediscon);
-            feeder.Initiate("HealthChecks");
-            feeder.Sync();
+            // var feeder = new SchedulerRedisRepositoryFeeder<HealthCheckResourceV1>(repo, loggerfeeder, rediscon);
+            // feeder.Initiate("HealthChecks");
+            // feeder.Sync();
 
             //repo.Items.Add(hc);
 

@@ -1,6 +1,8 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Libs.Sentinel.Scheduler;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Quartz;
 using Sentinel.Models.Redis;
 using Sentinel.Models.Scheduler;
@@ -10,7 +12,7 @@ using StackExchange.Redis;
 
 namespace Sentinel.Scheduler
 {
-    public class SchedulerRedisRepositoryFeeder<T> where T : IScheduledTask, new()
+    public class SchedulerRedisRepositoryFeeder<T> : ISchedulerRepositoryFeeder where T : IScheduledTask, new()
     {
         protected readonly ILogger<SchedulerRedisRepositoryFeeder<T>> _logger;
         protected readonly SchedulerRepository<T> _schedulerRepository;
@@ -21,17 +23,20 @@ namespace Sentinel.Scheduler
         public SchedulerRedisRepositoryFeeder(
             SchedulerRepository<T> schedulerRepository,
             ILogger<SchedulerRedisRepositoryFeeder<T>> logger,
-            IConnectionMultiplexer multiplexer)
+            IConnectionMultiplexer multiplexer,
+            IOptions<RedisKeyFeederOption<T>> redisKeyFeederOption)
         {
+            if (redisKeyFeederOption?.Value?.RedisKey == null)
+            {
+                throw new ArgumentNullException(nameof(redisKeyFeederOption));
+            }
             _logger = logger;
             _schedulerRepository = schedulerRepository;
             _multiplexer = multiplexer;
+            redisDictionary = new RedisDictionary<T>(_multiplexer, _logger, redisKeyFeederOption.Value.RedisKey);
         }
 
-        public void Initiate(string redisKey)
-        {
-            redisDictionary = new RedisDictionary<T>(_multiplexer, _logger, redisKey);
-        }
+
 
         public void Sync()
         {

@@ -36,14 +36,15 @@ namespace Sentinel.Common
 
         public static void UseSerilogAuto(
             this IHostBuilder builder, string applicationName,
-            string environmentName, LogEventLevel minimumLogLevel = LogEventLevel.Information)
+            string environmentName, LogEventLevel minimumLogLevel = LogEventLevel.Information, LogEventLevel AspNetCoreminimumLogLevel = LogEventLevel.Warning)
         {
 
             builder.UseSerilog((ctx, lc) => lc
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Enviroment", environmentName)
                 .Enrich.WithProperty("ApplicationName", applicationName)
-                .MinimumLevel.Override("Microsoft", minimumLogLevel)
+                .MinimumLevel.Override("Microsoft.AspNetCore", AspNetCoreminimumLogLevel)
+                .MinimumLevel.Override("Default", minimumLogLevel)
                 .WriteTo.Console()
                 .WriteTo.File("Logs/logs.txt", rollingInterval: RollingInterval.Day)
             );
