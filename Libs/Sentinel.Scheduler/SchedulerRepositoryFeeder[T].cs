@@ -12,7 +12,7 @@ using StackExchange.Redis;
 
 namespace Sentinel.Scheduler
 {
-    public class SchedulerRedisRepositoryFeeder<T> : ISchedulerRepositoryFeeder where T : IScheduledTask, new()
+    public class SchedulerRedisRepositoryFeeder<T> : ISchedulerRepositoryFeeder where T : IScheduledTaskItem, new()
     {
         protected readonly ILogger<SchedulerRedisRepositoryFeeder<T>> _logger;
         protected readonly SchedulerRepository<T> _schedulerRepository;
@@ -65,7 +65,7 @@ namespace Sentinel.Scheduler
                     _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {pair.Key} updated  new Schedule {pair.Value.Schedule}");
                 }
             }
-            _logger.LogDebug("Repository Feeder" + genericTypeName + " : " + _schedulerRepository.ScheduledTasks.Count.ToString() + " items");
+            _logger.LogInformation("SchedulerRedisRepositoryFeeder {type} : {count} items", genericTypeName, _schedulerRepository.ScheduledTasks.Count.ToString());
         }
     }
 }

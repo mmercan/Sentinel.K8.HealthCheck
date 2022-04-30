@@ -10,10 +10,17 @@ using Sentinel.Scheduler.GeneralScheduler.Cron;
 
 namespace Sentinel.Scheduler
 {
-    public class SchedulerRepository<T> where T : IScheduledTask, new()
+    public class SchedulerRepository<T> : ISchedulerRepository where T : IScheduledTaskItem
     {
-        // public ObservableCollection<T> Items { get; set; }
         public List<ScheduledTask<T>> ScheduledTasks { get; }
+        public List<IScheduledTask> ScheduledTaskCopy
+        {
+            get
+            {
+                var res = ScheduledTasks.Cast<IScheduledTask>().ToList();
+                return res;
+            }
+        }
         private readonly ILogger<SchedulerRepository<T>> _logger;
         private readonly string genericTypeName;
         public SchedulerRepository(ILogger<SchedulerRepository<T>> logger)

@@ -5,9 +5,9 @@ namespace Sentinel.Scheduler.Helpers
 {
     public static class HealthCheckResourceHelper
     {
-        public static ServiceV1 FindServiceRelatedtoHealthCheckResourceV1(
+        public static ServiceV1? FindServiceRelatedtoHealthCheckResourceV1(
            this HealthCheckResourceV1 healthCheckResource,
-            IDictionary<string,ServiceV1> ServiceRedisDic
+            IDictionary<string, ServiceV1> ServiceDic
             )
         {
             if (!string.IsNullOrWhiteSpace(healthCheckResource?.Spec?.Service))
@@ -30,18 +30,19 @@ namespace Sentinel.Scheduler.Helpers
                     serviceKey = $"{serviceNameWithoutNamespace}.{namespaceName}";
                 }
 
-                if (serviceKey != string.Empty)
+                if (serviceKey != string.Empty && ServiceDic.ContainsKey(serviceKey))
                 {
-                    var service = ServiceRedisDic[serviceKey];
+                    var service = ServiceDic[serviceKey];
                     if (service == null)
                     {
-                        throw new KeyNotFoundException($"Service with key {serviceKey} not found in Redis");
+                        // throw new KeyNotFoundException($"Service with key {serviceKey} not found in Redis");
                     }
                     return service;
                 }
                 else
                 {
-                    throw new KeyNotFoundException($"Service name not found in HealthCheckResource");
+                    return null;
+                    //throw new KeyNotFoundException($"Service name not found in HealthCheckResource");
                 }
             }
             else

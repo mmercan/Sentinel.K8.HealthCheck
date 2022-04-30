@@ -6,7 +6,7 @@ using Sentinel.Models.Scheduler;
 
 namespace Sentinel.Models.K8sDTOs
 {
-    public class HealthCheckResourceV1 : IScheduledTask
+    public class HealthCheckResourceV1 : IScheduledTaskItem
     {
 
         [Key]
@@ -28,7 +28,7 @@ namespace Sentinel.Models.K8sDTOs
 
         public HealthCheckResourceStatusV1 Status { get; set; } = default!;
 
-        public ServiceV1 RelatedService { get; set; } = default!;
+        public ServiceV1? RelatedService { get; set; } = default!;
 
         public static string Group = "sentinel.mercan.io";
         public static string Kind = "HealthCheck";

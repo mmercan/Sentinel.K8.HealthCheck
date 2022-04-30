@@ -1,6 +1,6 @@
 namespace Sentinel.Models.Scheduler
 {
-    public interface IScheduledTask
+    public interface IScheduledTaskItem
     {
         string Uid { get; }
 

@@ -5,7 +5,7 @@ using Sentinel.Scheduler.GeneralScheduler.Cron;
 
 namespace Sentinel.Scheduler.GeneralScheduler
 {
-    public class ScheduledTask<T> where T : IScheduledTask, new()
+    public class ScheduledTask<T> : IScheduledTask where T : IScheduledTaskItem
     {
         private readonly ILogger _logger;
 

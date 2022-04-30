@@ -6,7 +6,7 @@ using Sentinel.Models.Scheduler;
 
 namespace Sentinel.Models.K8sDTOs
 {
-    public class DeploymentScalerResourceV1 : IScheduledTask
+    public class DeploymentScalerResourceV1 : IScheduledTaskItem
     {
 
         [Key]
