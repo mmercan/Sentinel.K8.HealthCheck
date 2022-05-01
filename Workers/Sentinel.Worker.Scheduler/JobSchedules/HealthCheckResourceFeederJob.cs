@@ -17,7 +17,6 @@ namespace Sentinel.Worker.Scheduler.JobSchedules
         {
             repositories = new List<ISchedulerRepositoryFeeder>();
             _healthCheckResourceFeeder = healthCheckResourceFeeder;
-            //  _healthCheckResourceFeeder.Initiate(configuration["Rediskey:HealthChecks"]);
             _logger = logger;
             repositories.Add(_healthCheckResourceFeeder);
         }

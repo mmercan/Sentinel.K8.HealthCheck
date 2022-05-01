@@ -38,8 +38,8 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
             _mapper = mapper;
             _k8MemoryRepository = k8MemoryRepository;
             redisDic = new RedisDictionary<HealthCheckResourceV1>(redisMultiplexer, _logger, "HealthChecks");
-            redisServiceDictionary = new RedisDictionary<ServiceV1>(redisMultiplexer, _logger, configuration["Rediskey:Services"]);
-            redisHealCheckServiceNotFoundDictionary = new RedisDictionary<HealthCheckResourceV1>(redisMultiplexer, _logger, configuration["Rediskey:HealCheckServiceNotFound"]);
+            redisServiceDictionary = new RedisDictionary<ServiceV1>(redisMultiplexer, _logger, configuration["Rediskey:Services:RedisKey"]);
+            redisHealCheckServiceNotFoundDictionary = new RedisDictionary<HealthCheckResourceV1>(redisMultiplexer, _logger, configuration["Rediskey:HealCheckServiceNotFound:RedisKey"]);
 
             if (!string.IsNullOrWhiteSpace(configuration["timezone"]))
             {

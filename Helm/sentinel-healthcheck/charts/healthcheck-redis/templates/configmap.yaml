@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: "{{ include "healthcheck-redis.fullname" . }}-config"
 data:
- redis-config: "databases 16\nmaxclients 2000\nrequirepass \"{{.Values.password}}\"\n\n"
+ redis-config: "databases 2\nmaxclients 2000\nrequirepass \"{{.Values.password}}\"\n\n"
  requirepass: {{.Values.password}}
  servicename: {{ include "healthcheck-redis.fullname" . }}
  {{- if .Values.configmap -}}
