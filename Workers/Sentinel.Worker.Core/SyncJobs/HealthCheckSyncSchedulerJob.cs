@@ -96,7 +96,7 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
 
             _k8MemoryRepository.HealthChecks = dtoitems;
             redisDic.Sync(dtoitems);
-            _logger.LogInformation(checks.Count.ToString() + " HealthChecks have been synced");
+            _logger.LogInformation("{count} HealthChecks have been synced", checks.Count.ToString());
         }
     }
 }

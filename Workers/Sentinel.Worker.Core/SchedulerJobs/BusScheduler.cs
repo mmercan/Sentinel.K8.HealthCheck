@@ -66,16 +66,17 @@ namespace Scheduler.JobSchedules
             foreach (var taskThatShouldRun in tasksThatShouldRun)
             {
                 taskThatShouldRun.Increment();
+                var type = taskThatShouldRun.IScheduledTaskItem.GetType();
+
                 _logger.LogInformation("BusScheduler : Task Adding to RabbitMQ " + taskThatShouldRun.IScheduledTaskItem.Key);
 
-
-
                 // TODO: Add a check to see if the service added to object before sending the message
+
                 _bus.PubSub.PublishAsync(taskThatShouldRun.IScheduledTaskItem, _configuration["queue:healthcheck"]).ContinueWith(task =>
                  {
                      if (task.IsCompleted && !task.IsFaulted)
                      {
-                         _logger.LogInformation("Task Added to RabbitMQ {healthcheck} {Key} ", _configuration["queue:healthcheck"], taskThatShouldRun.IScheduledTaskItem.Key);
+                         _logger.LogInformation("Task Added to RabbitMQ on topic {healthcheck} with Key {Key} {type}", _configuration["queue:healthcheck"], taskThatShouldRun.IScheduledTaskItem.Key, taskThatShouldRun.IScheduledTaskItem.GetType().Name);
                      }
                      if (task.IsFaulted)
                      {

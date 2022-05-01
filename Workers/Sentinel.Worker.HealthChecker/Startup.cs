@@ -35,6 +35,7 @@ using Microsoft.Identity.Web;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Sentinel.Models.HealthCheck;
+using Sentinel.PubSub.BackgroundServices;
 
 namespace Sentinel.Worker.HealthChecker
 {
@@ -126,6 +127,9 @@ namespace Sentinel.Worker.HealthChecker
             );
 
             services.AddHostedService<HealthCheckSubscriber>();
+            // services.AddHostedService<OtherSubs>();
+
+            services.AddRabbitMQSubscribeDefinitions(Configuration, typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

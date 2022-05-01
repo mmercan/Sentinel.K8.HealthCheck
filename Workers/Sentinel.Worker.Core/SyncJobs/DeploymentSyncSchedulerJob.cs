@@ -42,7 +42,7 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
             dtoitems.ForEach(p => p.SyncDate = syncTime);
             _k8MemoryRepository.Deployments = dtoitems;
             redisDic.Sync(dtoitems);
-            _logger.LogInformation(dtoitems.Count.ToString() + " Deployments have been synced");
+            _logger.LogInformation("{count} Deployments have been synced", dtoitems.Count.ToString());
         }
     }
 }

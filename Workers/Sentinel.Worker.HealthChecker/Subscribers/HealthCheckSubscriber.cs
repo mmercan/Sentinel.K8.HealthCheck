@@ -5,7 +5,9 @@ using Sentinel.Common;
 using Sentinel.Common.HttpClientServices;
 using Sentinel.Models.HealthCheck;
 using Sentinel.Models.K8sDTOs;
+using Sentinel.Models.Scheduler;
 using Sentinel.Mongo;
+using Sentinel.Scheduler.GeneralScheduler;
 
 namespace Sentinel.Worker.HealthChecker.Subscribers
 {
@@ -62,7 +64,7 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             try
             {
                 _logger.LogInformation("HealthCheckSubscriber: Connected to bus");
-                _bus.PubSub.SubscribeAsync<HealthCheckResourceV1>(_configuration["queue:healthcheck"], Handler);
+                _bus.PubSub.SubscribeAsync<IScheduledTaskItem>(_configuration["queue:healthcheck"], Handler);
                 _logger.LogInformation("HealthCheckSubscriber: Listening on topic " + _configuration["queue:healthcheck"]);
                 _ResetEvent.Wait();
             }
@@ -73,8 +75,16 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             }
         }
 
-        private async Task Handler(HealthCheckResourceV1 healthcheck)
+        private async Task Handler(IScheduledTaskItem healthcheckTask)
         {
+
+            if (healthcheckTask is not HealthCheckResourceV1)
+            {
+                _logger.LogError("HealthCheckSubscriber: Received an unknown task type");
+                return;
+            }
+
+            HealthCheckResourceV1? healthcheck = healthcheckTask as HealthCheckResourceV1;
             this.ReportHealthy();
             bool serviceFound = false;
             string serviceName = "";
