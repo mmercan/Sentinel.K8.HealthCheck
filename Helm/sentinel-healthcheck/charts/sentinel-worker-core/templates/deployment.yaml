@@ -1,28 +1,28 @@
-{{- $name := include "sentinel-worker-sync.fullname" . -}}
+{{- $name := include "sentinel-worker-core.fullname" . -}}
 {{- $cfgname := printf "%s-%s" $name "config" -}}
 {{- $secretname := printf "%s-%s" $name "secret" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "sentinel-worker-sync.fullname" . }}
+  name: {{ include "sentinel-worker-core.fullname" . }}
   labels:
-    {{- include "sentinel-worker-sync.labels" . | nindent 4 }}
+    {{- include "sentinel-worker-core.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 1
   selector:
     matchLabels:
-      {{- include "sentinel-worker-sync.selectorLabels" . | nindent 6 }}
+      {{- include "sentinel-worker-core.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "sentinel-worker-sync.selectorLabels" . | nindent 8 }}
+        {{- include "sentinel-worker-core.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "sentinel-worker-sync.serviceAccountName" . }}
+      serviceAccountName: {{ include "sentinel-worker-core.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

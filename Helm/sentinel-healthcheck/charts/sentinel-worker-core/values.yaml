@@ -1,11 +1,11 @@
-# Default values for sentinel-worker-sync.
+# Default values for sentinel-worker-core.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: mmercan/healthcheck-sync
+  repository: mmercan/healthcheck-core
   tag: latest
   pullPolicy: IfNotPresent
 

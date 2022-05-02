@@ -3,12 +3,12 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: {{ include "sentinel-worker-sync.name" . }}-vs
+  name: {{ include "sentinel-worker-core.name" . }}-vs
 spec:
   hosts:
-    - {{ include "sentinel-worker-sync.name" . }}
+    - {{ include "sentinel-worker-core.name" . }}
   http:
     - route:
         - destination:
-            host: {{ include "sentinel-worker-sync.name" . }}  # Service Name
+            host: {{ include "sentinel-worker-core.name" . }}  # Service Name
 {{- end }}

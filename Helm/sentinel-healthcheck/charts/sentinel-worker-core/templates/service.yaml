@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "sentinel-worker-sync.name" . }}
+  name: {{ include "sentinel-worker-core.name" . }}
   labels:
-    {{- include "sentinel-worker-sync.labels" . | nindent 4 }}
+    {{- include "sentinel-worker-core.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "sentinel-worker-sync.selectorLabels" . | nindent 4 }}
+    {{- include "sentinel-worker-core.selectorLabels" . | nindent 4 }}

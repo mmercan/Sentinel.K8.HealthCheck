@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "sentinel-worker-sync.name" -}}
+{{- define "sentinel-worker-core.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "sentinel-worker-sync.fullname" -}}
+{{- define "sentinel-worker-core.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "sentinel-worker-sync.chart" -}}
+{{- define "sentinel-worker-core.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "sentinel-worker-sync.labels" -}}
-helm.sh/chart: {{ include "sentinel-worker-sync.chart" . }}
-{{ include "sentinel-worker-sync.selectorLabels" . }}
+{{- define "sentinel-worker-core.labels" -}}
+helm.sh/chart: {{ include "sentinel-worker-core.chart" . }}
+{{ include "sentinel-worker-core.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,16 +46,16 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "sentinel-worker-sync.selectorLabels" -}}
-app: {{ include "sentinel-worker-sync.name" . }}
+{{- define "sentinel-worker-core.selectorLabels" -}}
+app: {{ include "sentinel-worker-core.name" . }}
 version: {{ .Chart.AppVersion  | quote }}
-app.kubernetes.io/name: {{ include "sentinel-worker-sync.name" . }}
+app.kubernetes.io/name: {{ include "sentinel-worker-core.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 branch:  {{ .Values.branch }}
 {{- end -}}
 
 
-{{- define "sentinel-worker-sync.annotations" -}}
+{{- define "sentinel-worker-core.annotations" -}}
 pipelines/run: {{ .Values.pipelines.run }}
 pipelines/pipeline: {{ .Values.pipelines.pipeline }}
 pipelines/jobName: {{ .Values.pipelines.job }}
@@ -67,9 +67,9 @@ pipelines/org: {{ .Values.pipelines.org }}
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "sentinel-worker-sync.serviceAccountName" -}}
+{{- define "sentinel-worker-core.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "sentinel-worker-sync.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "sentinel-worker-core.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}

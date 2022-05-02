@@ -1,11 +1,11 @@
-name: Sentinel Worker Sync
+name: Sentinel Worker Core
 
 on:
   push:
     branches: [master]
     paths:
-      - Workers/Sentinel.Worker.Sync/**
-      - Helm/sentinel-healthcheck/charts/sentinel-worker-sync/**
+      - Workers/Sentinel.Worker.Core/**
+      - Helm/sentinel-healthcheck/charts/sentinel-worker-core/**
   pull_request:
     branches: [master]
 
@@ -22,7 +22,7 @@ jobs:
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
-      dockercomposeLoc: Workers/Sentinel.Worker.Sync/docker-compose.yml
+      dockercomposeLoc: Workers/Sentinel.Worker.Core/docker-compose.yml
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -69,9 +69,9 @@ jobs:
     env:
       ARTIFACT_PATH: ${{ github.workspace }}
       IMAGE_NAME: ${{ github.repository }}
-      chartName: "sentinel-worker-sync"
+      chartName: "sentinel-worker-core"
       namespace: "sentinel-healthcheck"
-      releaseName: "sentinel-worker-sync-dev"
+      releaseName: "sentinel-worker-core-dev"
       pipelines_pipeline: '"${{ github.WORKFLOW }}"'
       pipelines_run: ${{ github.RUN_ID }}
       pipelines_org: '"${{ github.SERVER_URL }}"'
