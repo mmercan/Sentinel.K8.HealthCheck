@@ -43,7 +43,6 @@ namespace Sentinel.Scheduler.Quartz
 
                 foreach (Type jobType in listJobType)
                 {
-
                     QuartzJobAttribute? jobAttr = jobType.GetCustomAttributes(typeof(QuartzJobAttribute), true).First() as QuartzJobAttribute;
                     if (jobAttr != null)
                     {

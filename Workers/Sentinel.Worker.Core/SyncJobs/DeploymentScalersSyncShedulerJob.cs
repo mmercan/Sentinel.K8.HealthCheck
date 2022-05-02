@@ -40,7 +40,7 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
             dtoitems.ForEach(p => p.LatestSyncDateUTC = syncTime);
             _k8MemoryRepository.DeploymentScalers = dtoitems;
             redisDic.Sync(dtoitems);
-            _logger.LogInformation(checks.Count.ToString() + " DeploymentScalerResource have been synced");
+            _logger.LogInformation("{count} DeploymentScalerResource have been synced", checks.Count.ToString());
         }
     }
 }

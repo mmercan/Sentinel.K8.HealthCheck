@@ -10,7 +10,7 @@ using Sentinel.PubSub.BackgroundServices;
 
 namespace Sentinel.Worker.HealthChecker.Subscribers
 {
-    [RabbitMQSubscribe(Name = "HealthChecker", TopicName = "HealthChecker", Description = "HealthChecker", Enabled = true)]
+    [RabbitMQSubscribe(Name = "HealthChecker", TopicName = "HealthChecker", TimeoutTotalMinutes = 3, Description = "HealthChecker", Enabled = true)]
     public class OtherSubs : SubscribeBackgroundService
     {
         public OtherSubs(IBus bus,

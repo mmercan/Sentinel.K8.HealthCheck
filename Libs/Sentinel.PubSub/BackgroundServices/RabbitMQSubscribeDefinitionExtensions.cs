@@ -18,14 +18,26 @@ namespace Sentinel.PubSub.BackgroundServices
             var rabbitMQSubscribeDefinitions = new List<Type>();
             foreach (var marker in scanMarkers)
             {
-                rabbitMQSubscribeDefinitions.AddRange(marker.Assembly.ExportedTypes
-                .Where(t => typeof(SubscribeBackgroundService).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                //.Select(Activator.CreateInstance).Cast<SubscribeBackgroundService>()
+                var items = marker.Assembly.ExportedTypes.Where(
+                    t => typeof(SubscribeBackgroundService).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract
+                    && Attribute.IsDefined(t, typeof(RabbitMQSubscribeAttribute))
                 );
+                if (items != null && items.Any())
+                {
+                    rabbitMQSubscribeDefinitions.AddRange(items);
+                }
             }
             foreach (var subscribeBackgroundService in rabbitMQSubscribeDefinitions)
             {
-                services.AddHostedServices(subscribeBackgroundService);
+                 RabbitMQSubscribeAttribute? rabbitAttr = subscribeBackgroundService.GetCustomAttributes(typeof(RabbitMQSubscribeAttribute), true).First() as RabbitMQSubscribeAttribute;
+                    if (rabbitAttr != null)
+                    {
+                        bool enabled = rabbitAttr.Enabled;
+                        if(enabled){
+                            services.AddHostedServices(subscribeBackgroundService);
+                        }
+                    }
+                
             }
             //  services.AddSingleton(rabbitMQSubscribeDefinitions as IReadOnlyCollection<SubscribeBackgroundService>);
         }

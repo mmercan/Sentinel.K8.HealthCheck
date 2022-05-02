@@ -17,6 +17,9 @@ namespace Sentinel.PubSub.BackgroundServices
 
         public string Description { get; set; } = default!;
 
+        public int TimeoutTotalMinutes { get; set; } = default!;
         public bool Enabled { get; set; } = true;
+
+
     }
 }

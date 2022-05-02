@@ -61,14 +61,15 @@ namespace Scheduler.JobSchedules
 
             var tasksThatShouldRun = _scheduledTasks.Where(t => t.ShouldRun(referenceTime, tzi)).ToList();
 
-            _logger.LogTrace("BusScheduler : Checking for HealthCheckRepository ScheduledTasks " + _scheduledTasks.Count.ToString() + " Counted " + tasksThatShouldRun.Count.ToString() + " will be triggered");
+            _logger.LogTrace("BusScheduler : Checking for HealthCheckRepository ScheduledTasks {AllCount}  Counted {runCount} will be triggered",
+             _scheduledTasks.Count.ToString(), tasksThatShouldRun.Count.ToString());
 
             foreach (var taskThatShouldRun in tasksThatShouldRun)
             {
                 taskThatShouldRun.Increment();
                 var type = taskThatShouldRun.IScheduledTaskItem.GetType();
 
-                _logger.LogInformation("BusScheduler : Task Adding to RabbitMQ " + taskThatShouldRun.IScheduledTaskItem.Key);
+                _logger.LogInformation("BusScheduler : Task Adding to RabbitMQ Key : {key} ", taskThatShouldRun.IScheduledTaskItem.Key);
 
                 // TODO: Add a check to see if the service added to object before sending the message
 
