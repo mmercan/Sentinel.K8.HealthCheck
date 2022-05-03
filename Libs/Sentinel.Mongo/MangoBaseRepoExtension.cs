@@ -122,7 +122,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var logger = ctx.GetService<ILogger<MongoBaseRepo<T>>>();
                 if (logger == null)
                 {
-                    //TODO :should throw exception or use NullLogger when logger is null
+                    //TODO :should throw exception or use NullLogger when logger is null ??
                     logger = new NullLogger<MongoBaseRepo<T>>();
                 }
                 logger.LogInformation("databasename : " + databaseName + " collectionName : " + collectionName);

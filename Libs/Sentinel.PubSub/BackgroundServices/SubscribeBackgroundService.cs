@@ -93,16 +93,16 @@ namespace Sentinel.PubSub.BackgroundServices
         {
             try
             {
-                _logger.LogInformation(appName + " : Connected to bus");
+                _logger.LogInformation("{appName} : Connected to bus", appName);
                 _bus.PubSub.SubscribeAsync<IScheduledTaskItem>(topicName, HandlerPrivate);
 
-                _logger.LogInformation(appName + " : Listening on topic " + topicName);
+                _logger.LogInformation("{appName} : Listening on topic {topicName}", appName, topicName);
                 _ResetEvent.Wait();
             }
             catch (Exception ex)
             {
                 this.ReportUnhealthy(ex.Message);
-                _logger.LogError(appName + " : Exception: " + ex.Message);
+                _logger.LogError("{appName} : Exception: {Message}", appName, ex.Message);
             }
         }
         protected async Task HandlerPrivate(IScheduledTaskItem healthcheckTask)
@@ -115,7 +115,7 @@ namespace Sentinel.PubSub.BackgroundServices
             await Handler(healthcheckTask);
         }
 
-        abstract protected Task Handler(IScheduledTaskItem healthcheckTask);
+        abstract protected Task Handler(IScheduledTaskItem scheduledItem);
 
 
         private void getAttributeDetails()
@@ -127,7 +127,7 @@ namespace Sentinel.PubSub.BackgroundServices
 
             if (rabbitMQAttribute == null)
             {
-                _logger.LogWarning("The attribute was not found.");
+                _logger.LogWarning("RabbitMQSubscribeAttribute The attribute was not found. on {appName}", appName);
             }
             else
             {
@@ -142,7 +142,7 @@ namespace Sentinel.PubSub.BackgroundServices
                     }
                     else
                     {
-                        _logger.LogWarning("The attribute TopicConfigurationSection found. But the configuration section was not found. Config section: {section}"
+                        _logger.LogWarning("The attribute TopicConfigurationSection found. But the Topic was not found in Config section: {section}"
                         , rabbitMQAttribute.TopicConfigurationSection);
                     }
                 }
@@ -163,6 +163,20 @@ namespace Sentinel.PubSub.BackgroundServices
         public void ReportUnhealthy(string message = "") => bgHealthCheck.ReportUnhealthy(message);
         public void ReportDegraded(string message = "") => bgHealthCheck.ReportDegraded(message);
 
+
+
+
+        // private void OnClosed()
+        // {
+        //     var utc = DateTime.UtcNow.ToString();
+        //     var howlongran = (DateTime.UtcNow - lastrestart);
+        //     this._logger.LogError("===on watch {appName} Connection  Closed after  {howlongrunMin}:{howlongrunsec}  min:sec : re-running delay 30 seconds {utc}"
+        //     , appName, howlongran.TotalMinutes.ToString(), howlongran.Seconds.ToString(), utc);
+        //     Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+        //     lastrestart = DateTime.UtcNow;
+        //     this._logger.LogError("=== on watch Restarting HealthCheckSubscriber Now....  time {time} ===", lastrestart.ToString());
+        //     executingTask = Task.Factory.StartNew(new Action(SubscribeQueue), TaskCreationOptions.LongRunning);
+        // }
 
         public override void Dispose()
         {
