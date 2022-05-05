@@ -185,7 +185,6 @@ namespace Sentinel.K8s.Watchers
 
             _logger.LogCritical("Saved UID :" + savedevent.Uid());
             return savedevent;
-
         }
 
     }

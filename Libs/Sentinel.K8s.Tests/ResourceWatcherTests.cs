@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using k8s.Models;
+using Microsoft.Extensions.Options;
 using Sentinel.K8s.Watchers;
 using Xunit;
 using Xunit.Abstractions;
@@ -20,12 +21,13 @@ namespace Sentinel.K8s.Tests
         [Fact]
         public void ResourceWatcherShouldHaveInstance()
         {
-            OperatorSettings set = new OperatorSettings();
+            OperatorSettings<V1Pod> set = new OperatorSettings<V1Pod>();
+            var setOptions = Options.Create<OperatorSettings<V1Pod>>(set);
             // set.Name
             var k8client = GetKubernetesClient();
             var loggger = Sentinel.Tests.Helpers.Helpers.GetLogger<ResourceWatcher<V1Pod>>();
-            var metrics = new ResourceWatcherMetrics<V1Pod>(set);
-            var watcher = new Watchers.ResourceWatcher<V1Pod>(k8client, loggger, metrics, set);
+            var metrics = new ResourceWatcherMetrics<V1Pod>(setOptions);
+            var watcher = new Watchers.ResourceWatcher<V1Pod>(k8client, loggger, metrics, setOptions);
 
             Assert.NotNull(watcher);
         }
@@ -35,13 +37,14 @@ namespace Sentinel.K8s.Tests
         [Fact]
         public async Task ResourceWatcherShouldHaveWatch()
         {
-            OperatorSettings set = new OperatorSettings();
+            OperatorSettings<V1ConfigMap> set = new OperatorSettings<V1ConfigMap>();
             set.Namespace = "default";
+            var setOptions = Options.Create<OperatorSettings<V1ConfigMap>>(set);
             // set.Name
             var k8client = GetKubernetesClient();
             var loggger = Sentinel.Tests.Helpers.Helpers.GetLogger<ResourceWatcher<V1ConfigMap>>();
-            var metrics = new ResourceWatcherMetrics<V1ConfigMap>(set);
-            var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, set);
+            var metrics = new ResourceWatcherMetrics<V1ConfigMap>(setOptions);
+            var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, setOptions);
 
 
             CancellationTokenSource source = new CancellationTokenSource();
@@ -76,14 +79,15 @@ namespace Sentinel.K8s.Tests
         [Fact]
         public async Task ResourceWatcherShouldHandleTimeouts()
         {
-            OperatorSettings set = new OperatorSettings();
+            OperatorSettings<V1ConfigMap> set = new OperatorSettings<V1ConfigMap>();
             set.Namespace = "default";
             set.WatcherHttpTimeout = 3;
+            var setOptions = Options.Create<OperatorSettings<V1ConfigMap>>(set);
             // set.Name
             var k8client = GetKubernetesClient();
             var loggger = Sentinel.Tests.Helpers.Helpers.GetLogger<ResourceWatcher<V1ConfigMap>>();
-            var metrics = new ResourceWatcherMetrics<V1ConfigMap>(set);
-            var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, set);
+            var metrics = new ResourceWatcherMetrics<V1ConfigMap>(setOptions);
+            var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, setOptions);
 
 
             CancellationTokenSource source = new CancellationTokenSource();
@@ -123,14 +127,15 @@ namespace Sentinel.K8s.Tests
         [Fact]
         public async Task ResourceWatcherOnCloseShouldTriggerRestart()
         {
-            OperatorSettings set = new OperatorSettings();
+            OperatorSettings<V1ConfigMap> set = new OperatorSettings<V1ConfigMap>();
             set.Namespace = "default";
             set.WatcherHttpTimeout = 3;
+            var setOptions = Options.Create<OperatorSettings<V1ConfigMap>>(set);
             // set.Name
             var k8client = GetKubernetesClient();
             var loggger = Sentinel.Tests.Helpers.Helpers.GetLogger<ResourceWatcher<V1ConfigMap>>();
-            var metrics = new ResourceWatcherMetrics<V1ConfigMap>(set);
-            var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, set);
+            var metrics = new ResourceWatcherMetrics<V1ConfigMap>(setOptions);
+            var watcher = new Watchers.ResourceWatcher<V1ConfigMap>(k8client, loggger, metrics, setOptions);
 
 
             CancellationTokenSource source = new CancellationTokenSource();

@@ -162,22 +162,6 @@ namespace Sentinel.PubSub.BackgroundServices
         public void ReportHealthy(string message = "") => bgHealthCheck.ReportHealthy(message);
         public void ReportUnhealthy(string message = "") => bgHealthCheck.ReportUnhealthy(message);
         public void ReportDegraded(string message = "") => bgHealthCheck.ReportDegraded(message);
-
-
-
-
-        // private void OnClosed()
-        // {
-        //     var utc = DateTime.UtcNow.ToString();
-        //     var howlongran = (DateTime.UtcNow - lastrestart);
-        //     this._logger.LogError("===on watch {appName} Connection  Closed after  {howlongrunMin}:{howlongrunsec}  min:sec : re-running delay 30 seconds {utc}"
-        //     , appName, howlongran.TotalMinutes.ToString(), howlongran.Seconds.ToString(), utc);
-        //     Task.Delay(TimeSpan.FromSeconds(30)).Wait();
-        //     lastrestart = DateTime.UtcNow;
-        //     this._logger.LogError("=== on watch Restarting HealthCheckSubscriber Now....  time {time} ===", lastrestart.ToString());
-        //     executingTask = Task.Factory.StartNew(new Action(SubscribeQueue), TaskCreationOptions.LongRunning);
-        // }
-
         public override void Dispose()
         {
             _ResetEvent.Dispose();

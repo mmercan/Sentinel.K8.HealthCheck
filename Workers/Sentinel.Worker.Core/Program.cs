@@ -4,6 +4,7 @@ using Quartz;
 using Sentinel.Common;
 using Sentinel.Common.Middlewares;
 using Sentinel.K8s;
+using Sentinel.K8s.BackgroundServices;
 using Sentinel.PubSub;
 using Sentinel.Redis;
 using Sentinel.Scheduler;
@@ -35,6 +36,8 @@ namespace Sentinel.Worker.Core
                 typeof(IPubSubLibAssemblyMarker),
                 typeof(Sentinel.Worker.Core.Program)
             );
+
+            builder.Services.AddK8sWatcherDefinitions(builder.Configuration, typeof(Sentinel.Worker.Core.Program));
 
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 

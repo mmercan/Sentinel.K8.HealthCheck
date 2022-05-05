@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Sentinel.PubSub.BackgroundServices
+namespace Sentinel.Common.Extensions
 {
     public static class AddHostedServicesExtension
     {

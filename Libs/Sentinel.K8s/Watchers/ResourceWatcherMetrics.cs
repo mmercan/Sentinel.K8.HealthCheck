@@ -1,5 +1,6 @@
 using k8s;
 using k8s.Models;
+using Microsoft.Extensions.Options;
 using Prometheus;
 using Sentinel.Models.K8s.Entities;
 using static Sentinel.K8s.Watchers.ResourceWatcherMetrics;
@@ -16,12 +17,12 @@ namespace Sentinel.K8s.Watchers
     {
 
 
-        public ResourceWatcherMetrics(OperatorSettings settings)
+        public ResourceWatcherMetrics(IOptions<OperatorSettings<TEntity>> settings)
         {
             var crd = CustomEntityDefinitionExtensions.CreateResourceDefinition<TEntity>();
             var labelValues = new[]
             {
-                settings.Name,
+                settings.Value?.Name,
                 crd.Kind,
                 crd.Group,
                 crd.Version,

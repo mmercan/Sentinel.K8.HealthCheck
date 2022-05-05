@@ -8,7 +8,7 @@ using Newtonsoft.Json.Converters;
 namespace Sentinel.K8s.Watchers
 {
 #nullable enable
-    public sealed class OperatorSettings
+    public sealed class OperatorSettings<TEntity>
     {
         private const string DefaultOperatorName = "KubernetesOperator";
         private const string NonCharReplacement = "-";

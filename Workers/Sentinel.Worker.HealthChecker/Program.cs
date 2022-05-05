@@ -1,6 +1,8 @@
+using System.Collections.ObjectModel;
 using Sentinel.Common;
 using Sentinel.Common.Middlewares;
 using Sentinel.K8s;
+using Sentinel.K8s.BackgroundServices;
 using Sentinel.Mongo;
 using Sentinel.PubSub;
 using Sentinel.Redis;
@@ -27,12 +29,12 @@ namespace Sentinel.Worker.HealthChecker
             builder.Services.AddServiceDefinitions(
                 builder.Configuration,
                 typeof(ICommonLibAssemblyMarker),
-                typeof(IK8sLibAssemblyMarker),
                 typeof(ISchedulerLibAssemblyMarker),
                 typeof(IPubSubLibAssemblyMarker),
                 typeof(IMongoLibAssemblyMarker),
                 typeof(Sentinel.Worker.HealthChecker.Program)
             );
+
 
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 

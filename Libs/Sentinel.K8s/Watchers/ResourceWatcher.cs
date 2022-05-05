@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using k8s;
 using k8s.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Sentinel.K8s.Watchers
 {
@@ -19,9 +20,9 @@ namespace Sentinel.K8s.Watchers
 
         private readonly Subject<(WatchEventType Event, TEntity Resource)> _watchEvents = new();
         private readonly IKubernetesClient _client;
-        private readonly ILogger<ResourceWatcher<TEntity>> _logger;
+        private readonly ILogger _logger;
         private readonly ResourceWatcherMetrics<TEntity> _metrics;
-        private readonly OperatorSettings _settings;
+        private readonly IOptions<OperatorSettings<TEntity>> _settings;
         private readonly Subject<TimeSpan> _reconnectHandler = new();
         private readonly IDisposable _reconnectSubscription;
         private readonly Random _rnd = new();
@@ -30,17 +31,33 @@ namespace Sentinel.K8s.Watchers
         private int _reconnectAttempts;
         private CancellationTokenSource? _cancellation;
         private Watcher<TEntity>? _watcher;
+        private string? Namespace;
+        private ushort WatcherHttpTimeout;
+
 
         public ResourceWatcher(
             IKubernetesClient client,
-            ILogger<ResourceWatcher<TEntity>> logger,
+            ILogger logger,
             ResourceWatcherMetrics<TEntity> metrics,
-            OperatorSettings settings)
+            IOptions<OperatorSettings<TEntity>> settings)
         {
             _client = client;
             _logger = logger;
             _metrics = metrics;
             _settings = settings;
+
+            if (settings.Value != null)
+            {
+                this.Namespace = settings.Value.Namespace;
+                this.WatcherHttpTimeout = settings.Value.WatcherHttpTimeout;
+
+            }
+            else
+            {
+                this.Namespace = null;
+                this.WatcherHttpTimeout = 60;
+            }
+
             _reconnectSubscription =
                 _reconnectHandler
                     .Select(Observable.Timer)
@@ -107,11 +124,11 @@ namespace Sentinel.K8s.Watchers
             _cancellation = new CancellationTokenSource();
 
             _watcher = await _client.WatchAsync<TEntity>(
-                TimeSpan.FromSeconds(_settings.WatcherHttpTimeout),
+                TimeSpan.FromSeconds(this.WatcherHttpTimeout),
                 OnWatcherEvent,
                 OnException,
                 OnClose,
-                _settings.Namespace,
+                this.Namespace,
                 _cancellation.Token);
             _metrics.Running.Set(1);
         }
