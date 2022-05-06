@@ -5,6 +5,7 @@ using Sentinel.K8s;
 using Sentinel.K8s.BackgroundServices;
 using Sentinel.Mongo;
 using Sentinel.PubSub;
+using Sentinel.PubSub.Middlewares;
 using Sentinel.Redis;
 using Sentinel.Scheduler;
 using Sentinel.Scheduler.Quartz;
@@ -40,6 +41,7 @@ namespace Sentinel.Worker.HealthChecker
 
             builder.Services.AddQuartzJobs(builder.Configuration, typeof(Program));
 
+            builder.Services.AddRabbitMQSubscribeDefinitions(builder.Configuration, typeof(Program));
             var app = builder.Build();
 
             app.UseRouting();

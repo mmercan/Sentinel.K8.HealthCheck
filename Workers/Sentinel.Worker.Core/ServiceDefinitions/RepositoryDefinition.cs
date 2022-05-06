@@ -34,17 +34,17 @@ namespace Workers.Sentinel.Worker.Core.ServiceDefinitions
             // services.AddSingleton<ScreenShotFeeder>();
 
 
-            //HealthCheck Feeder and Repository
+            //  HealthCheck Feeder and Repository
             services.AddSchedulerRedisRepositoryFeeder<HealthCheckResourceV1>(configuration.GetSection("Rediskey:HealthChecks"));
             // services.Configure<RedisKeyFeederOption<HealthCheckResourceV1>>(configuration.GetSection("Rediskey:HealthChecks"));
             // services.AddSingleton<SchedulerRepository<HealthCheckResourceV1>>();
             // services.AddSingleton<SchedulerRedisRepositoryFeeder<HealthCheckResourceV1>>();
 
-            //Scaler Feeder and Repository
-            services.AddSchedulerRedisRepositoryFeeder<HealthCheckResourceV1>(configuration.GetSection("Rediskey:DeploymentScalers"));
-            // services.Configure<RedisKeyFeederOption<DeploymentScalerResourceV1>>(configuration.GetSection("Rediskey:DeploymentScalers"));
-            // services.AddSingleton<SchedulerRepository<DeploymentScalerResourceV1>>();
-            // services.AddSingleton<SchedulerRedisRepositoryFeeder<DeploymentScalerResourceV1>>();
+            // Scaler Feeder and Repository
+            services.AddSchedulerRedisRepositoryFeeder<DeploymentScalerResourceV1>(configuration.GetSection("Rediskey:DeploymentScalers"));
+            //services.Configure<RedisKeyFeederOption<DeploymentScalerResourceV1>>(configuration.GetSection("Rediskey:DeploymentScalers"));
+            //services.AddSingleton<SchedulerRepository<DeploymentScalerResourceV1>>();
+            //services.AddSingleton<SchedulerRedisRepositoryFeeder<DeploymentScalerResourceV1>>();
         }
     }
 }
