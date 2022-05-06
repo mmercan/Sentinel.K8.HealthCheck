@@ -33,7 +33,6 @@ namespace Workers.Sentinel.Worker.Core.SchedulerJobs
                 }
             }
             _logger = logger;
-
         }
 
         public Task Execute(IJobExecutionContext context)

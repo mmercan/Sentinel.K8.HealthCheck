@@ -54,7 +54,9 @@ namespace Sentinel.K8s.BackgroundServices
         {
             Type t = this.GetType();
             // Get instance of the attribute.
-            K8sWatcherAttribute watcherAttribute = (K8sWatcherAttribute)Attribute.GetCustomAttribute(t, typeof(K8sWatcherAttribute));
+
+            var attribute = Attribute.GetCustomAttribute(t, typeof(K8sWatcherAttribute));
+            K8sWatcherAttribute? watcherAttribute = attribute as K8sWatcherAttribute;
             if (watcherAttribute == null)
             {
                 _logger.LogWarning("K8sWatcherAttribute The attribute was not found. on {appName}", appName);

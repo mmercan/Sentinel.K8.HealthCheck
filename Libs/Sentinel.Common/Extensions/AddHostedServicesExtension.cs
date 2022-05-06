@@ -12,7 +12,7 @@ namespace Sentinel.Common.Extensions
     {
         public static IServiceCollection AddHostedServices(this IServiceCollection services, Type backgroundServiceType)
         {
-            MethodInfo methodInfo = typeof(ServiceCollectionHostedServiceExtensions).GetMethods()
+            MethodInfo? methodInfo = typeof(ServiceCollectionHostedServiceExtensions).GetMethods()
                 .FirstOrDefault(p => p.Name == nameof(ServiceCollectionHostedServiceExtensions.AddHostedService));
 
             if (methodInfo == null)
@@ -27,7 +27,7 @@ namespace Sentinel.Common.Extensions
 
         public static IServiceCollection AddHostedServices(this IServiceCollection services, List<Assembly> workersAssemblies)
         {
-            MethodInfo methodInfo = typeof(ServiceCollectionHostedServiceExtensions).GetMethods()
+            MethodInfo? methodInfo = typeof(ServiceCollectionHostedServiceExtensions).GetMethods()
                 .FirstOrDefault(p => p.Name == nameof(ServiceCollectionHostedServiceExtensions.AddHostedService));
 
             if (methodInfo == null)
