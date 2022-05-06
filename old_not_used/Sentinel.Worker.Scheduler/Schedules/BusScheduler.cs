@@ -65,7 +65,7 @@ namespace Sentinel.Worker.Scheduler.Schedules
                 TimeSpan.FromSeconds(3)
               }, (ex, timeSpan, retryCount, context) =>
               {
-                  _logger.LogError(ex, "BusScheduler : Polly retry {retryCount}  Error Finding Service Related to HealthCheckResourceV1", retryCount.ToString());
+                  _logger.LogError(ex, "BusScheduler : Polly retry {retryCount} Error Finding Service Related to HealthCheckResourceV1", retryCount.ToString());
                   if (retryCount == 2)
                   {
                       throw ex;
@@ -106,14 +106,14 @@ namespace Sentinel.Worker.Scheduler.Schedules
                         taskThatShouldRun.Task.RelatedService = service;
                         if (service == null)
                         {
-                            _logger.LogCritical("BusScheduler : Error Finding Service Related to HealthCheckResourceV1 Logged in RedisHealCheckServiceNotFoundDictionary");
+                            _logger.LogCritical("BusScheduler : Error Finding Service Related to HealthCheckResourceV1 Logged in RedisHealCheckServiceNotFoundDictionary, Key : {Key}", taskThatShouldRun.Task.Key);
                             redisHealCheckServiceNotFoundDictionary.Add(taskThatShouldRun.Task);
                         }
                     });
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "BusScheduler : Error Finding Service Related to HealthCheckResourceV1");
+                    _logger.LogError(ex, "BusScheduler : Error Finding Service Related to HealthCheckResourceV1 Key: {Key}", taskThatShouldRun.Task.Key);
                 }
 
                 // TODO: Add a check to see if the service added to object before sending the message

@@ -13,7 +13,7 @@ namespace Workers.Sentinel.Worker.Core.SchedulerJobs
     public class SchedulerRepositoryFeederJob : IJob
     {
         private readonly List<ISchedulerRepositoryFeeder> repositories;
-        private readonly SchedulerRedisRepositoryFeeder<HealthCheckResourceV1> _healthCheckResourceFeeder;
+        // private readonly SchedulerRedisRepositoryFeeder<HealthCheckResourceV1> _healthCheckResourceFeeder = default!;
         private readonly ILogger<SchedulerRepositoryFeederJob> _logger;
 
         public SchedulerRepositoryFeederJob(

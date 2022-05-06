@@ -58,10 +58,7 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
               }, (ex, timeSpan, retryCount, context) =>
               {
                   _logger.LogError(ex, "BusScheduler : Polly retry {retryCount}  Error Finding Service Related to HealthCheckResourceV1", retryCount.ToString());
-                  //   if (retryCount == 2)
-                  //   {
-                  //       throw ex;
-                  //   }
+                  //   if (retryCount == 2) {       throw ex;   }
                   // Add logic to be executed before each retry, such as logging    
               });
 
@@ -86,7 +83,7 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
                 p.RelatedService = service;
                 if (service == null)
                 {
-                    _logger.LogCritical("BusScheduler : Error Finding Service Related to HealthCheckResourceV1 Logged in RedisHealCheckServiceNotFoundDictionary");
+                    _logger.LogCritical("BusScheduler : Error Finding Service Related to HealthCheckResourceV1 Logged in RedisHealCheckServiceNotFoundDictionary Key: {key}", p.Name);
                     policy.Execute(() =>
                     {
                         redisHealCheckServiceNotFoundDictionary.Add(p);

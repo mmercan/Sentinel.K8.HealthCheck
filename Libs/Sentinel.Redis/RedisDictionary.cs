@@ -39,19 +39,9 @@ namespace Sentinel.Redis
                     }, (ex, timeSpan, retryCount, context) =>
                     {
                         _logger.LogError(ex, "RedisDictionary : Polly retry " + retryCount.ToString() + "  Error");
-                        if (retryCount == 2) { throw ex; }
+                        //if (retryCount == 2) { throw ex; }
                         // Add logic to be executed before each retry, such as logging    
                     });
-            // policy.Execute(() =>
-            // {
-            //     var service = taskThatShouldRun.Item.FindServiceRelatedtoHealthCheckResourceV1(redisServiceDictionary);
-            //     taskThatShouldRun.Item.RelatedService = service;
-            //     if (service == null)
-            //     {
-            //         _logger.LogCritical("BusScheduler : Error Finding Service Related to HealthCheckResourceV1 Logged in RedisHealCheckServiceNotFoundDictionary");
-            //         redisHealCheckServiceNotFoundDictionary.Add(taskThatShouldRun.Item);
-            //     }
-            // });
 
         }
 
@@ -224,14 +214,13 @@ namespace Sentinel.Redis
         }
 
 
-// overrideExisting param added tp Sync
+        // overrideExisting param added tp Sync
         // public void UpSert(IEnumerable<TValue> items)
         // {
         //     foreach (var item in items)
         //     {
         //         Add(item);
         //     }
-
         //     foreach (var key in Keys)
         //     {
         //         if (!items.Any(p => PropertyInfoHelpers.GetKeyValue<string, TValue>(p) == key))
@@ -295,8 +284,6 @@ namespace Sentinel.Redis
         // {
         //     foreach (var item in items)
         //     {
-
-
         //             var newValue = item;
         //             var properties = PropertyInfoHelpers.GetProperties<TValue>();
         //             foreach (var property in properties)

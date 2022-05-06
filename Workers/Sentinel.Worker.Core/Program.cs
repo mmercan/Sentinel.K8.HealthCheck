@@ -8,6 +8,7 @@ using Sentinel.K8s.BackgroundServices;
 using Sentinel.PubSub;
 using Sentinel.Redis;
 using Sentinel.Scheduler;
+using Sentinel.Scheduler.Middlewares;
 using Sentinel.Scheduler.Quartz;
 using Serilog;
 using Serilog.Events;
@@ -42,6 +43,7 @@ namespace Sentinel.Worker.Core
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
             builder.Services.AddQuartzJobs(builder.Configuration, typeof(Program));
+
 
             var app = builder.Build();
 

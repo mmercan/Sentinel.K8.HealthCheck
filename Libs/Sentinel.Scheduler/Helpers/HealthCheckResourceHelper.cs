@@ -7,7 +7,7 @@ namespace Sentinel.Scheduler.Helpers
     {
         public static ServiceV1? FindServiceRelatedtoHealthCheckResourceV1(
            this HealthCheckResourceV1 healthCheckResource,
-            IDictionary<string, ServiceV1> ServiceDic
+            IDictionary<string, ServiceV1>? ServiceDic
             )
         {
             if (!string.IsNullOrWhiteSpace(healthCheckResource?.Spec?.Service))
@@ -30,7 +30,7 @@ namespace Sentinel.Scheduler.Helpers
                     serviceKey = $"{serviceNameWithoutNamespace}.{namespaceName}";
                 }
 
-                if (serviceKey != string.Empty && ServiceDic.ContainsKey(serviceKey))
+                if (serviceKey != string.Empty && ServiceDic != null && ServiceDic.ContainsKey(serviceKey))
                 {
                     var service = ServiceDic[serviceKey];
                     if (service == null)

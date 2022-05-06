@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sentinel.Common.Extensions;
+using Sentinel.PubSub.BackgroundServices;
 
-namespace Sentinel.PubSub.BackgroundServices
+namespace Sentinel.PubSub.Middlewares
 {
-    public static class RabbitMQSubscribeDefinitionExtensions
+    public static class RabbitMQSubscribeDefinitionMiddleware
     {
         public static void AddRabbitMQSubscribeDefinitions(this IServiceCollection services, IConfiguration configuration, params Type[] scanMarkers)
         {

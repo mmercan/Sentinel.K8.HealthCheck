@@ -12,7 +12,7 @@ using StackExchange.Redis;
 
 namespace Sentinel.Scheduler
 {
-    public class SchedulerRedisRepositoryFeeder<T> : ISchedulerRepositoryFeeder where T : IScheduledTaskItem, new()
+    public class SchedulerRedisRepositoryFeeder<T> : ISchedulerRepositoryFeeder where T : IScheduledTaskItem //, new()
     {
         protected readonly ILogger<SchedulerRedisRepositoryFeeder<T>> _logger;
         protected readonly SchedulerRepository<T> _schedulerRepository;
