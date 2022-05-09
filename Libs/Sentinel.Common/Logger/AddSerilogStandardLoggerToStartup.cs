@@ -43,6 +43,7 @@ namespace Sentinel.Common
                 .Enrich.FromLogContext()
                 .Enrich.WithProperty("Enviroment", environmentName)
                 .Enrich.WithProperty("ApplicationName", applicationName)
+                .MinimumLevel.Information()
                 .MinimumLevel.Override("Microsoft", AspNetCoreminimumLogLevel)
                 .MinimumLevel.Override("Microsoft.AspNetCore", AspNetCoreminimumLogLevel)
                 .MinimumLevel.Override("Default", minimumLogLevel)

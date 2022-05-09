@@ -34,9 +34,16 @@ namespace Sentinel.Common.HttpClientServices
 
             if (healthcheck?.Spec != null)
             {
-                if (healthcheck.Spec.Cert != null && _configuration[healthcheck.Spec.Cert] != null)
+                if (healthcheck.Spec.Cert != null)
                 {
-                    headers.Add("X-ARR-ClientCert", _configuration[healthcheck.Spec.Cert]);
+                    if (healthcheck.Spec.Cert.Length == 40 && _configuration[healthcheck.Spec.Cert] != null)
+                    {
+                        headers.Add("X-ARR-ClientCert", _configuration[healthcheck.Spec.Cert]);
+                    }
+                    else
+                    {
+                        headers.Add("X-ARR-ClientCert", healthcheck.Spec.Cert);
+                    }
                 }
                 if (healthcheck.Spec.ClientId != null)
                 {
