@@ -64,7 +64,7 @@ password: pn3FHuee2kxFzQmm
 externaldomain: ""
 
 configmap:
-  databases: "4"
+  databases: "1"
 
 pipelines:
   run: "run"
