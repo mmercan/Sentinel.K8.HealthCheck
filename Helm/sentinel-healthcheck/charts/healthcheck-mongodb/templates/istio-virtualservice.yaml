@@ -12,9 +12,9 @@ spec:
   tcp:
     - match:
       - port: 27017
-    - route:
-        - destination:
-            host: {{ include "healthcheck-mongodb.name" . }}  # Service Name
+      route:
+      - destination:
+          host: {{ include "healthcheck-mongodb.name" . }}  # Service Name
         port:
           number: 27017
 {{- end }}
