@@ -136,7 +136,7 @@ jobs:
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
 
-      - name: Concat Redis Connection String
+      - name: Concat Mongo Connection String
         run: |
           connectionString="mongodb://${{ secrets.RABBITMQADMIN }}:${{ env.RABBITMQ_PASSWORD }}@${{ secrets.RABBITMQURL }}:27017/admin?readPreference=primary"
           echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
