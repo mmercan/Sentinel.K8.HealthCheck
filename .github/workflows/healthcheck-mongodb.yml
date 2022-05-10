@@ -149,12 +149,3 @@ jobs:
           gh secret set Mongodb__ConnectionString --body "$connectionString" --env Dev
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
-
-      - name: save to a file
-        run: |
-          echo $connectionString >> /home/runner/work/_temp/secrets.txt
-
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          path: "/home/runner/work/_temp/"
