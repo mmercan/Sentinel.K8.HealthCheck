@@ -15,14 +15,14 @@ using Sentinel.PubSub.BackgroundServices;
 
 namespace Sentinel.Worker.HealthChecker.Subscribers
 {
-    [RabbitMQSubscribe(Name = "HealthChecker", TopicName = "HealthChecker", TimeoutTotalMinutes = 3, Description = "HealthChecker", Enabled = true)]
-    public class HealthCheckSubscriber : SubscribeBackgroundService
+    [RabbitMQSubscribe(Name = "HealthChecker", TopicConfigurationSection = "queue:healthcheck", TimeoutTotalMinutes = 3, Description = "HealthChecker", Enabled = true)]
+    public class HealthCheckSubscriber : SubscribeBackgroundService<HealthCheckResourceV1>
     {
         private readonly IsAliveAndWellHealthCheckDownloader _isAliveAndWelldownloader;
         private readonly MongoBaseRepo<IsAliveAndWellResult> _isAliveAndWellRepo;
         private readonly MongoBaseRepo<IsAliveAndWellResultTimeSerie> _isAliveAndWellRepoTimeSeries;
         public HealthCheckSubscriber(
-            IBus bus, IConfiguration configuration, ILogger<SubscribeBackgroundService> logger,
+            IBus bus, IConfiguration configuration, ILogger<SubscribeBackgroundService<HealthCheckResourceV1>> logger,
             IsAliveAndWellHealthCheckDownloader isAliveAndWelldownloader,
             MongoBaseRepo<IsAliveAndWellResult> isAliveAndWellRepo,
             MongoBaseRepo<IsAliveAndWellResultTimeSerie> isAliveAndWellRepoTimeSeries,
@@ -34,14 +34,8 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             _isAliveAndWellRepoTimeSeries = isAliveAndWellRepoTimeSeries;
         }
 
-        protected override async Task Handler(IScheduledTaskItem scheduledItem)
+        protected override async Task Handler(HealthCheckResourceV1 scheduledItem)
         {
-            if (scheduledItem is not HealthCheckResourceV1)
-            {
-                _logger.LogError("HealthCheckSubscriber: Received an unknown task type");
-                return;
-            }
-
             HealthCheckResourceV1? healthcheck = scheduledItem as HealthCheckResourceV1;
 
             bool serviceFound = false;

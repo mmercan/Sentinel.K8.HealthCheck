@@ -7,8 +7,14 @@ metadata:
 spec:
   hosts:
     - {{ include "healthcheck-mongodb.name" . }}
-  http:
+  gateways:
+    - {{ include "healthcheck-mongodb.name" . }}-gateway
+  tcp:
+    - match:
+      - port: 27017
     - route:
         - destination:
             host: {{ include "healthcheck-mongodb.name" . }}  # Service Name
+        port:
+          number: 27017
 {{- end }}

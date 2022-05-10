@@ -25,9 +25,6 @@ spec:
         - name: Crontab
           type: string
           jsonPath: .spec.crontab
-        - name: Age
-          type: date
-          jsonPath: .metadata.creationTimestamp
         - name: Status
           type: string
           jsonPath: .status.phase

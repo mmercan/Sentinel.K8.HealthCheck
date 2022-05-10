@@ -1,0 +1,23 @@
+{{- if .Values.istio.enabled -}}
+{{- $host := printf "%s.%s.%s" .Chart.Name "sentinel" .Values.hostdomain -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name:  {{ include "healthcheck-mongodb.name" . }}-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - {{ $host }}
+    - port:
+        number: 27017
+        name: mongo
+        protocol: MONGO
+      hosts:
+        - "*"
+{{- end }}

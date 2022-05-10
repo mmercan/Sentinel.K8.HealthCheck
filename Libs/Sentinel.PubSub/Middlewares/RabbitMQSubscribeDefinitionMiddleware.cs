@@ -13,13 +13,25 @@ namespace Sentinel.PubSub.Middlewares
             var rabbitMQSubscribeDefinitions = new List<Type>();
             foreach (var marker in scanMarkers)
             {
-                var items = marker.Assembly.ExportedTypes.Where(
-                    t => typeof(SubscribeBackgroundService).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract
+                // var items = marker.Assembly.ExportedTypes.Where(
+                //     t => typeof(SubscribeBackgroundService).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract
+                //     && Attribute.IsDefined(t, typeof(RabbitMQSubscribeAttribute))
+                // );
+
+                var items2 = marker.Assembly.ExportedTypes.Where(
+                    t => t.BaseType != null && t.BaseType.IsGenericType == true
+                    && t.BaseType.GetGenericTypeDefinition() == typeof(SubscribeBackgroundService<>)
+                    && !t.IsInterface && !t.IsAbstract
                     && Attribute.IsDefined(t, typeof(RabbitMQSubscribeAttribute))
                 );
-                if (items != null && items.Any())
+
+                // if (items != null && items.Any())
+                // {
+                //     rabbitMQSubscribeDefinitions.AddRange(items);
+                // }
+                if (items2 != null && items2.Any())
                 {
-                    rabbitMQSubscribeDefinitions.AddRange(items);
+                    rabbitMQSubscribeDefinitions.AddRange(items2);
                 }
             }
             foreach (var subscribeBackgroundService in rabbitMQSubscribeDefinitions)

@@ -5,7 +5,9 @@ using Sentinel.Common;
 using Sentinel.Common.Middlewares;
 using Sentinel.K8s;
 using Sentinel.K8s.BackgroundServices;
+using Sentinel.K8s.Middlewares;
 using Sentinel.PubSub;
+using Sentinel.PubSub.Middlewares;
 using Sentinel.Redis;
 using Sentinel.Scheduler;
 using Sentinel.Scheduler.Middlewares;
@@ -43,7 +45,7 @@ namespace Sentinel.Worker.Core
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(Sentinel.K8s.KubernetesClient).Assembly, typeof(Sentinel.Models.CRDs.HealthCheckResource).Assembly);
 
             builder.Services.AddQuartzJobs(builder.Configuration, typeof(Program));
-
+            builder.Services.AddRabbitMQSubscribeDefinitions(builder.Configuration, typeof(Program));
 
             var app = builder.Build();
 

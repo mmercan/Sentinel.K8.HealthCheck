@@ -6,9 +6,10 @@ using k8s.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sentinel.Common.Extensions;
+using Sentinel.K8s.BackgroundServices;
 using Sentinel.K8s.Watchers;
 
-namespace Sentinel.K8s.BackgroundServices
+namespace Sentinel.K8s.Middlewares
 {
     public static class WatcherHostedServicesExtension
     {
