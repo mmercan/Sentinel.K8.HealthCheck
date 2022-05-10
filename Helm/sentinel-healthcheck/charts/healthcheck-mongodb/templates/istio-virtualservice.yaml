@@ -15,6 +15,6 @@ spec:
       route:
       - destination:
           host: {{ include "healthcheck-mongodb.name" . }}  # Service Name
-        port:
-          number: 27017
+          port:
+            number: 27017
 {{- end }}
