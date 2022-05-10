@@ -90,8 +90,8 @@ jobs:
 
       - name: Concat mongo Connection String
         run: |
-          server=${{ env.arecord }}".${{ secrets.ENV_DOMAIN }}"
-          username="root"
+          server=${{ secret.MONGODBURL }}
+          username=${{ secret.MONGODBADMIN }}
           password=${{ env.MONGODB_PASSWORD }}
           connectionString="mongodb://${username}:${password}@${server}:27017/admin?readPreference=primary"
           echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
@@ -143,43 +143,6 @@ jobs:
           --set branch=master \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
-
-      - name: extractExternalIP
-        run: |
-          sleep 10
-          while [ -z $external_ip ]; do
-          echo "Waiting for end point..."
-          external_ip=$(kubectl get svc $chartName -n $namespace --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
-          [ -z "$external_ip" ] && sleep 10
-          done
-          echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
-          echo "::add-mask::$external_ip"
-
-      - name: Azure CLI script file
-        uses: azure/CLI@v1
-        with:
-          azcliversion: 2.30.0
-          inlineScript: |
-            if [ $(az network dns record-set list -g dnsmanagement -z  ${{ secrets.ENV_DOMAIN }}  --query "[?name=='$arecord']|  length(@)") = 0 ]; then
-              echo $arecord" not found, create resource" 
-              az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord -a $EXTERNAL_IP
-            else
-              echo  $arecord "found, checking resource IP"
-              oldIP=$(az network dns record-set list -g dnsmanagement -z myrcan.com  --query "[?name=='$arecord'] | [].aRecords[].ipv4Address | [0]")
-
-              # remove first and last char
-              oldIP="${oldIP:1:-1}"
-              echo "::add-mask::$oldIP"
-
-              echo $oldIP && echo $EXTERNAL_IP
-              if [ "$oldIP" = "$EXTERNAL_IP" ]; then
-               echo "Same IP no update"
-              else
-               echo "Different IP delete and create new"
-                az network dns record-set a remove-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $oldIP 
-                az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
-              fi
-            fi
 
       - name: save secret
         run: |

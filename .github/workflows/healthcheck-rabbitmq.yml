@@ -35,11 +35,9 @@ jobs:
       - name: View Docker Compose config
         run: |
           docker-compose --file Containers/RabbitMQ/docker-compose.yml --log-level DEBUG config
-
       - name: Build RabbitMQ Docker Image
         run: |
           docker-compose --file Containers/RabbitMQ/docker-compose.yml --log-level DEBUG build
-
       - name: tag Images
         run: |
           images=$(cat ./Containers/RabbitMQ/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
@@ -48,11 +46,9 @@ jobs:
             docker tag "${image}":"01-prod-linux" "${image}":"$GITHUB_RUN_ID"
             docker tag "${image}":"01-prod-linux" "${image}":"latest"
           done
-
       - name: list Images
         run: |
           docker images
-
       - name: Push Images
         run: |
           images=$(cat ./Containers/RabbitMQ/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
@@ -91,7 +87,6 @@ jobs:
           password=$(jq -n "$IP" | jq .passwords[0] | tr -d '"')
           echo "::add-mask::$password"
           echo "RABBITMQ_PASSWORD=$(echo $password)" >> $GITHUB_ENV
-
       - name: Test
         run: echo $RABBITMQ_PASSWORD
 
@@ -112,19 +107,15 @@ jobs:
         run: |
           cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
           ls /home/runner/work/_temp
-
       - name: Check Helm Version
         run: |
           helm version
-
       - name: Helm Package
         run: |
           helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartName
-
       - name: Validate Helm Package
         run: |
           helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
-
       - name: Helm upgrade
         run: |
           helm upgrade --namespace $namespace --install \
@@ -135,18 +126,39 @@ jobs:
           --set branch=master \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
-
-      - name: Concat Mongo Connection String
+      - name: extractExternalIP
         run: |
-          connectionString="mongodb://${{ secrets.RABBITMQADMIN }}:${{ env.RABBITMQ_PASSWORD }}@${{ secrets.RABBITMQURL }}:27017/admin?readPreference=primary"
-          echo "connectionString=$(echo $connectionString)" >> $GITHUB_ENV
-
-      - name: save secret
-        run: |
-          gh secret set RABBITMQCONNECTION --body "$connectionString" --env Dev
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
-
+          sleep 10
+          while [ -z $external_ip ]; do
+          echo "Waiting for end point..."
+          external_ip=$(kubectl get svc $releaseName -n $namespace --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
+          [ -z "$external_ip" ] && sleep 10
+          done
+          echo "EXTERNAL_IP=$(echo $external_ip)" >> $GITHUB_ENV
+          echo "::add-mask::$external_ip"
+      - name: Azure CLI script file
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.30.0
+          inlineScript: |
+            if [ $(az network dns record-set list -g dnsmanagement -z  ${{ secrets.ENV_DOMAIN }}  --query "[?name=='$arecord']|  length(@)") = 0 ]; then
+              echo $arecord" not found, create resource" 
+              az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord -a $EXTERNAL_IP
+            else
+              echo  $arecord "found, checking resource IP"
+              oldIP=$(az network dns record-set list -g dnsmanagement -z myrcan.com  --query "[?name=='$arecord'] | [].aRecords[].ipv4Address | [0]")
+              # remove first and last char
+              oldIP="${oldIP:1:-1}"
+              echo "::add-mask::$oldIP"
+              echo $oldIP && echo $EXTERNAL_IP
+              if [ "$oldIP" = "$EXTERNAL_IP" ]; then
+               echo "Same IP no update"
+              else
+               echo "Different IP delete and create new"
+                az network dns record-set a remove-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $oldIP 
+                az network dns record-set a add-record -g dnsmanagement -z ${{ secrets.ENV_DOMAIN }} -n $arecord --ipv4-address $EXTERNAL_IP
+              fi
+            fi
       - name: output env vars
         run: |
           echo  " $ARTIFACT_PATH "
