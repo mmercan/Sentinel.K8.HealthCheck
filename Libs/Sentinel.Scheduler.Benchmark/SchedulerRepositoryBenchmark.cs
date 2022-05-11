@@ -27,7 +27,7 @@ namespace Sentinel.Scheduler.Benchmark
 
             repo.Add(hc);
 
-            repo.UpdateItem(hc);
+            repo.UpdateSchedulerRepository(hc);
 
             repo.Remove(hc);
 

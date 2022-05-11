@@ -26,7 +26,7 @@ namespace Sentinel.Scheduler.Tests
 
             repo.Add(hc);
 
-            repo.UpdateItem(hc);
+            repo.UpdateSchedulerRepository(hc);
 
             repo.Remove(hc);
 

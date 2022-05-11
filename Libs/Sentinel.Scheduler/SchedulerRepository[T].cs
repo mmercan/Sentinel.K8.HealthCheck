@@ -44,7 +44,7 @@ namespace Sentinel.Scheduler
             _logger = logger;
             ScheduledTasks = new List<ScheduledTask<T>>();
         }
-        public void UpdateItem(T item)
+        public void UpdateSchedulerRepository(T item)
         {
             if (item == null) { throw new ArgumentNullException("item"); }
 
@@ -63,6 +63,25 @@ namespace Sentinel.Scheduler
             }
             else { _logger.LogCritical("SchedulerRepository <" + genericTypeName + " >  Item  not Found in ScheduledTasks UID : " + item.Uid); }
         }
+
+        public void UpdateTask(T item)
+        {
+            var referenceTime = DateTime.UtcNow;
+            var scheduledSelectedTask = ScheduledTasks.FirstOrDefault(e => e.Uid == item.Uid);
+            if (scheduledSelectedTask != null)
+            {
+                var scheduledIndex = ScheduledTasks.IndexOf(scheduledSelectedTask);
+                if (scheduledIndex > -1)
+                {
+                    // if (ScheduledTasks[scheduledIndex].Task.ToJSON() != item.ToJSON())
+                    // {
+                    ScheduledTasks[scheduledIndex].Task = item;
+                    _logger.LogDebug("SchedulerRepository Updated " + genericTypeName + " Key : " + item.Key + " : " + item.Schedule.ToString() + " ===> " + scheduledSelectedTask.Schedule.GetNextOccurrence(referenceTime).ToString("MM/dd/yyyy H:mm"));
+                    // }
+                }
+
+            }
+        }
         public void Add(T item)
         {
             var referenceTime = DateTime.UtcNow;
@@ -79,6 +98,48 @@ namespace Sentinel.Scheduler
                 ScheduledTasks.Remove(itemtodelete);
             }
             _logger.LogInformation("SchedulerRepository Deleted" + genericTypeName + " Key : " + item.Key);
+        }
+
+
+        public void Sync(IList<T>? items)
+        {
+            if (items == null)
+            {
+                _logger.LogDebug("SchedulerRepository<{type}> Sync null", genericTypeName);
+                return;
+            }
+
+            var itemsToAdd = items.Where(p => !ScheduledTasks.Any(e => e.Uid == p.Uid)).ToList();//.ForEach(p => Add(p));
+            var itemsToUpdate = items.Where(p => ScheduledTasks.Any(e => e.Uid == p.Uid)).ToList();//.ForEach(p => Add(p));
+            var itemsToRemove = ScheduledTasks.Where(p => !items.Any(e => e.Uid == p.Uid)).ToList();//.ForEach(p => Add(p));
+
+            foreach (var item in itemsToAdd)
+            {
+                Add(item);
+                _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {item.Key} Removed ");
+            }
+
+
+            foreach (var item in itemsToRemove)
+            {
+                ScheduledTasks.Remove(item);
+                _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {item.Task.Key} Removed ");
+            }
+
+            foreach (var pair in itemsToUpdate)
+            {
+
+                if (pair.Schedule != ScheduledTasks.FirstOrDefault(x => x.Task.Key == pair.Key)?.Task.Schedule)
+                {
+                    UpdateSchedulerRepository(pair);
+                    _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {pair.Key} updated  new Schedule {pair.Schedule}");
+                }
+                else
+                {
+                    UpdateTask(pair);
+                }
+            }
+
         }
     }
 }

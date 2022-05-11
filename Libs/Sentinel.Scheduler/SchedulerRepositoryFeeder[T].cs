@@ -61,7 +61,7 @@ namespace Sentinel.Scheduler
             {
                 if (pair.Value.Schedule != _schedulerRepository.ScheduledTasks.FirstOrDefault(x => x.Task.Key == pair.Key)?.Task.Schedule)
                 {
-                    _schedulerRepository.UpdateItem(pair.Value);
+                    _schedulerRepository.UpdateSchedulerRepository(pair.Value);
                     _logger.LogDebug($"SchedulerRepositoryFeeder : {genericTypeName} {pair.Key} updated  new Schedule {pair.Value.Schedule}");
                 }
             }

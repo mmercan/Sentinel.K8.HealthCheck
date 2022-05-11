@@ -12,6 +12,7 @@ using Sentinel.Models.CRDs;
 using Sentinel.Models.K8sDTOs;
 using Sentinel.Models.Redis;
 using Sentinel.Redis;
+using Sentinel.Scheduler;
 using Sentinel.Scheduler.Helpers;
 using StackExchange.Redis;
 
@@ -27,11 +28,14 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
         private readonly IRedisDictionary<HealthCheckResourceV1> redisDic;
         private readonly RedisDictionary<ServiceV1> redisServiceDictionary;
         private readonly RedisDictionary<HealthCheckResourceV1> redisHealCheckServiceNotFoundDictionary;
+        private readonly SchedulerRepository<HealthCheckResourceV1> _healthCheckSchedulerRepository;
         protected readonly RetryPolicy policy;
         private readonly object timezone;
 
         public HealthCheckSyncSchedulerJob(ILogger<HealthCheckSyncSchedulerJob> logger, IConfiguration configuration,
-        K8MemoryRepository k8MemoryRepository, K8sGeneralService k8sGeneralService, IMapper mapper, IConnectionMultiplexer redisMultiplexer)
+        K8MemoryRepository k8MemoryRepository, K8sGeneralService k8sGeneralService, IMapper mapper, IConnectionMultiplexer redisMultiplexer,
+        SchedulerRepository<HealthCheckResourceV1> HealthCheckSchedulerRepository
+        )
         {
             _logger = logger;
             _k8sGeneralService = k8sGeneralService;
@@ -40,6 +44,7 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
             redisDic = new RedisDictionary<HealthCheckResourceV1>(redisMultiplexer, _logger, "HealthChecks");
             redisServiceDictionary = new RedisDictionary<ServiceV1>(redisMultiplexer, _logger, configuration["Rediskey:Services:RedisKey"]);
             redisHealCheckServiceNotFoundDictionary = new RedisDictionary<HealthCheckResourceV1>(redisMultiplexer, _logger, configuration["Rediskey:HealCheckServiceNotFound:RedisKey"]);
+            _healthCheckSchedulerRepository = HealthCheckSchedulerRepository;
 
             if (!string.IsNullOrWhiteSpace(configuration["timezone"]))
             {
@@ -92,6 +97,8 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
             });
 
             _k8MemoryRepository.HealthChecks = dtoitems;
+            _healthCheckSchedulerRepository.Sync(dtoitems);
+
             redisDic.Sync(dtoitems);
 
             _logger.LogInformation("{count} HealthChecks have been synced Which {service} has RelatedServices",

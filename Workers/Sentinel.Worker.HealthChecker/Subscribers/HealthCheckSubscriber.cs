@@ -48,8 +48,8 @@ namespace Sentinel.Worker.HealthChecker.Subscribers
             string serviceName = "";
             if (healthcheck?.RelatedService == null)
             {
-                _logger.LogInformation("HealthCheckSubscriber: Handler Received an item but Related Service Not Found: {key} Service Found: {serviceFound} service name: {serviceName}",
-                healthcheck?.Key, serviceFound, serviceName);
+                _logger.LogInformation("HealthCheckSubscriber: Handler Received an item but Related Service Not Found: {key} Service Found: {serviceFound} service name in healthcheck: {serviceName}",
+                healthcheck?.Key, serviceFound, healthcheck?.Spec?.Service);
                 return;
             }
 
