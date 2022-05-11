@@ -17,7 +17,7 @@ using StackExchange.Redis;
 
 namespace Workers.Sentinel.Worker.Core.SyncJobs
 {
-    [QuartzJob(ConfigurationSection = "Schedules:HealthCheckSyncScheduler")]
+    [QuartzJob(ConfigurationSection = "Schedules:HealthCheckSyncScheduler", DelaySecond = 30)]
     public class HealthCheckSyncSchedulerJob : IJob
     {
         private readonly ILogger<HealthCheckSyncSchedulerJob> _logger;
@@ -93,7 +93,9 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
 
             _k8MemoryRepository.HealthChecks = dtoitems;
             redisDic.Sync(dtoitems);
-            _logger.LogInformation("{count} HealthChecks have been synced", checks.Count.ToString());
+
+            _logger.LogInformation("{count} HealthChecks have been synced Which {service} has RelatedServices",
+                checks.Count.ToString(), dtoitems.Count(p => p.RelatedService != null).ToString());
         }
     }
 }

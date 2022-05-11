@@ -12,7 +12,7 @@ using StackExchange.Redis;
 
 namespace Workers.Sentinel.Worker.Core.SyncJobs
 {
-    [QuartzJob(ConfigurationSection = "Schedules:ServicesSynccheduler")]
+    [QuartzJob(ConfigurationSection = "Schedules:ServicesSynccheduler", DelaySecond = 1)]
     public class ServiceSyncSchedulerJob : IJob
     {
         private readonly ILogger<ServiceSyncSchedulerJob> _logger;

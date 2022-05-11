@@ -96,7 +96,7 @@ namespace Sentinel.PubSub.BackgroundServices
                 _logger.LogInformation("{appName} : Connected to bus", appName);
                 _bus.PubSub.SubscribeAsync<T>(topicName, HandlerPrivate);
 
-                _logger.LogInformation("{appName} : Listening on topic {topicName}", appName, topicName);
+                _logger.LogInformation("{appName} : Listening on topic {topicName} type of {TType}", appName, topicName, typeof(T).ToString());
                 _ResetEvent.Wait();
             }
             catch (Exception ex)

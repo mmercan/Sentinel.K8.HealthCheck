@@ -20,7 +20,16 @@ namespace Sentinel.Models.K8sDTOs
         {
             VirtualServiceV1 virtualService = new VirtualServiceV1();
             virtualService.Host = jitem.SelectToken("spec.hosts[0]").ToString();
-            virtualService.Service = jitem.SelectToken("spec.http[0].route[0].destination.host").ToString();
+            var service = jitem.SelectToken("spec.http[0].route[0].destination.host")?.ToString();
+            if (service != null)
+            {
+                virtualService.Service = service;
+            }
+            else
+            {
+                //TODO what if protocol is not http (TCP or TLS etc..) 
+            }
+            // virtualService.Service = jitem.SelectToken("spec.http[0].route[0].destination.host").ToString();
             virtualService.Port = jitem.SelectToken("spec.http[0].route[0].destination.port.number")?.ToString();
 
             virtualService.Name = jitem.SelectToken("metadata.name").ToString();

@@ -73,21 +73,23 @@ namespace Scheduler.JobSchedules
 
                 // TODO: Add a check to see if the service added to object before sending the message
 
-                _bus.PubSub.PublishAsync(taskThatShouldRun.IScheduledTaskItem, _configuration["queue:healthcheck"]).ContinueWith(task =>
-                 {
-                     if (task.IsCompleted && !task.IsFaulted)
-                     {
-                         _logger.LogInformation("Task Added to RabbitMQ on topic {healthcheck} with Key {Key} {type}", _configuration["queue:healthcheck"], taskThatShouldRun.IScheduledTaskItem.Key, taskThatShouldRun.IScheduledTaskItem.GetType().Name);
-                     }
-                     if (task.IsFaulted)
-                     {
-                         _logger.LogError("BusScheduler Failed : {Exception} ", task.Exception.MessageWithInnerException());
-                         var constring = _configuration["RabbitMQConnection"];
-                         _logger.LogDebug("RabbitMQConnection {RabbitMQConnection}", constring);
-                     }
-                 });
+                _bus.PubSub.PublishAsync(taskThatShouldRun.IScheduledTaskItem, _configuration["queue:healthcheck"]).ContinueWith(task => ContinueWith(task, taskThatShouldRun));
             }
             return Task.CompletedTask;
+        }
+
+        private void ContinueWith(Task task, IScheduledTask taskThatShouldRun)
+        {
+            if (task.IsCompleted && !task.IsFaulted)
+            {
+                _logger.LogInformation("Task Added to RabbitMQ on topic {healthcheck} with Key {Key} {type}", _configuration["queue:healthcheck"], taskThatShouldRun.IScheduledTaskItem.Key, taskThatShouldRun.IScheduledTaskItem.GetType().Name);
+            }
+            if (task.IsFaulted)
+            {
+                _logger.LogError("BusScheduler Failed : {Exception} ", task.Exception.MessageWithInnerException());
+                var constring = _configuration["RabbitMQConnection"];
+                _logger.LogDebug("RabbitMQConnection {RabbitMQConnection}", constring);
+            }
         }
     }
 }

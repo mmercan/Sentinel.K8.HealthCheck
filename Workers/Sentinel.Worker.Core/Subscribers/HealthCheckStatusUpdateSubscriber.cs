@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EasyNetQ;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using Sentinel.K8s.K8sClients;
 using Sentinel.Models.HealthCheck;
 using Sentinel.Models.Scheduler;
@@ -34,6 +35,26 @@ namespace Sentinel.Worker.Core.Subscribers
             var HealthCheckUid = healthcheck.HealthCheck.Uid;
 
             var status = healthcheck.IsAliveAndWellResult.Status;
+            var qq = healthcheck.IsAliveAndWellResult.Result;
+            if (healthcheck.IsAliveAndWellResult.Result != null)
+            {
+                try
+                {
+                    JObject json = JObject.Parse(healthcheck.IsAliveAndWellResult.Result);
+                    if (json != null)
+                    {
+                        var internalstatus = json["status"]?.ToString();
+                        if (internalstatus != null)
+                        {
+                            status = internalstatus;
+                        }
+                    }
+                }
+                catch
+                {
+
+                }
+            }
             await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(Name, Namespace, status, DateTime.UtcNow);
 
             // await _k8sGeneralService.EventClient.CountUpOrCreateEvent(
