@@ -49,19 +49,22 @@ namespace Sentinel.K8s.Middlewares
                     bool enabled = watcherAttr.Enabled;
                     if (enabled)
                     {
-                        Type[] genericTypeArguments = subscribeBackgroundService.BaseType.GetGenericArguments();
-                        var resourceWatcherType = typeof(ResourceWatcher<>).MakeGenericType(genericTypeArguments);
+                        if (subscribeBackgroundService?.BaseType != null)
+                        {
+                            Type[] genericTypeArguments = subscribeBackgroundService.BaseType.GetGenericArguments();
+                            var resourceWatcherType = typeof(ResourceWatcher<>).MakeGenericType(genericTypeArguments);
 
-                        // var resourceWatcherMetricsType = typeof(ResourceWatcherMetrics<>).MakeGenericType(genericTypeArguments);
-                        // if (!services.Any(p => p.ServiceType == resourceWatcherType))
-                        // {
-                        //     services.AddSingleton(resourceWatcherType);
-                        // }
-                        // if (!services.Any(p => p.ServiceType == resourceWatcherMetricsType))
-                        // {
-                        //     services.AddSingleton(resourceWatcherMetricsType);
-                        // }
-                        services.AddHostedServices(subscribeBackgroundService);
+                            // var resourceWatcherMetricsType = typeof(ResourceWatcherMetrics<>).MakeGenericType(genericTypeArguments);
+                            // if (!services.Any(p => p.ServiceType == resourceWatcherType))
+                            // {
+                            //     services.AddSingleton(resourceWatcherType);
+                            // }
+                            // if (!services.Any(p => p.ServiceType == resourceWatcherMetricsType))
+                            // {
+                            //     services.AddSingleton(resourceWatcherMetricsType);
+                            // }
+                            services.AddHostedServices(subscribeBackgroundService);
+                        }
                     }
                 }
             }

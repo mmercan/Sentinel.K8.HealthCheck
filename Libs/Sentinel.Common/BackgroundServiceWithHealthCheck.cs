@@ -12,9 +12,9 @@ namespace Sentinel.Common
         protected Task executingTask;
         public DateTime LastRestart = DateTime.UtcNow;
         protected readonly ILogger<BackgroundServiceWithHealthCheck> _logger;
-        protected readonly BackgroundServiceHealthCheck bgHealthCheck;
+        protected readonly BackgroundServiceHealthCheck bgHealthCheck = default!;
         protected TimeSpan? timeout;
-        protected Timer _timer;
+        protected Timer _timer = default!;
         protected bool isTriggered { get; set; } = true;
         protected ManualResetEventSlim _ResetEvent = new ManualResetEventSlim(false);
         protected virtual string appName
@@ -67,9 +67,9 @@ namespace Sentinel.Common
 
         protected abstract Task Execute(CancellationToken stoppingToken);
 
-        protected void HealthCheckFailIfQueueNotUsed(object state)
+        protected void HealthCheckFailIfQueueNotUsed(object? state)
         {
-            if (!isTriggered)
+            if (!isTriggered && timeout.HasValue)
             {
                 ReportUnhealthy(timeout.Value.ToString(@"dd\.hh\:mm\:ss") + "  have passed without receiving any message from the queue");
             }
