@@ -1,0 +1,26 @@
+{{- if .Values.istio.enabled -}}
+{{- $host := printf "%s.%s.%s" .Chart.Name "sentinel" .Values.hostdomain -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name:  {{ include "sentinel-tester-testapp.fullname" . }}-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - {{ $host }}
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: sentinel-wildcard-tls
+      hosts:
+        - {{ $host }}
+{{- end }}
