@@ -25,7 +25,7 @@ namespace Sentinel.PubSub.BackgroundServices
         protected string topicName { get; set; } = default!;
         protected TimeSpan? timeout;
         protected DateTime LastRun { get; set; } = DateTime.UtcNow;
-        private Timer _timer;
+        private Timer _timer = default!;
         protected bool isTriggered { get; set; } = true;
         protected ManualResetEventSlim _ResetEvent = new ManualResetEventSlim(false);
         protected virtual string appName
@@ -81,9 +81,9 @@ namespace Sentinel.PubSub.BackgroundServices
             if (executingTask.IsCompleted) { return executingTask; }
             return Task.CompletedTask;
         }
-        protected void HealthCheckFailIfQueueNotUsed(object state)
+        protected void HealthCheckFailIfQueueNotUsed(object? state)
         {
-            if (!isTriggered)
+            if (!isTriggered && timeout.HasValue)
             {
                 ReportUnhealthy(timeout.Value.ToString(@"dd\.hh\:mm\:ss") + "  have passed without receiving any message from the queue");
             }
@@ -107,7 +107,12 @@ namespace Sentinel.PubSub.BackgroundServices
         }
         protected async Task HandlerPrivate(T healthcheckTask)
         {
-
+            if (healthcheckTask is null)
+            {
+                _logger.LogInformation("{appName} Received Type: {type}  on Topic: {topic} but healthcheckTask is null",
+                        appName, healthcheckTask?.GetType().Name, topicName);
+                return;
+            }
             isTriggered = true;
             LastRun = DateTime.UtcNow;
             this.ReportHealthy("Queue is Receiving messages at " + LastRun.ToString("dd/MM/yyyy HH:mm:ss"));
@@ -125,15 +130,15 @@ namespace Sentinel.PubSub.BackgroundServices
         {
             Type t = this.GetType();
             // Get instance of the attribute.
-            RabbitMQSubscribeAttribute rabbitMQAttribute =
-                (RabbitMQSubscribeAttribute)Attribute.GetCustomAttribute(t, typeof(RabbitMQSubscribeAttribute));
+            var attr = Attribute.GetCustomAttribute(t, typeof(RabbitMQSubscribeAttribute));
 
-            if (rabbitMQAttribute == null)
+            if (attr == null)
             {
                 _logger.LogWarning("RabbitMQSubscribeAttribute The attribute was not found. on {appName}", appName);
             }
             else
             {
+                RabbitMQSubscribeAttribute rabbitMQAttribute = (RabbitMQSubscribeAttribute)attr;
                 var AppName = t.Name;
                 string SubscribeName = string.IsNullOrEmpty(rabbitMQAttribute.Name) ? AppName : AppName;
 
