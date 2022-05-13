@@ -48,7 +48,7 @@ namespace Sentinel.Common.HttpClientServices
                 if (healthcheck.Spec.ClientId != null)
                 {
                     AZAuthServiceSettings setting = new AZAuthServiceSettings();
-                    _configuration.GetSection("CI_" + healthcheck.Spec.ClientId).Bind(setting);
+                    _configuration.GetSection(healthcheck.Spec.ClientId).Bind(setting);
                     if (setting?.ClientId != null)
                     {
                         var token = await _azAuthService.AuthenticateAsync(setting);
