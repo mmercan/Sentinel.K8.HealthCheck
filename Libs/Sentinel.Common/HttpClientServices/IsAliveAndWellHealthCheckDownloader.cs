@@ -48,10 +48,11 @@ namespace Sentinel.Common.HttpClientServices
                 if (healthcheck.Spec.ClientId != null)
                 {
                     AZAuthServiceSettings setting = new AZAuthServiceSettings();
-                    _configuration.GetSection(healthcheck.Spec.ClientId).Bind(setting);
+                    _configuration.GetSection("CI_" + healthcheck.Spec.ClientId).Bind(setting);
                     if (setting?.ClientId != null)
                     {
                         var token = await _azAuthService.AuthenticateAsync(setting);
+                        _logger.LogInformation("HealthCheckSubscriber: Authenticated with clientId {clientId} with Token first 5 char : {token}", setting.ClientId, token.Substring(0, 5));
                         headers.Add(HttpRequestHeader.Authorization.ToString(), "Bearer " + token);
                     }
                 }
