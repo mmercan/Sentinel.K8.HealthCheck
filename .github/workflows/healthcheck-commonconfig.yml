@@ -64,9 +64,9 @@ jobs:
           --set secrets.AzureAd__ClientId=$BUILDTIME_APPID \
           --set secrets.AzureAd__Secret=$BUILDTIME_APPSECRET \
           --set secrets.AzureAd__TenantId=$BUILDTIME_ADID \
-          --set secrets.a67d009b197fe496384ff3590b06df0da__ClientId=$BUILDTIME_APPID \
-          --set secrets.a67d009b197fe496384ff3590b06df0da__Secret=$BUILDTIME_APPSECRET \
-          --set secrets.a67d009b197fe496384ff3590b06df0da__TenantId=$BUILDTIME_ADID \
+          --set secrets.CI_67d009b1-97fe-4963-84ff-3590b06df0da__ClientId=$BUILDTIME_APPID \
+          --set secrets.CI_67d009b1-97fe-4963-84ff-3590b06df0da__Secret=$BUILDTIME_APPSECRET \
+          --set secrets.CI_67d009b1-97fe-4963-84ff-3590b06df0da__TenantId=$BUILDTIME_ADID \
           --wait $releaseName \
           /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
 
