@@ -66,6 +66,7 @@ namespace Sentinel.K8s.K8sClients
                 healthCheck.Status = new HealthCheckResource.HealthCheckResourceStatus();
             }
             healthCheck.Status.Phase = status;
+            healthCheck.Status.CheckedUrl = checkedUrl;
             if (lastCheckTime != null)
             {
                 //healthCheck.Status.LastCheckTime = lastCheckTime.Value.ToString("o");
