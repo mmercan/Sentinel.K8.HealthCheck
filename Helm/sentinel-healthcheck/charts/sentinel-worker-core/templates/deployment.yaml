@@ -37,12 +37,16 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /Health/IsAliveAndWell
               port: http
+            initialDelaySeconds: 120
+            periodSeconds: 300
           readinessProbe:
             httpGet:
-              path: /
+              path: /Health/IsAliveAndWell
               port: http
+            initialDelaySeconds: 120
+            periodSeconds: 300
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
