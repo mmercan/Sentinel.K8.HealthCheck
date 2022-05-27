@@ -14,7 +14,7 @@ using Sentinel.K8s.Watchers;
 
 namespace Sentinel.Worker.Core.Watchers
 {
-    [K8sWatcher(Name = "NamespaceWatcher", WatchAllNamespaces = true, Description = "Watches for Namespace changes", TimeoutTotalMinutes = 5, Enabled = true)]
+    [K8sWatcher(Name = "NamespaceWatcher", WatchAllNamespaces = true, Description = "Watches for Namespace changes", TimeoutTotalMinutes = 60, Enabled = true)]
     public class NamespaceWatcher : WatcherBackgroundService<V1Namespace>
     {
 

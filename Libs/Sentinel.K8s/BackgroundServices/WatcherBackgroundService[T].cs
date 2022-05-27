@@ -19,6 +19,10 @@ namespace Sentinel.K8s.BackgroundServices
         protected string Name { get; set; } = default!;
         protected string? Namespace { get; set; } = default!;
         public ResourceWatcher<TEntity> Watcher { get; set; } = default!;
+        private string AppName
+        {
+            get { return this.GetType().Name; }
+        }
         public WatcherBackgroundService(IConfiguration configuration, IKubernetesClient client,
             ILogger<WatcherBackgroundService<TEntity>> logger, IOptions<HealthCheckServiceOptions> hcoptions) : base(logger, hcoptions)
         {
@@ -44,6 +48,7 @@ namespace Sentinel.K8s.BackgroundServices
             Watcher.Start();
             Watcher.WatchEvents.Subscribe(x =>
                         {
+                            ReportHealthy(string.Format("{0} watcher event: {1} :  {2}", appName, x.Event, x.Resource.Metadata.Name));
                             Watch(x.Event, x.Resource);
                         });
             return Task.CompletedTask;
