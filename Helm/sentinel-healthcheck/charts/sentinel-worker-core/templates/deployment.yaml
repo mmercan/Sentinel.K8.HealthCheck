@@ -43,7 +43,7 @@ spec:
             periodSeconds: 300
           readinessProbe:
             httpGet:
-              path: /Health/IsAliveAndWell
+              path: /
               port: http
             initialDelaySeconds: 120
             periodSeconds: 300
