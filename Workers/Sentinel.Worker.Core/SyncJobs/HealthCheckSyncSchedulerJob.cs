@@ -75,7 +75,7 @@ namespace Workers.Sentinel.Worker.Core.SyncJobs
             {
                 if (string.IsNullOrEmpty(check.Status?.Phase))
                 {
-                    await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(check, HealthCheckResource.HealthCheckResourceStatusPhase.AddedtoRedis);
+                    await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(check, HealthCheckResource.HealthCheckResourceStatusPhase.AddedtoRedis, "");
                 }
             });
             var dtoitems = _mapper.Map<IList<HealthCheckResourceV1>>(checks);

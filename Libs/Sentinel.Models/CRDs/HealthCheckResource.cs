@@ -78,6 +78,9 @@ namespace Sentinel.Models.CRDs
 
             [JsonProperty(PropertyName = "labelSelector")]
             public string LabelSelector { get; set; } = default!;
+
+            [JsonProperty(PropertyName = "checkedUrl")]
+            public string CheckedUrl { get; set; } = default!;
         }
 
         public enum HealthCheckResourceStatusPhase

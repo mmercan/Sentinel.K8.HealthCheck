@@ -33,7 +33,7 @@ namespace Sentinel.Worker.Core.Subscribers
             var Name = healthcheck.HealthCheck.Name;
             var Namespace = healthcheck.HealthCheck.Namespace;
             var HealthCheckUid = healthcheck.HealthCheck.Uid;
-
+            var checkedUrl = healthcheck.IsAliveAndWellResult.CheckedUrl;
             var status = healthcheck.IsAliveAndWellResult.Status;
             var qq = healthcheck.IsAliveAndWellResult.Result;
             if (healthcheck.IsAliveAndWellResult.Result != null)
@@ -55,7 +55,7 @@ namespace Sentinel.Worker.Core.Subscribers
 
                 }
             }
-            await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(Name, Namespace, status, DateTime.UtcNow);
+            await _k8sGeneralService.HealthCheckResourceClient.UpdateStartusAsync(Name, Namespace, status, checkedUrl, DateTime.UtcNow);
 
             // await _k8sGeneralService.EventClient.CountUpOrCreateEvent(
             //      Namespace, Name, HealthCheckUid,  HealthCheckResourceV1.ApiVersion,

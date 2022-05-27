@@ -73,6 +73,8 @@ spec:
                   format: date-time
                 message:
                   type: string
+                checkedUrl:
+                  type: string
                 phase:
                   type: string
                   default: "Pending"
