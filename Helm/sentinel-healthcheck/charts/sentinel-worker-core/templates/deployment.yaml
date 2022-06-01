@@ -38,13 +38,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /Health/IsAliveAndWell
-              port: http
+              port: 8080
             initialDelaySeconds: 120
             periodSeconds: 300
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: 8080
             initialDelaySeconds: 120
             periodSeconds: 300
           resources:
