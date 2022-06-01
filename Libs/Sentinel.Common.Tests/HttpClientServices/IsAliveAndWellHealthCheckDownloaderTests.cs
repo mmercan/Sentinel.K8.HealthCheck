@@ -128,7 +128,7 @@ namespace Sentinel.Common.Tests.HttpClientServices
                 downTask.Wait(TimeSpan.FromSeconds(50));
 
                 //downTask.Result.Where(x => x.IsSuccessStatusCode == false).Should().BeEmpty();
-                downTask.Result?.IsSuccessStatusCode.Should().BeTrue();
+                downTask?.Result?.IsSuccessStatusCode.Should().BeTrue();
 
             }).Wait(TimeSpan.FromSeconds(60));
 

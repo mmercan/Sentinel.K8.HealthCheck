@@ -1,0 +1,19 @@
+{{- if .Values.istio.enabled -}}
+{{- $host := printf "%s.%s.%s" .Chart.Name .Values.environment .Values.istiohostdomain -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ include "sentinel-mailhog.fullname" . }}-dr
+spec:
+  host: {{ include "sentinel-mailhog.fullname" . }}
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+  subsets:
+    - name: v1
+      labels:
+        version: "1.0.0"
+    # - name: v2
+    #   labels:
+    #     version: "2.0"
+{{- end }}

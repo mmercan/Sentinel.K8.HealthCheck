@@ -14,12 +14,14 @@ namespace Sentinel.Models.K8sDTOs
 
         public string Name { get; set; } = default!;
         public string Namespace { get; set; } = default!;
+        public string? GatewayName { get; set; } = default!;
 
 
         public static VirtualServiceV1 ConvertFromJTokenToVirtualServiceV1(JToken jitem)
         {
             VirtualServiceV1 virtualService = new VirtualServiceV1();
             virtualService.Host = jitem.SelectToken("spec.hosts[0]").ToString();
+            virtualService.GatewayName = jitem.SelectToken("spec.gateways[0]")?.ToString();
             var service = jitem.SelectToken("spec.http[0].route[0].destination.host")?.ToString();
             if (service != null)
             {

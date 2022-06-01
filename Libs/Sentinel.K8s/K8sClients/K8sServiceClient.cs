@@ -28,11 +28,14 @@ namespace Sentinel.K8s.K8sClients
             var servicesTask = _k8sclient.ApiClient.ListServiceForAllNamespacesWithHttpMessagesAsync();
             var ingressesTask = _k8sclient.ApiClient.ListIngressForAllNamespacesWithHttpMessagesAsync();
             var virtualservicesTask = _k8sclient.ListClusterCustomObjectAsync("networking.istio.io", "v1alpha3", "virtualservices");
+            var gatewaysTask = _k8sclient.ListClusterCustomObjectAsync("networking.istio.io", "v1alpha3", "gateways");
 
-            Task.WaitAll(servicesTask, ingressesTask, virtualservicesTask);
+            Task.WaitAll(servicesTask, ingressesTask, virtualservicesTask, gatewaysTask);
+
 
             var ingresses = ingressesTask.Result.Body.Items;
             var virtualservices = VirtualServiceV1.ConvertFromJTokenToVirtualServiceV1List(virtualservicesTask.Result);
+            var gateways = GatewayV1.ConvertFromJTokenToGatewayV1List(gatewaysTask.Result);
             var services = servicesTask.Result;
 
             var dtoitems = _mapper.Map<IList<ServiceV1>>(services.Body.Items);
@@ -56,9 +59,20 @@ namespace Sentinel.K8s.K8sClients
                 }
 
                 var vs = virtualservices.FirstOrDefault(p => p.Namespace == item.Namespace && p.Service == item.Name);
+                var gw = gateways.FirstOrDefault(p => p.Namespace == item.Namespace && p.Name == vs?.GatewayName);
                 if (vs != null)
                 {
-                    item.VirtualServiceUrl = "http://" + vs.Host;
+                    var protocol = "http://";
+                    if (gw != null)
+                    {
+                        var ishttps = gw?.ServerPorts.Any(p => p.Tls == true && p.Host == vs.Host);
+                        protocol = ishttps.HasValue && ishttps.Value ? "https://" : "http://";
+                        if (ishttps.HasValue && ishttps.Value)
+                        {
+                            var log = true;
+                        }
+                    }
+                    item.VirtualServiceUrl = protocol + vs.Host;
                 }
             }
 

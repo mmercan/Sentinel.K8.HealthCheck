@@ -78,10 +78,8 @@
       "sentinel-dev-health-ui-app-health-ui.sentinel-dev:80"
     ],
     "ExternalEndpoints": [],
-    "Ingresses": [
-      "https://health.dev.ui.sentinel.mercan.io"
-    ],
-    "VirtualServiceUrl": null,
+    "Ingresses":null
+    "VirtualServiceUrl": "https://sentinel-tester-testapp.sentinel.myrcan.com",
     "LatestSyncDateUTC": "2022-01-17T06:18:42.6838798Z",
     "Deleted": false,
     "ServiceApiVersion": null,

@@ -32,8 +32,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 80
+            - name: http-web
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
