@@ -74,6 +74,9 @@ tolerations: []
 
 affinity: {}
 
+environment: health
+hostdomain: myrcan.com
+
 azurepipelines:
   run: "run"
   pipeline: "pipeline"
