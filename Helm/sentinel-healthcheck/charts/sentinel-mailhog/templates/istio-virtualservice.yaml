@@ -13,7 +13,7 @@ spec:
     - route:
         - destination:
             host: {{ include "sentinel-mailhog.fullname" . }}  # Service Name
-            subset: v1
+            
             port:
               number: {{ .Values.service.port }}
 

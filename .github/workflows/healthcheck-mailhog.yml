@@ -1,0 +1,134 @@
+name: Healthcheck MailHog
+on:
+  push:
+    branches: [master]
+    paths:
+      - Containers/mailhog/**
+      - Helm/sentinel-healthcheck/charts/sentinel-mailhog/**
+  pull_request:
+    branches: [master]
+
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_PATH: ${{ github.workspace }}
+      IMAGE_NAME: ${{ github.repository }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: View Docker Compose config
+        run: |
+          docker-compose --file Containers/mailhog/docker-compose.yml --log-level DEBUG config
+
+      - name: Build Redis Docker Image
+        run: |
+          docker-compose --file Containers/mailhog/docker-compose.yml --log-level DEBUG build
+
+      - name: tag Images
+        run: |
+          images=$(cat ./Containers/mailhog/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
+          for image in $images 
+          do 
+            docker tag "${image}":"01-prod-linux" "${image}":"$GITHUB_RUN_ID"
+            docker tag "${image}":"01-prod-linux" "${image}":"latest"
+          done
+
+      - name: list Images
+        run: |
+          docker images
+
+      - name: Push Images
+        run: |
+          images=$(cat ./Containers/mailhog/docker-compose.yml | grep 'image: ' | cut -d':' -f 2 | tr -d '"')
+          for image in $images 
+          do 
+            docker image push --all-tags ${image}
+          done
+  deploy-dev:
+    environment: Dev
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      ARTIFACT_PATH: ${{ github.workspace }}
+      IMAGE_NAME: ${{ github.repository }}
+      chartName: "sentinel-mailhog"
+      namespace: "sentinel-healthcheck"
+      releaseName: "sentinel-mailhog-dev"
+      arecord: "mailhog-dev"
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Kubernetes set context
+        uses: Azure/k8s-set-context@v1.1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          context: matt-aks
+
+      - name: add KUBECONFIG To env file
+        run: |
+          cp ${{ env.KUBECONFIG }} /home/runner/work/_temp/config
+          ls /home/runner/work/_temp
+
+      - name: Check Helm Version
+        run: |
+          helm version
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Helm Package
+        run: |
+          helm package --version 2.0.0-$GITHUB_RUN_ID --destination /home/runner/work/_temp ./Helm/sentinel-healthcheck/charts/$chartName
+
+      - name: Validate Helm Package
+        run: |
+          helm template "./Helm/sentinel-healthcheck/charts/$chartName" -f "./Helm/values/$chartName/dev-values.yaml"
+
+      - name: Helm upgrade
+        run: |
+          helm upgrade --namespace $namespace --install \
+          --history-max 1 \
+          --values ./Helm/values/$chartName/dev-values.yaml \
+          --set image.tag=$GITHUB_RUN_ID \
+          --set branch=master \
+          --wait $releaseName \
+          /home/runner/work/_temp/$chartName-2.0.0-$GITHUB_RUN_ID.tgz \
+
+      - name: output env vars
+        run: |
+          echo  " $ARTIFACT_PATH "
+          echo  " $IMAGE_NAME "
+          echo  " $chartName "
+          echo  " $namespace "
+          echo  " $releaseName "
+          echo  " $pipelines_pipeline "
+          echo  " $pipelines_run "
+          echo  " $pipelines_org "
+          echo  " $pipelines_repo "
+          echo  " $pipelines_gitsha "
+          echo  " $pipelines_branch "
+          echo  " $pipelines_runuri "
