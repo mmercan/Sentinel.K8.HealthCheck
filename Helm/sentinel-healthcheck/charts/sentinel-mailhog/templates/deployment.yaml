@@ -8,7 +8,7 @@ metadata:
   labels:
     {{- include "sentinel-mailhog.labels" . | nindent 4 }}
   annotations:
-    {{- include "Turquoise.Util.Mailhog.annotations" . | nindent 4 }}
+    {{- include "sentinel-mailhog.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: 1
