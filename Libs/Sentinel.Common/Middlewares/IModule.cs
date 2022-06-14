@@ -8,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Sentinel.Common.Middlewares
 {
-    public interface IEndpointDefinition
+    public interface IModule
     {
-        void DefineServices(IServiceCollection services, ConfigurationManager  configuration);
-        void DefineEndpoints(WebApplication app);
+        void RegisterServices(IServiceCollection services, ConfigurationManager configuration);
+        void MapEndpoints(WebApplication app);
 
     }
 }

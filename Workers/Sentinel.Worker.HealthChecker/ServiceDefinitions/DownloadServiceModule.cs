@@ -7,16 +7,16 @@ using Turquoise.HealthChecks.Common.CheckCaller;
 
 namespace Sentinel.Worker.HealthChecker.ServiceDefinitions
 {
-    public class DownloadServiceDefinition : IEndpointDefinition
+    public class DownloadServiceModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
 
         }
 
 
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             services.AddSingleton<DownloadService>();
             services.AddSingleton<IsAliveAndWellHealthCheckDownloader>();

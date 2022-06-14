@@ -10,14 +10,14 @@ using Sentinel.Common.Middlewares;
 
 namespace Libs.Sentinel.Common.ServiceDefinitions
 {
-    public class IISServerOptionsDefinition : IEndpointDefinition
+    public class IISServerOptionsModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
 
         }
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
             services.Configure<IISServerOptions>(options => { options.AllowSynchronousIO = true; });

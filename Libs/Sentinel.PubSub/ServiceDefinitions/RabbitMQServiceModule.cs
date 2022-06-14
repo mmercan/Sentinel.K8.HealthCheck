@@ -10,14 +10,14 @@ using EasyNetQ;
 
 namespace Libs.Sentinel.PubSub.ServiceDefinitions
 {
-    public class RabbitMQServiceDefinition : IEndpointDefinition
+    public class RabbitMQServiceModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
 
         }
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             services.AddSingleton<EasyNetQ.IBus>((ctx) =>
             {

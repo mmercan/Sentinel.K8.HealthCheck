@@ -12,9 +12,9 @@ using Sentinel.Common.Middlewares;
 
 namespace Libs.Sentinel.Scheduler.JobSchedules
 {
-    public class QuartzServiceDefinition : IEndpointDefinition
+    public class QuartzServiceModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
             var options = new CrystalQuartzOptions
             {
@@ -26,7 +26,7 @@ namespace Libs.Sentinel.Scheduler.JobSchedules
             app.UseCrystalQuartz(() => scheduler, options);
         }
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             services.Configure<QuartzOptions>(configuration.GetSection("Quartz"));
             services.Configure<QuartzOptions>(options =>

@@ -12,14 +12,14 @@ using Sentinel.K8s.K8sClients;
 
 namespace Sentinel.K8s.ServiceDefinitions
 {
-    public class KubernetesServiceDefinition : IEndpointDefinition
+    public class KubernetesServiceModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
 
         }
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             if (configuration["RunOnCluster"] == "true") { services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.InClusterConfig()); }
             else { services.AddSingleton<KubernetesClientConfiguration>(KubernetesClientConfiguration.BuildConfigFromConfigFile()); }

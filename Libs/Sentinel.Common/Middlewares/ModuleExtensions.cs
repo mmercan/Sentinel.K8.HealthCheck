@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Sentinel.Common.Middlewares
 {
-    public static class EndpointDefinitionExtensions
+    public static class ModuleExtensions
     {
         // public static void DefineEndpoints(this IEndpointDefinition endpointDefinition, WebApplication app)
         // {
@@ -20,19 +20,19 @@ namespace Sentinel.Common.Middlewares
         public static void AddServiceDefinitions(this IServiceCollection services, ConfigurationManager configuration, params Type[] scanMarkers)
         {
 
-            var endpointDefinitions = new List<IEndpointDefinition>();
+            var endpointDefinitions = new List<IModule>();
             foreach (var marker in scanMarkers)
             {
                 endpointDefinitions.AddRange(marker.Assembly.ExportedTypes
-                .Where(t => typeof(IEndpointDefinition).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
-                .Select(Activator.CreateInstance).Cast<IEndpointDefinition>()
+                .Where(t => typeof(IModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                .Select(Activator.CreateInstance).Cast<IModule>()
                 );
             }
             foreach (var endpointDefinition in endpointDefinitions)
             {
-                endpointDefinition.DefineServices(services, configuration);
+                endpointDefinition.RegisterServices(services, configuration);
             }
-            services.AddSingleton(endpointDefinitions as IReadOnlyCollection<IEndpointDefinition>);
+            services.AddSingleton(endpointDefinitions as IReadOnlyCollection<IModule>);
         }
 
         public static void UseEndpointDefinitions(this WebApplication app)
@@ -40,7 +40,7 @@ namespace Sentinel.Common.Middlewares
             ILogger? logger = app.Services.GetService<ILoggerFactory>()?.CreateLogger("EndpointDefinitionExtensions");
 
 
-            var definitions = app.Services.GetService<IReadOnlyCollection<IEndpointDefinition>>();
+            var definitions = app.Services.GetService<IReadOnlyCollection<IModule>>();
             if (definitions == null) return;
             foreach (var endpointDefinition in definitions)
             {
@@ -49,7 +49,7 @@ namespace Sentinel.Common.Middlewares
                     logger.LogInformation($"Defining endpoint {endpointDefinition.GetType().Name}");
                 }
 
-                endpointDefinition.DefineEndpoints(app);
+                endpointDefinition.MapEndpoints(app);
             }
 
         }

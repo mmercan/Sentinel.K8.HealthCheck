@@ -6,9 +6,9 @@ using Sentinel.Models.HealthCheck;
 
 namespace Sentinel.Worker.HealthChecker.ServiceDefinitions
 {
-    public class AZAuthServiceDefinition : IEndpointDefinition
+    public class AZAuthServiceModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
             app.UseAuthentication();
             app.UseAuthorization();
@@ -16,7 +16,7 @@ namespace Sentinel.Worker.HealthChecker.ServiceDefinitions
 
 
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             services.Configure<AZAuthServiceSettings>(configuration.GetSection("AzureAd"));
             services.AddSingleton<AZAuthService>();

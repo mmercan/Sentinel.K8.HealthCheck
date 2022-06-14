@@ -8,13 +8,13 @@ using Sentinel.Common.Middlewares;
 using Turquoise.HealthChecks.Common;
 using Turquoise.HealthChecks.Common.Checks;
 using Turquoise.HealthChecks.RabbitMQ;
-using Turquoise.HealthChecks.Redis;
+using Turquoise.HealthChecks.Mongo;
 
-namespace Workers.Sentinel.Worker.Core.ServiceDefinitions
+namespace Sentinel.Worker.HealthChecker.ServiceDefinitions
 {
-    public class HealthCheckServiceDefinition : IEndpointDefinition
+    public class HealthCheckModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
             if (app.Services.GetService<HealthCheckService>() != null)
             {
@@ -41,11 +41,11 @@ namespace Workers.Sentinel.Worker.Core.ServiceDefinitions
 
 
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             services.AddHealthChecks()
             .AddSystemInfoCheck()
-            .AddRedisHealthCheck(configuration["RedisConnection"])
+            .AddMongoHealthCheck(configuration["Mongodb:ConnectionString"])
             .AddConfigurationChecker(configuration)
             .AddRabbitMQHealthCheckWithDiIBus();
         }

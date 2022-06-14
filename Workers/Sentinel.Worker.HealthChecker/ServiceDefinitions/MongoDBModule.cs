@@ -3,16 +3,16 @@ using Sentinel.Models.HealthCheck;
 
 namespace Sentinel.Worker.HealthChecker.ServiceDefinitions
 {
-    public class MongoDBDefinition : IEndpointDefinition
+    public class MongoDBModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
 
         }
 
 
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             services.AddMongoTimeSeriesRepo<IsAliveAndWellResultTimeSerie>(
                 configuration["Mongodb:ConnectionString"],

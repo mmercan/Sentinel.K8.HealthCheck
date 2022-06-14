@@ -10,14 +10,14 @@ using Sentinel.Common.Middlewares;
 
 namespace Libs.Sentinel.Common.ServiceDefinitions
 {
-    public class ServiceCollectionDefinition : IEndpointDefinition
+    public class ServiceCollectionModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
             app.UseExceptionLogger();
         }
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             services.AddSingleton<IServiceCollection>(services);
             services.AddSingleton<IConfiguration>(configuration);

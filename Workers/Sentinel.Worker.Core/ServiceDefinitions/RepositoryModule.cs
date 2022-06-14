@@ -18,16 +18,16 @@ using Turquoise.HealthChecks.Redis;
 
 namespace Workers.Sentinel.Worker.Core.ServiceDefinitions
 {
-    public class RepositoryDefinition : IEndpointDefinition
+    public class RepositoryModule : IModule
     {
-        public void DefineEndpoints(WebApplication app)
+        public void MapEndpoints(WebApplication app)
         {
 
         }
 
 
 
-        public void DefineServices(IServiceCollection services, ConfigurationManager configuration)
+        public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
             services.AddSingleton<K8MemoryRepository>();
 
