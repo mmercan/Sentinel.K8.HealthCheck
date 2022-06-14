@@ -67,10 +67,6 @@ namespace Sentinel.K8s.K8sClients
                     {
                         var ishttps = gw?.ServerPorts.Any(p => p.Tls == true && p.Host == vs.Host);
                         protocol = ishttps.HasValue && ishttps.Value ? "https://" : "http://";
-                        if (ishttps.HasValue && ishttps.Value)
-                        {
-                            var log = true;
-                        }
                     }
                     item.VirtualServiceUrl = protocol + vs.Host;
                 }
