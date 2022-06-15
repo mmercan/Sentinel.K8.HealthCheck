@@ -16,7 +16,7 @@ namespace Sentinel.K8s.Watchers
      where TEntity : IKubernetesObject<V1ObjectMeta>
     {
 
-
+#pragma warning disable CS8620
         public ResourceWatcherMetrics(IOptions<OperatorSettings<TEntity>> settings)
         {
             var crd = CustomEntityDefinitionExtensions.CreateResourceDefinition<TEntity>();
