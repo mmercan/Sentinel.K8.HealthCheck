@@ -1,21 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using EasyNetQ;
-using Polly;
-using Polly.Retry;
 using Quartz;
 using Sentinel.Common;
-using Sentinel.Models.Scheduler;
 using Sentinel.Scheduler;
 using Sentinel.Scheduler.GeneralScheduler;
-using StackExchange.Redis;
 using TimeZoneConverter;
 
 namespace Scheduler.JobSchedules
 {
-    [QuartzJob(Name = "BusScheduler", Group = "Scheduler", CronExpression = "0 */1 * * * ?", Description = "BusScheduler Check Cron of All Scheduled Repositories and Ad them to RabbitMQ Queues")]
+    [QuartzJob(Name = "BusScheduler", Group = "Scheduler", CronExpression = "0 */1 * * * ?", DelaySecond = 40, Description = "BusScheduler Check Cron of All Scheduled Repositories and Ad them to RabbitMQ Queues")]
     public class BusScheduler : IJob
     {
         private readonly IConfiguration _configuration;

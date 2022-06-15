@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Quartz;
-using Sentinel.Models.K8sDTOs;
 using Sentinel.Scheduler;
 
 

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Sentinel.K8s.K8sClients;
 
-namespace Sentinel.K8s.ServiceDefinitions
+namespace Sentinel.K8s.Modules
 {
     public class KubernetesServiceModule : IModule
     {

@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sentinel.Common.Middlewares;
-using EasyNetQ;
+using Microsoft.AspNetCore.Builder;
 
-namespace Libs.Sentinel.PubSub.ServiceDefinitions
+namespace Sentinel.Mongo.Modules
 {
-    public class RabbitMQServiceModule : IModule
+    public class MongoServiceModule : IModule
     {
         public void MapEndpoints(WebApplication app)
         {
@@ -19,10 +18,7 @@ namespace Libs.Sentinel.PubSub.ServiceDefinitions
 
         public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
-            services.AddSingleton<EasyNetQ.IBus>((ctx) =>
-            {
-                return RabbitHutch.CreateBus(configuration["RabbitMQConnection"]);
-            });
+
         }
     }
 }

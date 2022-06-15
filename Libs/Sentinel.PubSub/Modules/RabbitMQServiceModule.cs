@@ -3,24 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sentinel.Common.Middlewares;
+using EasyNetQ;
 
-namespace Libs.Sentinel.Common.ServiceDefinitions
+namespace Libs.Sentinel.PubSub.Modules
 {
-    public class ServiceCollectionModule : IModule
+    public class RabbitMQServiceModule : IModule
     {
         public void MapEndpoints(WebApplication app)
         {
-            app.UseExceptionLogger();
+
         }
 
         public void RegisterServices(IServiceCollection services, ConfigurationManager configuration)
         {
-            services.AddSingleton<IServiceCollection>(services);
-            services.AddSingleton<IConfiguration>(configuration);
+            services.AddSingleton<EasyNetQ.IBus>((ctx) =>
+            {
+                return RabbitHutch.CreateBus(configuration["RabbitMQConnection"]);
+            });
         }
     }
 }

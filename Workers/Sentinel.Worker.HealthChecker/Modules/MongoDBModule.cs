@@ -1,7 +1,7 @@
 using Sentinel.Common.Middlewares;
 using Sentinel.Models.HealthCheck;
 
-namespace Sentinel.Worker.HealthChecker.ServiceDefinitions
+namespace Sentinel.Worker.HealthChecker.Modules
 {
     public class MongoDBModule : IModule
     {

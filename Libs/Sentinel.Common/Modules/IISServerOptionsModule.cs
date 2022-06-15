@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sentinel.Common.Middlewares;
 
-namespace Libs.Sentinel.Common.ServiceDefinitions
+namespace Libs.Sentinel.Common.Modules
 {
     public class IISServerOptionsModule : IModule
     {

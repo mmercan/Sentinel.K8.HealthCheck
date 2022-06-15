@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Sentinel.Common.Middlewares;
 using StackExchange.Redis;
 
-namespace Sentinel.Redis.ServiceDefinitions
+namespace Sentinel.Redis.Modules
 {
     public class RedisServiceModule : IModule
     {

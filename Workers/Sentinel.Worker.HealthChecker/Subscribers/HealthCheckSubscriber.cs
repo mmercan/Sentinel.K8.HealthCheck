@@ -15,7 +15,7 @@ using Sentinel.PubSub.BackgroundServices;
 
 namespace Sentinel.Worker.HealthChecker.Subscribers
 {
-    [RabbitMQSubscribe(Name = "HealthChecker", TopicConfigurationSection = "queue:healthcheck", TimeoutTotalMinutes = 3, Description = "HealthChecker", Enabled = true)]
+    [RabbitMQSubscribe(Name = "HealthChecker", TopicConfigurationSection = "queue:healthcheck", TimeoutTotalMinutes = 30, Description = "HealthChecker", Enabled = true)]
     public class HealthCheckSubscriber : SubscribeBackgroundService<IScheduledTaskItem>
     {
         private readonly IsAliveAndWellHealthCheckDownloader _isAliveAndWelldownloader;

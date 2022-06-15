@@ -10,7 +10,7 @@ using Turquoise.HealthChecks.Common.Checks;
 using Turquoise.HealthChecks.RabbitMQ;
 using Turquoise.HealthChecks.Redis;
 
-namespace Workers.Sentinel.Worker.Core.ServiceDefinitions
+namespace Workers.Sentinel.Worker.Core.Modules
 {
     public class HealthCheckServiceModule : IModule
     {
