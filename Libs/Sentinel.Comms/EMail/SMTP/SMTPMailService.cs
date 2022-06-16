@@ -11,10 +11,10 @@ namespace Sentinel.Comms.EMail.SMTP
 {
     public class SMTPMailService : IEmailSenderService
     {
-        private readonly IOptions<ISMTPMailServiceSettings> options;
+        private readonly IOptions<SMTPMailServiceSettings> options;
         private ILogger<SMTPMailService> _logger;
 
-        public SMTPMailService(IOptions<ISMTPMailServiceSettings> options, ILogger<SMTPMailService> logger)
+        public SMTPMailService(IOptions<SMTPMailServiceSettings> options, ILogger<SMTPMailService> logger)
         {
             this.options = options;
             _logger = logger;

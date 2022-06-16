@@ -92,3 +92,10 @@ dotnet watch -p .\Sentinel.K8.HealthCheck.sln test --logger:"console;verbosity=d
 ```
 docker-compose -f dockercompose-sonar.yml up --build sentinel-healthcheck-test
 ```
+
+forward smtp
+  kubectl port-forward services/sentinel-mailhog-dev 8090:1025 -n sentinel-healthcheck
+
+
+  bash:
+   kubectl port-forward services/sentinel-mailhog-dev 8090:1025 -n sentinel-healthcheck &

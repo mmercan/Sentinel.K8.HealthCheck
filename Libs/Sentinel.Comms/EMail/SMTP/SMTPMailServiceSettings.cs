@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Sentinel.Comms.EMail.SMTP
 {
-    public class SMTPMailServiceSettings : ISMTPMailServiceSettings
+    public class SMTPMailServiceSettings
     {
         public string Server { get; set; } = default!;
         public int Port { get; set; }
