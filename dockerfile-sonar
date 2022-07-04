@@ -5,6 +5,7 @@ ARG buildtime_ADID
 ARG buildtime_SONARKEY
 ARG buildtime_RabbitMQConnection
 ARG buildtime_RedisConnection
+ARG buildtime_Mongodb__ConnectionString
 # ENV DOTNET_USE_POLLING_FILE_WATCHER=1
 # ENV ASPNETCORE_ENVIRONMENT=Development
 # ENV SONAR_HOST http://sonar.myrcan.com
