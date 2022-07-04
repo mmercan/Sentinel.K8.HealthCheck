@@ -74,7 +74,8 @@ namespace Sentinel.Comms.Tests.Mail.SMTP
             var sp = serviceCollection.BuildServiceProvider();
             var emailservice = sp.GetService<IEmailSenderService>();
             Assert.NotNull(emailservice);
-            emailservice.Send("test@test.com", "Hello", "This is a Message");
+            var tsk = emailservice?.Send("test@test.com", "Hello", "This is a Message");
+            tsk?.Wait();
         }
     }
 }
