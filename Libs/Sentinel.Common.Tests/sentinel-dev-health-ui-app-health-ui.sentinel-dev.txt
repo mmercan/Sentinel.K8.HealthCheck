@@ -78,7 +78,7 @@
       "sentinel-dev-health-ui-app-health-ui.sentinel-dev:80"
     ],
     "ExternalEndpoints": [],
-    "Ingresses":null
+    "Ingresses":null,
     "VirtualServiceUrl": "https://sentinel-tester-testapp.sentinel.myrcan.com",
     "LatestSyncDateUTC": "2022-01-17T06:18:42.6838798Z",
     "Deleted": false,
